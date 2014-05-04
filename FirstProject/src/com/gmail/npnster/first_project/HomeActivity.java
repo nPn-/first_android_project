@@ -3,6 +3,12 @@ package com.gmail.npnster.first_project;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.turbomanage.httpclient.AsyncCallback;
@@ -24,11 +30,12 @@ import android.widget.ImageView;
 import android.os.Build;
 
 public class HomeActivity extends ActionBarActivity {
-
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+	
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -78,37 +85,62 @@ public class HomeActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_home, container,
 					false);
 			
-			PersistData mPersistData = new PersistData(this.getActivity());
-			String token = mPersistData.readAccessToken();
-			String user = token.split(":")[0];
+//			PersistData mPersistData = new PersistData(this.getActivity());
+//			String token = mPersistData.readAccessToken();
+//			String user = token.split(":")[0];
+			//MyApp myApp = MyApp.getInstance();
+			String user = MyApp.getUserId();
+			String token = MyApp.getToken();
+			
 			Log.i("user info ",
 					String.format("user id = %s, user token = %s", user, token));
-			AndroidHttpClient httpClient = new AndroidHttpClient(
-					"http://10.0.2.2:3000");
-			String url = "/api/v1/users/" + user;
-			ParameterMap params = httpClient.newParams().add("api_access_token", token);
-			httpClient.get(url, params, new AsyncCallback() {
-				public void onComplete(HttpResponse httpResponse) {
-					System.out.println(httpResponse.getBodyAsString());
-					JSONObject jsonResponse = null;
-					String gravatarId = null;
-					try {
-						jsonResponse = new JSONObject(httpResponse.getBodyAsString());
-						gravatarId = jsonResponse.getString("gravatar_id");
-						System.out.println(String.format("gravatar_id  = %s", gravatarId));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					String gravatarURL = "http://www.gravatar.com/avatar/" + gravatarId;
+			RestAdapter restAdapter = new RestAdapter.Builder()
+			   .setEndpoint("http://10.0.2.2:3000")
+			   .build();
+			RailsApi railsApi = restAdapter.create(RailsApi.class);
+			
+			//ApiRequester apiRequester = new ApiRequester("http://10.0.2.2:3000", MyApp.getInstance());
+			
+			//railsApi.userParams(user,token, new Callback<UserParams>() {
+			ApiRequester apiRequester = MyApp.getApiRequester();
+			apiRequester.getMyParams(new Callback<UserParams>() {
+				@Override
+				public void success(UserParams params, Response response) {
+					System.out.println(String.format("gravatar id = %s", params.getGravatar_id()));
+					String gravatarURL = "http://www.gravatar.com/avatar/" + params.getGravatar_id();
 					Picasso.with(getActivity()).load(gravatarURL).into((ImageView) getActivity().findViewById(R.id.imageButton1));
 				}
-
-				public void onError(Exception e) {
-					e.printStackTrace();
+				@Override
+				public void failure(RetrofitError retroFitError) {
+					
 				}
-
 			});
+//			AndroidHttpClient httpClient = new AndroidHttpClient(
+//					"http://10.0.2.2:3000");
+//			String url = "/api/v1/users/" + user;
+//			ParameterMap params = httpClient.newParams().add("api_access_token", token);
+//			httpClient.get(url, params, new AsyncCallback() {
+//				public void onComplete(HttpResponse httpResponse) {
+//					System.out.println(httpResponse.getBodyAsString());
+//					JSONObject jsonResponse = null;
+//					String gravatarId = null;
+//					try {
+//						jsonResponse = new JSONObject(httpResponse.getBodyAsString());
+//						gravatarId = jsonResponse.getString("gravatar_id");
+//						System.out.println(String.format("gravatar_id  = %s", gravatarId));
+//					} catch (JSONException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					String gravatarURL = "http://www.gravatar.com/avatar/" + gravatarId;
+//					Picasso.with(getActivity()).load(gravatarURL).into((ImageView) getActivity().findViewById(R.id.imageButton1));
+//				}
+//
+//				public void onError(Exception e) {
+//					e.printStackTrace();
+//				}
+//
+//			});
 			return rootView;
 		}
 	}
