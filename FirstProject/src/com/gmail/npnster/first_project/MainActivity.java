@@ -32,7 +32,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        persistData = new PersistData(this);
+        //persistData = new PersistData(this);
+        persistData = MyApp.getPersistData();
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -46,26 +47,26 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Log.i("info", "here");
-		AndroidHttpClient httpClient = new AndroidHttpClient("https://jdd-sample-app-rails4.herokuapp.com");
-		
-		ParameterMap params = httpClient.newParams()
-				.add("param1", "parm1_value");
-				
-		
-		//httpClient.addHeader("head1", "head_value1");
-		JSONObject jsonObject = null;
-		try {
-			jsonObject = new JSONObject("{ user: { email: npnster@gmail.com, password: trans1st0r, password_confirmation: trans1st0r}}");
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			
-		}
-		System.out.println("json");
-		System.out.println(jsonObject.toString());
-		System.out.println("end json");
-		String jparams = "{ user: { email: npnster@gmail.com, password: trans1st0r, password_confirmation: trans1st0r}})";
-		byte[] b = jparams.getBytes();
+//		AndroidHttpClient httpClient = new AndroidHttpClient("https://jdd-sample-app-rails4.herokuapp.com");
+//		
+//		ParameterMap params = httpClient.newParams()
+//				.add("param1", "parm1_value");
+//				
+//		
+//		//httpClient.addHeader("head1", "head_value1");
+//		JSONObject jsonObject = null;
+//		try {
+//			jsonObject = new JSONObject("{ user: { email: npnster@gmail.com, password: trans1st0r, password_confirmation: trans1st0r}}");
+//		} catch (JSONException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			
+//		}
+//		System.out.println("json");
+//		System.out.println(jsonObject.toString());
+//		System.out.println("end json");
+//		String jparams = "{ user: { email: npnster@gmail.com, password: trans1st0r, password_confirmation: trans1st0r}})";
+//		byte[] b = jparams.getBytes();
 		// post code example below
 //		httpClient.post("/api/v1/signin", "application/json", jsonObject.toString().getBytes() ,new AsyncCallback() {
 //            @Override
@@ -79,15 +80,19 @@ public class MainActivity extends Activity {
 //		});
 //		NetworkRequest request = new NetworkRequest();
 //		request.execute();
+		
+		
+		//persistData.clearAccessToken();
+		//persistData.clearUserId();
 		Intent intent = null;
-		if (persistData.readUserId() == "" ) {
+		if (persistData.readEmailId() == "" ) {
 			intent = new Intent(this, SignUpActivity.class);
 		    intent.putExtra("ACTION", "signup");	
 		} else if (persistData.readAccessToken() == "") {
 			intent = new Intent(this, SignUp.class);
 		    intent.putExtra("ACTION", "signin");
 		} else {
-			System.out.println(String.format("user = %s , token = %s", persistData.readUserId(), persistData.readAccessToken()));
+			System.out.println(String.format("user = %s , token = %s", persistData.readEmailId(), persistData.readAccessToken()));
 			intent = new Intent(this, HomeActivity.class);
 		    intent.putExtra("ACTION", "home");
 		}

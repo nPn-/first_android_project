@@ -10,13 +10,16 @@ public class MyApp extends Application {
 	
 	private static String user;
 	private static PersistData persistData;
+	private static PersistData.Cached cachedPersistData;
 
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		singleton = this;
-		persistData = new PersistData(this);	
+		persistData = new PersistData(this);
+		cachedPersistData = persistData.new Cached();
+		
 		token = persistData.readAccessToken();
 		user = getUserFromToken();
 		apiRequester = new ApiRequester("http://10.0.2.2:3000", getInstance());
@@ -41,7 +44,7 @@ public class MyApp extends Application {
 	}
 
 	public static void saveToken(String tokenToSave) {
-		persistData.saveUserId(tokenToSave);
+		cachedPersistData.saveAccessToken(tokenToSave);
 		user = tokenToSave.split(":")[0];
 		token = tokenToSave;
 	}

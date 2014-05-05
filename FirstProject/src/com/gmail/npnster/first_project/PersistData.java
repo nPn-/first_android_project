@@ -11,6 +11,13 @@ public class PersistData {
 	private SharedPreferences generalSettingsFile;
 	private SharedPreferences.Editor generalSettingsFileEditor;
 	
+	protected class Cached {
+		public void saveAccessToken(String accessToken) {
+			generalSettingsFileEditor.putString("ACCESS_TOKEN", accessToken);
+			generalSettingsFileEditor.commit();
+		}
+	}
+	
 	public PersistData(Context context) {
 		this.context = context;
 		generalSettingsFile = context.getSharedPreferences(GENERAL_SETTINGS_FILE_NAME, Context.MODE_PRIVATE );
@@ -18,10 +25,7 @@ public class PersistData {
 		
 	}
 	
-	public void saveAccessToken(String accessToken) {
-		generalSettingsFileEditor.putString("ACCESS_TOKEN", accessToken);
-		generalSettingsFileEditor.commit();
-	}
+	
 
 	public String readAccessToken() {
 		String token = generalSettingsFile.getString("ACCESS_TOKEN","");
@@ -34,14 +38,18 @@ public class PersistData {
 	}
 
 	
-	public void saveUserId(String accessToken) {
-		generalSettingsFileEditor.putString("USER_ID", accessToken);
+	public void saveEmailId(String emailId) {
+		generalSettingsFileEditor.putString("USER_ID", emailId);
 		generalSettingsFileEditor.commit();
 	}
 
+	public String readEmailId() {
+		String emaiId = generalSettingsFile.getString("USER_ID","");
+		return(emaiId);
+	}
+	
 	public String readUserId() {
-		String token = generalSettingsFile.getString("USER_ID","");
-		return(token);
+		return readAccessToken().split(":")[0];
 	}
 	
 	public void clearUserId() {

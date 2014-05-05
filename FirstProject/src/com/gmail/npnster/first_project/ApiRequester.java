@@ -14,13 +14,19 @@ public class ApiRequester {
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
 				endpoint).build();
 		railsApi = restAdapter.create(RailsApi.class);
+		this.app = app;
 	}
 
 	@SuppressWarnings("static-access")
 	public UserParams getMyParams(Callback<UserParams> callback) {
-		railsApi.userParams(app.getUserFromToken(), app.getToken(), callback);
+		System.out.println(String.format("inside userParams,  user = %s, token = %s", app.getUserId(), app.getToken()));
+		railsApi.userParams(app.getUserId(), app.getToken(), callback);
 		return null;
 
+	}
+	
+	public ReturnedToken signup(UserSignupParameters params) {
+		return railsApi.signup(params);
 	}
 
 }
