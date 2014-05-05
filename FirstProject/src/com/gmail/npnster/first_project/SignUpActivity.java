@@ -249,41 +249,6 @@ public class SignUpActivity extends Activity {
 			    persistData.saveEmailId(mEmail);
             }			
 			System.out.println(String.format("email = %s, token = %s", persistData.readEmailId(), persistData.readAccessToken() ));
-//			String requestParams = String
-//					.format("{ user: { name: %s, email: %s, password: %s, password_confirmation: %s }}",
-//							mName, mEmail, mPassword, mPasswordConfirmation);
-//			AndroidHttpClient httpClient = new AndroidHttpClient(
-//					"http://10.0.2.2:3000");
-//			JSONObject jsonObject = null;
-//			HttpResponse response = null;
-//			try {
-//				jsonObject = new JSONObject(requestParams);
-//				response = httpClient.post("/api/v1/signup", "application/json",
-//						jsonObject.toString().getBytes());
-//			} catch (JSONException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//
-//			}
-//			System.out.println("json");
-//			System.out.println(jsonObject.toString());
-//			System.out.println("end json");
-//
-//			JSONObject jsonResponse = null;
-//			String token = null;
-//			try {
-//				jsonResponse = new JSONObject(response.getBodyAsString());
-//				token = jsonResponse.getString("token");
-//				System.out.println(String.format("token = %s", token));
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			PersistData mPersistData = new PersistData(getApplicationContext());
-//			mPersistData.saveAccessToken(token);
-//			mPersistData.saveUserId(mEmail);
-			
 			return true;
 		}
 

@@ -1,13 +1,7 @@
 package com.gmail.npnster.first_project;
 
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import com.squareup.picasso.Picasso;
-
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,14 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.os.Build;
 
-public class HomeActivity extends ActionBarActivity {
+public class SignInActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
+		setContentView(R.layout.activity_sign_in);
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -34,7 +28,7 @@ public class HomeActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.home, menu);
+		getMenuInflater().inflate(R.menu.sign_in, menu);
 		return true;
 	}
 
@@ -55,47 +49,14 @@ public class HomeActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		@Override
-		public void onResume() {
-			// TODO Auto-generated method stub
-			super.onResume();
-			ApiRequester apiRequester = MyApp.getApiRequester();
-			apiRequester.getMyParams(new Callback<UserParams>() {
-				@Override
-				public void success(UserParams params, Response response) {
-					System.out.println(String.format("gravatar id = %s",
-							params.getGravatar_id()));
-					String gravatarURL = "http://www.gravatar.com/avatar/"
-							+ params.getGravatar_id();
-					Picasso.with(getActivity())
-							.load(gravatarURL)
-							.into((ImageView) getActivity().findViewById(
-									R.id.imageButton1));
-				}
-
-				@Override
-				public void failure(RetrofitError retroFitError) {
-
-				}
-			});
-		}
-
 		public PlaceholderFragment() {
-		}
-
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			// TODO Auto-generated method stub
-			super.onCreate(savedInstanceState);
-
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_home, container,
-					false);
-
+			View rootView = inflater.inflate(R.layout.fragment_sign_in,
+					container, false);
 			return rootView;
 		}
 	}

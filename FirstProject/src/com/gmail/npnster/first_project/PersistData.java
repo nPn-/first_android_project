@@ -11,6 +11,8 @@ public class PersistData {
 	private SharedPreferences generalSettingsFile;
 	private SharedPreferences.Editor generalSettingsFileEditor;
 	
+	// this mainly just hides this method since it should only be called via the application class
+	// which also caches a copy of the token 
 	protected class Cached {
 		public void saveAccessToken(String accessToken) {
 			generalSettingsFileEditor.putString("ACCESS_TOKEN", accessToken);
@@ -25,8 +27,6 @@ public class PersistData {
 		
 	}
 	
-	
-
 	public String readAccessToken() {
 		String token = generalSettingsFile.getString("ACCESS_TOKEN","");
 		return(token);
