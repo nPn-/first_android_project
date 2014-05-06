@@ -18,6 +18,10 @@ public class PersistData {
 			generalSettingsFileEditor.putString("ACCESS_TOKEN", accessToken);
 			generalSettingsFileEditor.commit();
 		}
+		public void saveEmailId(String emailId) {
+			generalSettingsFileEditor.putString("USER_ID", emailId);
+			generalSettingsFileEditor.commit();
+		}
 	}
 	
 	public PersistData(Context context) {
@@ -37,11 +41,6 @@ public class PersistData {
 		generalSettingsFileEditor.commit();
 	}
 
-	
-	public void saveEmailId(String emailId) {
-		generalSettingsFileEditor.putString("USER_ID", emailId);
-		generalSettingsFileEditor.commit();
-	}
 
 	public String readEmailId() {
 		String emaiId = generalSettingsFile.getString("USER_ID","");

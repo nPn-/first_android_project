@@ -2,8 +2,11 @@ package com.gmail.npnster.first_project;
 
 import retrofit.RestAdapter;
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
+import com.gmail.npnster.first_project.api_params.SignoutApiParams;
 
 public class ApiRequester {
 
@@ -27,6 +30,11 @@ public class ApiRequester {
 	
 	public ReturnedToken signup(UserSignupParameters params) {
 		return railsApi.signup(params);
+	}
+	
+	public void signout(Callback<Void> callback) {
+		railsApi.signout(app.getToken(), app.getEmail(), "", callback);
+		
 	}
 
 }

@@ -9,6 +9,7 @@ public class MyApp extends Application {
 	private static ApiRequester apiRequester;
 	
 	private static String user;
+	private static String email;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
 
@@ -21,6 +22,7 @@ public class MyApp extends Application {
 		cachedPersistData = persistData.new Cached();
 		
 		token = persistData.readAccessToken();
+		email = persistData.readEmailId();
 		user = getUserFromToken();
 		apiRequester = new ApiRequester("http://10.0.2.2:3000", getInstance());
 	}
@@ -37,16 +39,24 @@ public class MyApp extends Application {
 	public static String getToken() {
 		return token;
 	}
-
+	
+	public static String getEmail() {
+		return email;
+	}
 	
 	public static String getUserId() {
-		return token;
+		return getUserFromToken();
 	}
 
 	public static void saveToken(String tokenToSave) {
 		cachedPersistData.saveAccessToken(tokenToSave);
 		user = tokenToSave.split(":")[0];
 		token = tokenToSave;
+	}
+	
+	public static void saveEmailId(String emailToSave) {
+		cachedPersistData.saveEmailId(emailToSave);
+		email = emailToSave;
 	}
 
 	public static PersistData getPersistData() {

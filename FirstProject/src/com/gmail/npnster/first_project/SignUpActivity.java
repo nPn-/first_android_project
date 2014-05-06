@@ -246,7 +246,7 @@ public class SignUpActivity extends Activity {
 			} 			
             if ( returnedToken != null ) {
 			    MyApp.saveToken(returnedToken.getToken());
-			    persistData.saveEmailId(mEmail);
+			    MyApp.saveEmailId(mEmail);
             }			
 			System.out.println(String.format("email = %s, token = %s", persistData.readEmailId(), persistData.readAccessToken() ));
 			return true;

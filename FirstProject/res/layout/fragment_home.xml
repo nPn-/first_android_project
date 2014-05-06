@@ -18,4 +18,12 @@
         android:layout_marginTop="16dp"
         android:src="@drawable/abc_ab_transparent_dark_holo" />
 
+    <Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Sign out" />
+
 </RelativeLayout>

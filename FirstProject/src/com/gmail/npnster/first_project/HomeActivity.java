@@ -1,20 +1,25 @@
 package com.gmail.npnster.first_project;
 
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.InjectView;
 
+import com.gmail.npnster.first_project.api_params.SignoutApiParams;
 import com.squareup.picasso.Picasso;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class HomeActivity extends ActionBarActivity {
@@ -54,6 +59,31 @@ public class HomeActivity extends ActionBarActivity {
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
+
+		@InjectView(R.id.sign_out_button)
+		Button signOutButton;
+
+		@OnClick(R.id.sign_out_button)
+		void signOut() {
+			System.out.println("signout");
+			Log.i("signout", "signout");
+			MyApp.getApiRequester().signout(new Callback<Void>() {
+
+				@Override
+				public void failure(RetrofitError arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void success(Void arg0, Response arg1) {
+					// TODO Auto-generated method stub
+					MyApp.getPersistData().clearAccessToken();
+					MyApp.getPersistData().clearUserId();
+					
+				}
+			});
+		}
 
 		@Override
 		public void onResume() {
@@ -95,6 +125,7 @@ public class HomeActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_home, container,
 					false);
+			ButterKnife.inject(this, rootView);
 
 			return rootView;
 		}
