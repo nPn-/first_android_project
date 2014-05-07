@@ -1,6 +1,7 @@
 package com.gmail.npnster.first_project;
 
-import com.gmail.npnster.first_project.api_params.SignoutApiParams;
+import com.gmail.npnster.first_project.api_params.SignoutRequestParams;
+import com.gmail.npnster.first_project.api_params.UserProfileParams;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -18,7 +19,7 @@ public class RailsApiClient {
 		@GET(API_URL + "/users/{id}")
 		void userParams(@Path("id") String id,
 				@Query("api_access_token") String token,
-				Callback<UserParams> callback);
+				Callback<UserProfileParams> callback);
 
 		@POST(API_URL + "/signup")
 		ReturnedToken signup(@Body UserSignupParameters params);

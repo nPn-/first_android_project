@@ -7,8 +7,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.InjectView;
 
+import com.gmail.npnster.first_project.api_events.ProfileRequestCompletedEvent;
+import com.gmail.npnster.first_project.api_events.ProfileRequestEvent;
 import com.gmail.npnster.first_project.api_events.SignoutEvent;
-import com.gmail.npnster.first_project.api_params.SignoutApiParams;
+import com.gmail.npnster.first_project.api_params.SignoutRequestParams;
+import com.gmail.npnster.first_project.api_params.UserProfileParams;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -106,26 +109,21 @@ public class HomeActivity extends ActionBarActivity {
 			// TODO Auto-generated method stub
 			super.onResume();
 			 getBus().register(this);
-			ApiRequestRepository apiRequestRepository = MyApp.getApiRequester();
-			apiRequestRepository.getMyParams(new Callback<UserParams>() {
-				@Override
-				public void success(UserParams params, Response response) {
-					System.out.println(String.format("gravatar id = %s",
-							params.getGravatar_id()));
-					String gravatarURL = "http://www.gravatar.com/avatar/"
-							+ params.getGravatar_id();
-					Picasso.with(getActivity())
-							.load(gravatarURL)
-							.into((ImageView) getActivity().findViewById(
-									R.id.imageButton1));
-				}
-
-				@Override
-				public void failure(RetrofitError retroFitError) {
-
-				}
-			});
+			 mBus.post(new ProfileRequestEvent(null));
 		}
+		
+		@Subscribe
+		public void onProfileRequestCompleted(ProfileRequestCompletedEvent event) {
+			UserProfileParams params = event.getParams();
+			String gravatarURL = "http://www.gravatar.com/avatar/"
+					+ params.getGravatar_id();
+			Picasso.with(getActivity())
+			.load(gravatarURL)
+			.into((ImageView) getActivity().findViewById(
+					R.id.imageButton1));
+			
+		}
+		
 
 		public PlaceholderFragment() {
 		}

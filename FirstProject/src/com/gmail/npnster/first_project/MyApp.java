@@ -8,18 +8,17 @@ import com.squareup.otto.Bus;
 import android.app.Application;
 
 public class MyApp extends Application {
-	
+
 	private static final String API_ROOT_URL = "http://10.0.2.2:3000";
 	private static MyApp singleton;
 	private static String token;
 	private static ApiRequestRepository apiRequestRepository;
-	
 	private static String user;
 	private static String email;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
 	protected RailsApi railsApi;
-	 private Bus mBus = BusProvider.getInstance();
+	private Bus mBus = BusProvider.getInstance();
 
 	@Override
 	public void onCreate() {
@@ -28,18 +27,19 @@ public class MyApp extends Application {
 		singleton = this;
 		persistData = new PersistData(this);
 		cachedPersistData = persistData.new Cached();
-		
+
 		token = persistData.readAccessToken();
 		email = persistData.readEmailId();
 		user = getUserFromToken();
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
-		API_ROOT_URL).build();
-        railsApi = restAdapter.create(RailsApi.class);
-		apiRequestRepository = new ApiRequestRepository(getInstance(), railsApi,mBus);
+				API_ROOT_URL).build();
+		railsApi = restAdapter.create(RailsApi.class);
+		apiRequestRepository = new ApiRequestRepository(getInstance(),
+				railsApi, mBus);
 		mBus.register(apiRequestRepository);
 		mBus.register(this);
 	}
-	
+
 	public static ApiRequestRepository getApiRequester() {
 		return apiRequestRepository;
 	}
@@ -52,11 +52,11 @@ public class MyApp extends Application {
 	public static String getToken() {
 		return token;
 	}
-	
+
 	public static String getEmail() {
 		return email;
 	}
-	
+
 	public static String getUserId() {
 		return getUserFromToken();
 	}
@@ -66,7 +66,7 @@ public class MyApp extends Application {
 		user = tokenToSave.split(":")[0];
 		token = tokenToSave;
 	}
-	
+
 	public static void saveEmailId(String emailToSave) {
 		cachedPersistData.saveEmailId(emailToSave);
 		email = emailToSave;
@@ -75,11 +75,9 @@ public class MyApp extends Application {
 	public static PersistData getPersistData() {
 		return persistData;
 	}
-	
+
 	protected static String getUserFromToken() {
 		return token.split(":")[0];
 	}
-	
-	
 
 }

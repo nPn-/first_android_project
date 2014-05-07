@@ -1,9 +1,9 @@
 package com.gmail.npnster.first_project.api_events;
 
-import com.gmail.npnster.first_project.api_params.SignoutApiParams;
+import com.gmail.npnster.first_project.api_params.SignoutRequestParams;
 
 public class SignoutEvent {
-	protected SignoutApiParams mSignoutApiParams;
+//	protected SignoutRequestParams mSignoutApiParams;
 	
 	
 	// example of event with paramaters
