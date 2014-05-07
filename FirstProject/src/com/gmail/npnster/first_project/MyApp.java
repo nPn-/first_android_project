@@ -1,17 +1,25 @@
 package com.gmail.npnster.first_project;
 
+import retrofit.RestAdapter;
+
+import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
+import com.squareup.otto.Bus;
+
 import android.app.Application;
 
 public class MyApp extends Application {
 	
+	private static final String API_ROOT_URL = "http://10.0.2.2:3000";
 	private static MyApp singleton;
 	private static String token;
-	private static ApiRequester apiRequester;
+	private static ApiRequestRepository apiRequestRepository;
 	
 	private static String user;
 	private static String email;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
+	protected RailsApi railsApi;
+	 private Bus mBus = BusProvider.getInstance();
 
 	@Override
 	public void onCreate() {
@@ -24,11 +32,16 @@ public class MyApp extends Application {
 		token = persistData.readAccessToken();
 		email = persistData.readEmailId();
 		user = getUserFromToken();
-		apiRequester = new ApiRequester("http://10.0.2.2:3000", getInstance());
+		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
+		API_ROOT_URL).build();
+        railsApi = restAdapter.create(RailsApi.class);
+		apiRequestRepository = new ApiRequestRepository(getInstance(), railsApi,mBus);
+		mBus.register(apiRequestRepository);
+		mBus.register(this);
 	}
 	
-	public static ApiRequester getApiRequester() {
-		return apiRequester;
+	public static ApiRequestRepository getApiRequester() {
+		return apiRequestRepository;
 	}
 
 	public static MyApp getInstance() {

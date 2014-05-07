@@ -235,12 +235,12 @@ public class SignUpActivity extends Activity {
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
-            ApiRequester apiRequester = MyApp.getApiRequester();
+            ApiRequestRepository apiRequestRepository = MyApp.getApiRequester();
             PersistData persistData = MyApp.getPersistData();
             UserSignupParameters signupParams = new UserSignupParameters(mName,mEmail,mPassword,mPasswordConfirmation);
 			ReturnedToken returnedToken = null;
             try {
-            returnedToken = apiRequester.signup(signupParams);
+            returnedToken = apiRequestRepository.signup(signupParams);
             } catch (RuntimeException e) {
             	e.printStackTrace();
 			} 			

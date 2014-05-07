@@ -7,7 +7,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.InjectView;
 
+import com.gmail.npnster.first_project.api_events.SignoutEvent;
 import com.gmail.npnster.first_project.api_params.SignoutApiParams;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import android.support.v7.app.ActionBarActivity;
@@ -60,37 +63,51 @@ public class HomeActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
+		@Override
+		public void onPause() {
+			// TODO Auto-generated method stub
+			super.onPause();
+			getBus().unregister(this);
+		}
+
 		@InjectView(R.id.sign_out_button)
 		Button signOutButton;
+		
+		private Bus mBus;
+		
+		private Bus getBus() {
+		    if (mBus == null) {
+		      mBus = BusProvider.getInstance();
+		    }
+		    return mBus;
+		  }
+
+		  public void setBus(Bus bus) {
+		    mBus = bus;
+		  }
+		
+		
 
 		@OnClick(R.id.sign_out_button)
 		void signOut() {
 			System.out.println("signout");
 			Log.i("signout", "signout");
-			MyApp.getApiRequester().signout(new Callback<Void>() {
-
-				@Override
-				public void failure(RetrofitError arg0) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void success(Void arg0, Response arg1) {
-					// TODO Auto-generated method stub
-					MyApp.getPersistData().clearAccessToken();
-					MyApp.getPersistData().clearUserId();
-					
-				}
-			});
+			mBus.post(new SignoutEvent(""));
+		}
+		
+		@Subscribe
+		public void onSignoutCompletedEvent(String arg) {
+			MyApp.getPersistData().clearAccessToken();
+			MyApp.getPersistData().clearUserId();
 		}
 
 		@Override
 		public void onResume() {
 			// TODO Auto-generated method stub
 			super.onResume();
-			ApiRequester apiRequester = MyApp.getApiRequester();
-			apiRequester.getMyParams(new Callback<UserParams>() {
+			 getBus().register(this);
+			ApiRequestRepository apiRequestRepository = MyApp.getApiRequester();
+			apiRequestRepository.getMyParams(new Callback<UserParams>() {
 				@Override
 				public void success(UserParams params, Response response) {
 					System.out.println(String.format("gravatar id = %s",
