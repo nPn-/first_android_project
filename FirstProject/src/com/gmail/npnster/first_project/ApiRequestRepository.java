@@ -9,7 +9,10 @@ import com.gmail.npnster.first_project.api_events.ProfileRequestCompletedEvent;
 import com.gmail.npnster.first_project.api_events.ProfileRequestEvent;
 import com.gmail.npnster.first_project.api_events.SignoutCompletedEvent;
 import com.gmail.npnster.first_project.api_events.SignoutEvent;
+import com.gmail.npnster.first_project.api_events.SignupCompletedEvent;
+import com.gmail.npnster.first_project.api_events.SignupRequestEvent;
 import com.gmail.npnster.first_project.api_params.SignoutRequestParams;
+import com.gmail.npnster.first_project.api_params.SignupCompletedParams;
 import com.gmail.npnster.first_project.api_params.UserProfileParams;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -80,9 +83,31 @@ public class ApiRequestRepository {
 
 	}
 
-	public ReturnedToken signup(UserSignupParameters params) {
-		return mRailsApi.signup(params);
+	
+//	public ReturnedToken signup(UserSignupParameters params) {
+//		return mRailsApi.signup(params);
+//	}
+	
+	@Subscribe
+	public void onSignup(SignupRequestEvent event) {
+		mRailsApi.signup(event.getParams(), new Callback<SignupCompletedParams>() {
+
+			@Override
+			public void failure(RetrofitError arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void success(SignupCompletedParams tokenParms, Response arg1) {
+				// TODO Auto-generated method stub
+				mBus.post(new SignupCompletedEvent(tokenParms));
+				
+			}
+			
+		});
 	}
+
 
 	// public void signout(Callback<Void> callback) {
 	// mRailsApi.signout(mApp.getToken(), mApp.getEmail(), "", callback);

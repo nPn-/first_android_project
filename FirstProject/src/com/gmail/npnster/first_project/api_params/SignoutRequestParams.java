@@ -5,3 +5,4 @@ public class SignoutRequestParams extends UserRequestParams {
 		super(name,email,password,passwordConfirmation);
 	}
 }
+    

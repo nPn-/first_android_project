@@ -3,6 +3,11 @@ package com.gmail.npnster.first_project;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.gmail.npnster.first_project.api_events.SignupCompletedEvent;
+import com.gmail.npnster.first_project.api_events.SignupRequestEvent;
+import com.gmail.npnster.first_project.api_params.UserRequestParams;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
 import com.turbomanage.httpclient.android.AndroidHttpClient;
@@ -43,7 +48,7 @@ public class SignUpActivity extends Activity {
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
-	private UserLoginTask mAuthTask = null;
+	// UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mName;
@@ -60,7 +65,21 @@ public class SignUpActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	private boolean requestInFlight = false;
 
+	private Bus mBus;
+	
+	private Bus getBus() {
+	    if (mBus == null) {
+	      mBus = BusProvider.getInstance();
+	    }
+	    return mBus;
+	  }
+
+	  public void setBus(Bus bus) {
+	    mBus = bus;
+	  }
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,7 +100,7 @@ public class SignUpActivity extends Activity {
 							KeyEvent keyEvent) {
 						if (id == R.id.login || id == EditorInfo.IME_NULL) {
 							attemptLogin();
-							return true;
+							return true; 
 						}
 						return false;
 					}
@@ -99,6 +118,21 @@ public class SignUpActivity extends Activity {
 					}
 				});
 	}
+	
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		getBus().register(this);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		getBus().unregister(this);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,8 +147,14 @@ public class SignUpActivity extends Activity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (mAuthTask != null) {
+//		if (mAuthTask != null) {
+//			return;
+//		}
+		
+		if (requestInFlight) {
 			return;
+		} else {
+			requestInFlight = true;
 		}
 
 		// Reset errors.
@@ -175,15 +215,29 @@ public class SignUpActivity extends Activity {
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
 			// form field with an error.
+			requestInFlight = false;
 			focusView.requestFocus();
 		} else {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
-			mAuthTask = new UserLoginTask();
-			mAuthTask.execute((Void) null);
+			PersistData persistData = MyApp.getPersistData();
+			System.out.println("post signin request to bus");
+            mBus.post(new SignupRequestEvent(new UserRequestParams(mName,mEmail,mPassword,mPasswordConfirmation )));
+
+//			mAuthTask = new UserLoginTask();
+//			mAuthTask.execute((Void) null);
 		}
+	}
+	
+	@Subscribe
+	public void onSignupCompleted(SignupCompletedEvent event) {
+		System.out.println("in onSignupCompleted");
+		System.out.println(event.toString());
+		System.out.println(String.format("in onSignupCompleted, got token = %s ", event.getParams().getToken()));
+		showProgress(false);
+		requestInFlight = false;
 	}
 
 	/**
@@ -231,47 +285,47 @@ public class SignUpActivity extends Activity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
-            ApiRequestRepository apiRequestRepository = MyApp.getApiRequester();
-            PersistData persistData = MyApp.getPersistData();
-            UserSignupParameters signupParams = new UserSignupParameters(mName,mEmail,mPassword,mPasswordConfirmation);
-			ReturnedToken returnedToken = null;
-            try {
-            returnedToken = apiRequestRepository.signup(signupParams);
-            } catch (RuntimeException e) {
-            	e.printStackTrace();
-			} 			
-            if ( returnedToken != null ) {
-			    MyApp.saveToken(returnedToken.getToken());
-			    MyApp.saveEmailId(mEmail);
-            }			
-			System.out.println(String.format("email = %s, token = %s", persistData.readEmailId(), persistData.readAccessToken() ));
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(final Boolean success) {
-			mAuthTask = null;
-			showProgress(false);
-
-			if (success) {
-				finish();
-//				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//				startActivity(intent);
-			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
-			}
-		}
-
-		@Override
-		protected void onCancelled() {
-			mAuthTask = null;
-			showProgress(false);
-		}
-	}
+//	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+//		@Override
+//		protected Boolean doInBackground(Void... params) {
+//			// TODO: attempt authentication against a network service.
+//            ApiRequestRepository apiRequestRepository = MyApp.getApiRequester();
+//            PersistData persistData = MyApp.getPersistData();
+//            UserSignupParameters signupParams = new UserSignupParameters(mName,mEmail,mPassword,mPasswordConfirmation);
+//			ReturnedToken returnedToken = null;
+//            try {
+//            returnedToken = apiRequestRepository.signup(signupParams);
+//            } catch (RuntimeException e) {
+//            	e.printStackTrace();
+//			} 			
+//            if ( returnedToken != null ) {
+//			    MyApp.saveToken(returnedToken.getToken());
+//			    MyApp.saveEmailId(mEmail);
+//            }			
+//			System.out.println(String.format("email = %s, token = %s", persistData.readEmailId(), persistData.readAccessToken() ));
+//			return true;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(final Boolean success) {
+//			mAuthTask = null;
+//			showProgress(false);
+//
+//			if (success) {
+//				finish();
+////				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+////				startActivity(intent);
+//			} else {
+//				mPasswordView
+//						.setError(getString(R.string.error_incorrect_password));
+//				mPasswordView.requestFocus();
+//			}
+//		}
+//
+//		@Override
+//		protected void onCancelled() {
+//			mAuthTask = null;
+//			showProgress(false);
+//		}
+//	}
 }
