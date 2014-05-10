@@ -1,15 +1,15 @@
 package com.gmail.npnster.first_project.api_events;
 
-import com.gmail.npnster.first_project.api_params.UserProfileParams;
+import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 
 public class ProfileRequestCompletedEvent {
-	private UserProfileParams mUserProfileParams;
+	private GetUserProfileResponse mUserProfileParams;
 	
-	public ProfileRequestCompletedEvent(UserProfileParams userProfileParams) {
-		mUserProfileParams = userProfileParams;
+	public ProfileRequestCompletedEvent(GetUserProfileResponse getUserProfileResponse) {
+		mUserProfileParams = getUserProfileResponse;
 	}
 	
-	public UserProfileParams getParams() {
+	public GetUserProfileResponse getParams() {
 		System.out.println("params are being requested from the UserProfileCompletedEvent");
 		return mUserProfileParams;
 	}

@@ -3,8 +3,12 @@ package com.gmail.npnster.first_project;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.gmail.npnster.first_project.api_events.ApiResponseEvent;
+import com.gmail.npnster.first_project.api_events.ApiRequestEvent;
 import com.gmail.npnster.first_project.api_events.SignupCompletedEvent;
 import com.gmail.npnster.first_project.api_events.SignupRequestEvent;
+import com.gmail.npnster.first_project.api_params.SignupRequest;
+import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.gmail.npnster.first_project.api_params.UserRequestParams;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -223,8 +227,8 @@ public class SignUpActivity extends Activity {
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
 			PersistData persistData = MyApp.getPersistData();
-			System.out.println("post signin request to bus");
-            mBus.post(new SignupRequestEvent(new UserRequestParams(mName,mEmail,mPassword,mPasswordConfirmation )));
+			System.out.println("postin signup request to bus");
+            mBus.post(new ApiRequestEvent<SignupRequest>(new SignupRequest(mName,mEmail,mPassword,mPasswordConfirmation )));
 
 //			mAuthTask = new UserLoginTask();
 //			mAuthTask.execute((Void) null);
@@ -232,12 +236,21 @@ public class SignUpActivity extends Activity {
 	}
 	
 	@Subscribe
-	public void onSignupCompleted(SignupCompletedEvent event) {
+	public void onSignupCompleted(ApiResponseEvent<SignupResponse> event) {
 		System.out.println("in onSignupCompleted");
 		System.out.println(event.toString());
-		System.out.println(String.format("in onSignupCompleted, got token = %s ", event.getParams().getToken()));
+		String returnedToken = event.getParams().getToken();
+		System.out.println(String.format("in onSignupCompleted, got token = %s ", returnedToken));
 		showProgress(false);
 		requestInFlight = false;
+		
+		if ( returnedToken != null ) {
+		    MyApp.saveToken(returnedToken);
+		    MyApp.saveEmailId(mEmail);
+        }	
+		finish();
+		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+	    startActivity(intent);
 	}
 
 	/**

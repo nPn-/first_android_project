@@ -7,11 +7,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.InjectView;
 
+import com.gmail.npnster.first_project.api_events.ApiRequestEvent;
+import com.gmail.npnster.first_project.api_events.ApiResponseEvent;
 import com.gmail.npnster.first_project.api_events.ProfileRequestCompletedEvent;
 import com.gmail.npnster.first_project.api_events.ProfileRequestEvent;
 import com.gmail.npnster.first_project.api_events.SignoutEvent;
-import com.gmail.npnster.first_project.api_params.SignoutRequestParams;
-import com.gmail.npnster.first_project.api_params.UserProfileParams;
+import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
+import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
+import com.gmail.npnster.first_project.api_params.SignoutRequest;
+import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -93,13 +97,14 @@ public class HomeActivity extends ActionBarActivity {
 
 		@OnClick(R.id.sign_out_button)
 		void signOut() {
-			System.out.println("signout");
+			System.out.println("posting signout request to the bus");
 			Log.i("signout", "signout");
-			mBus.post(new SignoutEvent(""));
+			mBus.post(new ApiRequestEvent<SignoutRequest>(null));
 		}
 		
 		@Subscribe
-		public void onSignoutCompletedEvent(String arg) {
+		public void onSignoutCompletedEvent(ApiResponseEvent<SignoutResponse> event) {
+			System.out.println("inside home activity, onSignoutCompleted");
 			MyApp.getPersistData().clearAccessToken();
 			MyApp.getPersistData().clearUserId();
 		}
@@ -109,12 +114,14 @@ public class HomeActivity extends ActionBarActivity {
 			// TODO Auto-generated method stub
 			super.onResume();
 			 getBus().register(this);
-			 mBus.post(new ProfileRequestEvent(null));
+			 System.out.println("posting get user profile request to the bus");
+			 mBus.post(new ApiRequestEvent<GetUserProfileRequest>(null));
 		}
 		
 		@Subscribe
-		public void onProfileRequestCompleted(ProfileRequestCompletedEvent event) {
-			UserProfileParams params = event.getParams();
+		public void onProfileRequestCompleted(ApiResponseEvent<GetUserProfileResponse> event) {
+			System.out.println("inside home activity - onProfileRequestCompleted");
+			GetUserProfileResponse params = event.getParams();
 			String gravatarURL = "http://www.gravatar.com/avatar/"
 					+ params.getGravatar_id();
 			Picasso.with(getActivity())

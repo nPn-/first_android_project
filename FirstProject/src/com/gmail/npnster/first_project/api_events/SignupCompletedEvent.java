@@ -1,15 +1,15 @@
 package com.gmail.npnster.first_project.api_events;
 
-import com.gmail.npnster.first_project.api_params.SignupCompletedParams;
+import com.gmail.npnster.first_project.api_params.SignupResponse;
 
 public class SignupCompletedEvent {
 	
-	private SignupCompletedParams mSignupCompletedParams;
-	public SignupCompletedParams getParams() {
+	private SignupResponse mSignupCompletedParams;
+	public SignupResponse getParams() {
 		return mSignupCompletedParams;
 	}
-	public SignupCompletedEvent(SignupCompletedParams signupCompletedParams) {
-		mSignupCompletedParams = signupCompletedParams;
+	public SignupCompletedEvent(SignupResponse signupResponse) {
+		mSignupCompletedParams = signupResponse;
 	}
 
 }

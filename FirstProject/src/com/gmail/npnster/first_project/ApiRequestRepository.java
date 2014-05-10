@@ -5,15 +5,20 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
+import com.gmail.npnster.first_project.api_events.ApiResponseEvent;
+import com.gmail.npnster.first_project.api_events.ApiRequestEvent;
 import com.gmail.npnster.first_project.api_events.ProfileRequestCompletedEvent;
 import com.gmail.npnster.first_project.api_events.ProfileRequestEvent;
 import com.gmail.npnster.first_project.api_events.SignoutCompletedEvent;
 import com.gmail.npnster.first_project.api_events.SignoutEvent;
 import com.gmail.npnster.first_project.api_events.SignupCompletedEvent;
 import com.gmail.npnster.first_project.api_events.SignupRequestEvent;
-import com.gmail.npnster.first_project.api_params.SignoutRequestParams;
-import com.gmail.npnster.first_project.api_params.SignupCompletedParams;
-import com.gmail.npnster.first_project.api_params.UserProfileParams;
+import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
+import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
+import com.gmail.npnster.first_project.api_params.SignoutRequest;
+import com.gmail.npnster.first_project.api_params.SignoutResponse;
+import com.gmail.npnster.first_project.api_params.SignupRequest;
+import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -40,11 +45,11 @@ public class ApiRequestRepository {
 //	}
 
 	@Subscribe
-	public void onUserProfileRequestEvent(ProfileRequestEvent event) {
+	public void onUserProfileRequestEvent(ApiRequestEvent<GetUserProfileRequest> event) {
 		System.out.println(String.format(
-				"inside userParams,  user = %s, token = %s", mApp.getUserId(),
+				"inside api repro making profile request with the following userParams,  user = %s, token = %s", mApp.getUserId(),
 				mApp.getToken()));
-		mRailsApi.userParams(mApp.getUserId(), mApp.getToken(), new Callback<UserProfileParams>() {
+		mRailsApi.userParams(mApp.getUserId(), mApp.getToken(), new Callback<GetUserProfileResponse>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -53,9 +58,9 @@ public class ApiRequestRepository {
 			}
 
 			@Override
-			public void success(UserProfileParams profileParms, Response response) {
+			public void success(GetUserProfileResponse profileParms, Response response) {
 				// TODO Auto-generated method stub
-				mBus.post(new ProfileRequestCompletedEvent(profileParms));			
+				mBus.post(new ApiResponseEvent<GetUserProfileResponse>(profileParms));			
 			}
 			
 		});
@@ -63,7 +68,8 @@ public class ApiRequestRepository {
 	}
 
 	@Subscribe
-	public void onSignout(SignoutEvent event) {
+	public void onSignout(ApiRequestEvent<SignoutRequest> event) {
+		System.out.println("inside api repo - making signout request");
 		mRailsApi.signout(mApp.getToken(), mApp.getEmail(), "",
 				new Callback<Void>() {
 
@@ -75,7 +81,7 @@ public class ApiRequestRepository {
 
 					@Override
 					public void success(Void arg0, Response arg1) {
-						mBus.post(new SignoutCompletedEvent(""));
+						mBus.post(new ApiResponseEvent<SignoutResponse>(null));
 
 					}
 
@@ -89,8 +95,9 @@ public class ApiRequestRepository {
 //	}
 	
 	@Subscribe
-	public void onSignup(SignupRequestEvent event) {
-		mRailsApi.signup(event.getParams(), new Callback<SignupCompletedParams>() {
+	public void onSignup(ApiRequestEvent<SignupRequest> event) {
+		System.out.println("inside api repo - making signin request");
+		mRailsApi.signup(event.getParams(), new Callback<SignupResponse>() {
 
 			@Override
 			public void failure(RetrofitError arg0) {
@@ -99,14 +106,15 @@ public class ApiRequestRepository {
 			}
 
 			@Override
-			public void success(SignupCompletedParams tokenParms, Response arg1) {
+			public void success(SignupResponse tokenParms, Response arg1) {
 				// TODO Auto-generated method stub
-				mBus.post(new SignupCompletedEvent(tokenParms));
+				mBus.post(new ApiResponseEvent<SignupResponse>(tokenParms));
 				
 			}
 			
 		});
 	}
+	
 
 
 	// public void signout(Callback<Void> callback) {
