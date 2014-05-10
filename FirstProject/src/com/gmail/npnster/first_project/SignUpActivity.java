@@ -5,10 +5,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.gmail.npnster.first_project.api_events.ApiResponseEvent;
-import com.gmail.npnster.first_project.api_events.ApiRequestEvent;
-import com.gmail.npnster.first_project.api_events.SignupCompletedEvent;
-import com.gmail.npnster.first_project.api_events.SignupRequestEvent;
+
 import com.gmail.npnster.first_project.api_params.SignupRequest;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.gmail.npnster.first_project.api_params.UserRequestParams;

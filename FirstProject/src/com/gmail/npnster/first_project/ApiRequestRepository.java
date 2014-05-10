@@ -7,14 +7,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
-import com.gmail.npnster.first_project.api_events.ApiResponseEvent;
-import com.gmail.npnster.first_project.api_events.ApiRequestEvent;
-import com.gmail.npnster.first_project.api_events.ProfileRequestCompletedEvent;
-import com.gmail.npnster.first_project.api_events.ProfileRequestEvent;
-import com.gmail.npnster.first_project.api_events.SignoutCompletedEvent;
-import com.gmail.npnster.first_project.api_events.SignoutEvent;
-import com.gmail.npnster.first_project.api_events.SignupCompletedEvent;
-import com.gmail.npnster.first_project.api_events.SignupRequestEvent;
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;

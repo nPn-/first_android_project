@@ -7,11 +7,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.InjectView;
 
-import com.gmail.npnster.first_project.api_events.ApiRequestEvent;
-import com.gmail.npnster.first_project.api_events.ApiResponseEvent;
-import com.gmail.npnster.first_project.api_events.ProfileRequestCompletedEvent;
-import com.gmail.npnster.first_project.api_events.ProfileRequestEvent;
-import com.gmail.npnster.first_project.api_events.SignoutEvent;
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
