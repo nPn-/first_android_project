@@ -14,6 +14,8 @@ import com.gmail.npnster.first_project.api_events.ProfileRequestEvent;
 import com.gmail.npnster.first_project.api_events.SignoutEvent;
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
+import com.gmail.npnster.first_project.api_params.GetUsersRequest;
+import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.SignoutRequest;
 import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.squareup.otto.Bus;
@@ -99,11 +101,11 @@ public class HomeActivity extends ActionBarActivity {
 		void signOut() {
 			System.out.println("posting signout request to the bus");
 			Log.i("signout", "signout");
-			mBus.post(new ApiRequestEvent<SignoutRequest>(null));
+			mBus.post(new SignoutRequest());
 		}
 		
 		@Subscribe
-		public void onSignoutCompletedEvent(ApiResponseEvent<SignoutResponse> event) {
+		public void onSignoutCompletedEvent(SignoutResponse event) {
 			System.out.println("inside home activity, onSignoutCompleted");
 			MyApp.getPersistData().clearAccessToken();
 			MyApp.getPersistData().clearUserId();
@@ -115,15 +117,16 @@ public class HomeActivity extends ActionBarActivity {
 			super.onResume();
 			 getBus().register(this);
 			 System.out.println("posting get user profile request to the bus");
-			 mBus.post(new ApiRequestEvent<GetUserProfileRequest>(null));
+			 mBus.post(new GetUserProfileRequest());
+			 mBus.post(new GetUsersRequest());
 		}
 		
 		@Subscribe
-		public void onProfileRequestCompleted(ApiResponseEvent<GetUserProfileResponse> event) {
+		public void onProfileRequestCompleted(GetUserProfileResponse event) {
 			System.out.println("inside home activity - onProfileRequestCompleted");
-			GetUserProfileResponse params = event.getParams();
+			//GetUserProfileResponse params = event.getParams();
 			String gravatarURL = "http://www.gravatar.com/avatar/"
-					+ params.getGravatar_id();
+					+ event.getGravatar_id();
 			Picasso.with(getActivity())
 			.load(gravatarURL)
 			.into((ImageView) getActivity().findViewById(
@@ -131,6 +134,14 @@ public class HomeActivity extends ActionBarActivity {
 			
 		}
 		
+		// just tying to see if the user list is working
+		@Subscribe
+		public void onGetUsersResponseAvailable(GetUsersResponse event) {
+			for (GetUsersResponse.User user : event.getUsers()) {
+				System.out.println(user.getName());
+			}
+			
+		}
 
 		public PlaceholderFragment() {
 		}

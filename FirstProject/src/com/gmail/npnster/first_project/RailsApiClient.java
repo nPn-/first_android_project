@@ -1,7 +1,9 @@
 package com.gmail.npnster.first_project;
 
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
+import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.SignoutRequest;
+import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.gmail.npnster.first_project.api_params.UserRequestParams;
 
@@ -32,7 +34,11 @@ public class RailsApiClient {
 
 		@DELETE(API_URL + "/signout")
 		void signout(@Query("api_access_token") String token,
-				@Query("email") String email, @Query("password") String password,Callback<Void> callback );
+				@Query("email") String email, @Query("password") String password,Callback<SignoutResponse> callback );
+		
+		@GET(API_URL + "/users?per_page=all")
+		void getUsers(@Query("api_access_token") String token,
+				Callback<GetUsersResponse> callback );
 
 	}
 
