@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetUsersResponse {
+public class GetUsersResponse extends BaseResponse {
 
 	private String page;
 	private Integer total_user_count;

@@ -77,8 +77,9 @@ public class ApiRequestRepository {
 
 					@Override
 					public void failure(RetrofitError arg0) {
-						// TODO Auto-generated method stub
-
+						SignoutResponse response = new SignoutResponse();
+						response.setSuccessful(false);
+						mBus.post(response);
 					}
 
 					@Override
@@ -86,6 +87,8 @@ public class ApiRequestRepository {
 							Response arg1) {
 						// need to create one since the api just returns a
 						// header with no body , hence the response is null
+						SignoutResponse response = new SignoutResponse();
+						response.setSuccessful(false);
 						mBus.post(new SignoutResponse());
 
 					}
@@ -103,7 +106,9 @@ public class ApiRequestRepository {
 					@Override
 					public void failure(RetrofitError arg0) {
 						// TODO Auto-generated method stub
-
+						LeaveResponse response = new LeaveResponse();
+						response.setSuccessful(false);
+						mBus.post(response);
 					}
 
 					@Override
@@ -111,7 +116,9 @@ public class ApiRequestRepository {
 							Response arg1) {
 						// need to create one since the api just returns a
 						// header with no body , hence the response is null
-						mBus.post(new LeaveResponse());
+						LeaveResponse response = new LeaveResponse();
+						response.setSuccessful(true);
+						mBus.post(response);
 
 					}
 
@@ -132,7 +139,8 @@ public class ApiRequestRepository {
 			@Override
 			public void failure(RetrofitError arg0) {
 				// TODO Auto-generated method stub
-				SignupResponse signupResponse = (SignupResponse) arg0.getBody();
+				if (arg0.getBody() == null ) System.out.println("arg0.getBody() is null");
+ 				SignupResponse signupResponse = (SignupResponse) arg0.getBody();
 				signupResponse.setSuccessful(false);
 				mBus.post(signupResponse);
 				System.out.println("in failure method for signup request");

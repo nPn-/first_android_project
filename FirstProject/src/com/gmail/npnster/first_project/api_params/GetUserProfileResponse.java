@@ -9,11 +9,17 @@ public class GetUserProfileResponse {
 	private Integer id;
 	private String name;
 	private String gravatar_id;
+	private String email;
 	private Integer microposts_count;
 	private Integer followed_users_count;
 	private Integer followers_count;
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+	
+	public String getEmail() {
+		return email;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

@@ -5,24 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SignupResponse {
+public class SignupResponse extends BaseResponse {
 	private String token;
-	private List<String> errors = new ArrayList<String>();
-	private Boolean mSuccessful = false;
 
-	public List<String> getErrors() {
-		return errors;
-	}
 	public String getToken() {
 		return token;
 	}
 	
-	public void setSuccessful(Boolean successful) {
-		mSuccessful = successful;
-	}
-	
-	public Boolean isSuccessful() {
-		return mSuccessful;
-	}
-
 }
