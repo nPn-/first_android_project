@@ -43,6 +43,18 @@
             android:name="com.gmail.npnster.first_project.SignInActivity"
             android:label="@string/title_activity_sign_in" >
         </activity>
+        <activity
+            android:name="com.gmail.npnster.first_project.UsersListActivity"
+            android:label="@string/title_activity_users_list" >
+        </activity>
+        <activity
+            android:name="com.gmail.npnster.first_project.ApiCheckerActivity"
+            android:label="@string/title_activity_api_checker" >
+        </activity>
+        <activity
+            android:name="com.gmail.npnster.first_project.ApiExActivity"
+            android:label="@string/title_activity_api_ex" >
+        </activity>
     </application>
 
 </manifest>

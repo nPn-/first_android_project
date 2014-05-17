@@ -5,7 +5,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.SignupRequest;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.gmail.npnster.first_project.api_params.UserRequestParams;
@@ -233,6 +233,10 @@ public class SignUpActivity extends Activity {
 			// mAuthTask = new UserLoginTask();
 			// mAuthTask.execute((Void) null);
 		}
+	}
+	
+	public void leave(String email, String password) {
+		mBus.post(new LeaveRequest(email, password));
 	}
 
 	@Subscribe

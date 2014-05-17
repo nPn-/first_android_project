@@ -8,7 +8,7 @@ import java.util.Map;
 public class SignupResponse {
 	private String token;
 	private List<String> errors = new ArrayList<String>();
-	private Boolean mSuccessful;
+	private Boolean mSuccessful = false;
 
 	public List<String> getErrors() {
 		return errors;

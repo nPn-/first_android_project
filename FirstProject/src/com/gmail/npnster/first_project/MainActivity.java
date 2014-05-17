@@ -33,6 +33,8 @@ public class MainActivity extends Activity {
 		super.onResume();
 		Log.i("info", "here");
 		Intent intent = null;
+		   
+		
 		if (persistData.readEmailId() == "" ) {
 			intent = new Intent(this, SignUpActivity.class);
 		    intent.putExtra("ACTION", "signup");	
@@ -44,6 +46,10 @@ public class MainActivity extends Activity {
 			intent = new Intent(this, HomeActivity.class);
 		    intent.putExtra("ACTION", "home");
 		}
+		
+		
+		// force launch userlist for now
+		//intent = new Intent(this, UsersListActivity.class);
 		
 	    if (intent != null) {
 	    	startActivity(intent);

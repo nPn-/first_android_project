@@ -11,6 +11,8 @@ import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
+import com.gmail.npnster.first_project.api_params.LeaveRequest;
+import com.gmail.npnster.first_project.api_params.LeaveResponse;
 import com.gmail.npnster.first_project.api_params.SignoutRequest;
 import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.gmail.npnster.first_project.api_params.SignupRequest;
@@ -92,6 +94,32 @@ public class ApiRequestRepository {
 
 	}
 
+	@Subscribe
+	public void onLeave(LeaveRequest event) {
+		System.out.println("inside api repo - making leave request");
+		mRailsApi.leave(event.getEmail(), event.getPassword(),
+				new Callback<LeaveResponse>() {
+
+					@Override
+					public void failure(RetrofitError arg0) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void success(LeaveResponse leaveResponse,
+							Response arg1) {
+						// need to create one since the api just returns a
+						// header with no body , hence the response is null
+						mBus.post(new LeaveResponse());
+
+					}
+
+				});
+
+	}
+
+	
 	// public ReturnedToken signup(UserSignupParameters params) {
 	// return mRailsApi.signup(params);
 	// }
