@@ -4,7 +4,7 @@ package com.gmail.npnster.first_project.api_params;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetUserProfileResponse {
+public class GetUserProfileResponse extends BaseResponse {
 
 	private Integer id;
 	private String name;

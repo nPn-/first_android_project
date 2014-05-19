@@ -2,6 +2,8 @@ package com.gmail.npnster.first_project;
 
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
+import com.gmail.npnster.first_project.api_params.GetUsersRequest;
+import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
 import com.gmail.npnster.first_project.api_params.SignupRequest;
@@ -28,7 +30,7 @@ public class ApiExActivity extends Activity {
 	private TextView mTextView;
 
 	public enum ApiCall {
-		LEAVE, SIGNUP, GET_USER_PROFILE
+		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS
 	}
 
 	private ApiCall apiCall;
@@ -95,6 +97,27 @@ public class ApiExActivity extends Activity {
 	}
 	//***********************
 
+	// get users  ##################
+	private GetUsersRequest getUsersRequest;
+	private GetUsersResponse getUsersResponse;
+
+	public GetUsersResponse getGetUsersResponse() {
+		return getUsersResponse;
+	}
+
+	public void setGetUsersRequest(
+			GetUsersRequest getUsersRequest) {
+		this.getUsersRequest = getUsersRequest;
+		apiCall = ApiCall.GET_USERS;
+	}
+
+	@Subscribe
+	public void onGetUsersResponse(GetUsersResponse event) {
+		getUsersResponse = event;
+		setCallComplete();
+	}
+	//***********************
+
 	private Bus mBus;
 
 	protected Bus getBus() {
@@ -131,6 +154,9 @@ public class ApiExActivity extends Activity {
 					break;
 				case GET_USER_PROFILE:
 					mBus.post(getUserProfileRequest);
+					break;
+				case GET_USERS:
+					mBus.post(getUsersRequest);
 
 				}
 

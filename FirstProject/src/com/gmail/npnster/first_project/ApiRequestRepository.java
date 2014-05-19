@@ -32,15 +32,6 @@ public class ApiRequestRepository {
 		mBus = bus;
 	}
 
-	// @SuppressWarnings("static-access")
-	// public UserParams getMyParams(Callback<UserParams> callback) {
-	// System.out.println(String.format(
-	// "inside userParams,  user = %s, token = %s", mApp.getUserId(),
-	// mApp.getToken()));
-	// mRailsApi.userParams(mApp.getUserId(), mApp.getToken(), callback);
-	// return null;
-	//
-	// }
 
 	@Subscribe
 	public void onUserProfileRequestEvent(GetUserProfileRequest event) {
@@ -49,51 +40,14 @@ public class ApiRequestRepository {
 						.format("inside api repro making profile request with the following userParams,  user = %s, token = %s",
 								mApp.getUserId(), mApp.getToken()));
 		mRailsApi.userParams(mApp.getUserId(), mApp.getToken(),
-				new Callback<GetUserProfileResponse>() {
-
-					@Override
-					public void failure(RetrofitError arg0) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public void success(
-							GetUserProfileResponse getUserProfileResponse,
-							Response response) {
-						// TODO Auto-generated method stub
-						mBus.post(getUserProfileResponse);
-					}
-
-				});
-
+				new RailsApiCallback<GetUserProfileResponse>(mBus, new GetUserProfileResponse()));
 	}
 
 	@Subscribe
 	public void onSignout(SignoutRequest event) {
 		System.out.println("inside api repo - making signout request");
 		mRailsApi.signout(mApp.getToken(), mApp.getEmail(), "",
-				new Callback<SignoutResponse>() {
-
-					@Override
-					public void failure(RetrofitError arg0) {
-						SignoutResponse response = new SignoutResponse();
-						response.setSuccessful(false);
-						mBus.post(response);
-					}
-
-					@Override
-					public void success(SignoutResponse signoutResponse,
-							Response arg1) {
-						// need to create one since the api just returns a
-						// header with no body , hence the response is null
-						SignoutResponse response = new SignoutResponse();
-						response.setSuccessful(false);
-						mBus.post(new SignoutResponse());
-
-					}
-
-				});
+				new RailsApiCallback<SignoutResponse>(mBus, new SignoutResponse()));
 
 	}
 
@@ -101,96 +55,20 @@ public class ApiRequestRepository {
 	public void onLeave(LeaveRequest event) {
 		System.out.println("inside api repo - making leave request");
 		mRailsApi.leave(event.getEmail(), event.getPassword(),
-				new Callback<LeaveResponse>() {
-
-					@Override
-					public void failure(RetrofitError arg0) {
-						// TODO Auto-generated method stub
-						LeaveResponse response = new LeaveResponse();
-						response.setSuccessful(false);
-						mBus.post(response);
-					}
-
-					@Override
-					public void success(LeaveResponse leaveResponse,
-							Response arg1) {
-						// need to create one since the api just returns a
-						// header with no body , hence the response is null
-						LeaveResponse response = new LeaveResponse();
-						response.setSuccessful(true);
-						mBus.post(response);
-
-					}
-
-				});
-
-	}
-
+				new RailsApiCallback<LeaveResponse>(mBus, new LeaveResponse() ));
+	}	
 	
-	// public ReturnedToken signup(UserSignupParameters params) {
-	// return mRailsApi.signup(params);
-	// }
-
 	@Subscribe
 	public void onSignup(SignupRequest event) {
 		System.out.println("inside api repo - making signin request");
-		mRailsApi.signup(event, new Callback<SignupResponse>() {
-
-			@Override
-			public void failure(RetrofitError arg0) {
-				// TODO Auto-generated method stub
-				if (arg0.getBody() == null ) System.out.println("arg0.getBody() is null");
- 				SignupResponse signupResponse = (SignupResponse) arg0.getBody();
-				signupResponse.setSuccessful(false);
-				mBus.post(signupResponse);
-				System.out.println("in failure method for signup request");
-				System.out.println(((SignupResponse) arg0.getBody())
-						.getErrors());
-				List<String> errorList = ((SignupResponse) arg0.getBody())
-						.getErrors();
-				System.out.println(String.format("response status code = %d", arg0.getResponse().getStatus()));
-				for (String error : errorList) {
-					System.out.println(error);
-				}
-				
-
-			}
-
-			@Override
-			public void success(SignupResponse signupResponse, Response arg1) {
-				// TODO Auto-generated method stub
-				signupResponse.setSuccessful(true);
-				mBus.post(signupResponse);
-
-			}
-
-		});
+		mRailsApi.signup(event, new RailsApiCallback<SignupResponse>(mBus, new SignupResponse()));
 	}
 
 	@Subscribe
 	public void onGetUsers(GetUsersRequest event) {
 		System.out.println("inside api repo - making get users list  request");
-		mRailsApi.getUsers(mApp.getToken(), new Callback<GetUsersResponse>() {
-
-			@Override
-			public void failure(RetrofitError arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void success(GetUsersResponse getUsersResponse, Response arg1) {
-				// TODO Auto-generated method stub
-				mBus.post(getUsersResponse);
-
-			}
-
-		});
+		mRailsApi.getUsers(mApp.getToken(), new RailsApiCallback<GetUsersResponse>(mBus, new GetUsersResponse()));
 	}
 
-	// public void signout(Callback<Void> callback) {
-	// mRailsApi.signout(mApp.getToken(), mApp.getEmail(), "", callback);
-	//
-	// }
 
 }
