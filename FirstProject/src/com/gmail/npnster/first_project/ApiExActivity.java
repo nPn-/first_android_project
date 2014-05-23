@@ -1,5 +1,17 @@
 package com.gmail.npnster.first_project;
 
+import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
+import com.gmail.npnster.first_project.api_params.CreateMicropostResponse;
+import com.gmail.npnster.first_project.api_params.DeleteMicropostRequest;
+import com.gmail.npnster.first_project.api_params.DeleteMicropostResponse;
+import com.gmail.npnster.first_project.api_params.FollowRequest;
+import com.gmail.npnster.first_project.api_params.FollowResponse;
+import com.gmail.npnster.first_project.api_params.GetFollowedUsersRequest;
+import com.gmail.npnster.first_project.api_params.GetFollowedUsersResponse;
+import com.gmail.npnster.first_project.api_params.GetFollowersRequest;
+import com.gmail.npnster.first_project.api_params.GetFollowersResponse;
+import com.gmail.npnster.first_project.api_params.GetMicropostsRequest;
+import com.gmail.npnster.first_project.api_params.GetMicropostsResponse;
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
@@ -8,6 +20,10 @@ import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
 import com.gmail.npnster.first_project.api_params.SignupRequest;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
+import com.gmail.npnster.first_project.api_params.UnfollowRequest;
+import com.gmail.npnster.first_project.api_params.UnfollowResponse;
+import com.gmail.npnster.first_project.api_params.UpdateUserRequest;
+import com.gmail.npnster.first_project.api_params.UpdateUserResponse;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -30,7 +46,9 @@ public class ApiExActivity extends Activity {
 	private TextView mTextView;
 
 	public enum ApiCall {
-		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS
+		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS, UPDATE_USER,
+		GET_FOLLOWERS, GET_FOLLOWED_USERS, GET_MICROPOSTS, CREATE_MICROPOST,
+		DELETE_MICROPOST, FOLLOW, UNFOLLOW
 	}
 
 	private ApiCall apiCall;
@@ -47,14 +65,14 @@ public class ApiExActivity extends Activity {
 		this.leaveRequest = leaveRequest;
 		apiCall = ApiCall.LEAVE;
 	}
-	
 
 	@Subscribe
 	public void onLeaveResponse(LeaveResponse event) {
 		leaveResponse = event;
 		setCallComplete();
 	}
-	//***************************
+
+	// ***************************
 
 	// signup ################
 	private SignupRequest signupRequest;
@@ -74,7 +92,8 @@ public class ApiExActivity extends Activity {
 		signupResponse = event;
 		setCallComplete();
 	}
-	//**********************
+
+	// **********************
 
 	// get user profile ##################
 	private GetUserProfileRequest getUserProfileRequest;
@@ -95,9 +114,10 @@ public class ApiExActivity extends Activity {
 		getUserProfileResponse = event;
 		setCallComplete();
 	}
-	//***********************
 
-	// get users  ##################
+	// ***********************
+
+	// get users ##################
 	private GetUsersRequest getUsersRequest;
 	private GetUsersResponse getUsersResponse;
 
@@ -105,8 +125,7 @@ public class ApiExActivity extends Activity {
 		return getUsersResponse;
 	}
 
-	public void setGetUsersRequest(
-			GetUsersRequest getUsersRequest) {
+	public void setGetUsersRequest(GetUsersRequest getUsersRequest) {
 		this.getUsersRequest = getUsersRequest;
 		apiCall = ApiCall.GET_USERS;
 	}
@@ -116,7 +135,179 @@ public class ApiExActivity extends Activity {
 		getUsersResponse = event;
 		setCallComplete();
 	}
+
+	// ***********************
+
+	// get followers ##################
+	private GetFollowersRequest getFollowersRequest;
+	private GetFollowersResponse getFollowersResponse;
+
+	public GetFollowersResponse getGetFollowersResponse() {
+		return getFollowersResponse;
+	}
+
+	public void setGetFollowersRequest(GetFollowersRequest getFollowersRequest) {
+		this.getFollowersRequest = getFollowersRequest;
+		apiCall = ApiCall.GET_FOLLOWERS;
+	}
+
+	@Subscribe
+	public void onGetFollowersResponse(GetFollowersResponse event) {
+		getFollowersResponse = event;
+		setCallComplete();
+	}
+
+	// ***********************
+
+	// get followed users ##################
+	private GetFollowedUsersRequest getFollowedUsersRequest;
+	private GetFollowedUsersResponse getFollowedUsersResponse;
+
+	public GetFollowedUsersResponse getGetFollowedUsersResponse() {
+		return getFollowedUsersResponse;
+	}
+
+	public void setGetFollowedUsersRequest(
+			GetFollowedUsersRequest getFollowedUsersRequest) {
+		this.getFollowedUsersRequest = getFollowedUsersRequest;
+		apiCall = ApiCall.GET_FOLLOWED_USERS;
+	}
+
+	@Subscribe
+	public void onGetFollowedUsersResponse(GetFollowedUsersResponse event) {
+		getFollowedUsersResponse = event;
+		setCallComplete();
+	}
+
+	// ***********************
+
+	// get microposts ##################
+	private GetMicropostsRequest getMicropostsRequest;
+	private GetMicropostsResponse getMicropostsResponse;
+
+	public GetMicropostsResponse getGetMicropostsResponse() {
+		return getMicropostsResponse;
+	}
+
+	public void setGetMicropostsRequest(
+			GetMicropostsRequest getMicropostsRequest) {
+		this.getMicropostsRequest = getMicropostsRequest;
+		apiCall = ApiCall.GET_MICROPOSTS;
+	}
+
+	@Subscribe
+	public void onGetMicropostsResponse(GetMicropostsResponse event) {
+		getMicropostsResponse = event;
+		setCallComplete();
+	}
+
+	// create micropost ##################
+	private CreateMicropostRequest createMicropostRequest;
+	private CreateMicropostResponse createMicropostResponse;
+
+	public CreateMicropostResponse getCreateMicropostResponse() {
+		return createMicropostResponse;
+	}
+
+	public void setCreateMicropostRequest(
+			CreateMicropostRequest createMicropostRequest) {
+		this.createMicropostRequest = createMicropostRequest;
+		apiCall = ApiCall.CREATE_MICROPOST;
+	}
+
+	@Subscribe
+	public void onCreateMicropostResponse(CreateMicropostResponse event) {
+		createMicropostResponse = event;
+		setCallComplete();
+	}
+
+	// delete micropost ##################
+	private DeleteMicropostRequest deleteMicropostRequest;
+	private DeleteMicropostResponse deleteMicropostResponse;
+
+	public DeleteMicropostResponse getDeleteMicropostResponse() {
+		return deleteMicropostResponse;
+	}
+
+	public void setDeleteMicropostRequest(
+			DeleteMicropostRequest deleteMicropostRequest) {
+		this.deleteMicropostRequest = deleteMicropostRequest;
+		apiCall = ApiCall.DELETE_MICROPOST;
+	}
+
+	@Subscribe
+	public void onDeleteMicropostResponse(DeleteMicropostResponse event) {
+		deleteMicropostResponse = event;
+		setCallComplete();
+	}
+
 	//***********************
+	
+	// follow user ##################
+	private FollowRequest followRequest;
+	private FollowResponse followResponse;
+
+	public FollowResponse getFollowResponse() {
+		return followResponse;
+	}
+
+	public void setFollowRequest(
+			FollowRequest followRequest) {
+		this.followRequest = followRequest;
+		apiCall = ApiCall.FOLLOW;
+	}
+
+	@Subscribe
+	public void onFollowResponse(FollowResponse event) {
+		followResponse = event;
+		setCallComplete();
+	}
+
+	// ***********************
+
+	// unfollow user ##################
+	private UnfollowRequest unfollowRequest;
+	private UnfollowResponse unfollowResponse;
+
+	public UnfollowResponse getUnfollowResponse() {
+		return unfollowResponse;
+	}
+
+	public void setUnfollowRequest(
+			UnfollowRequest unfollowRequest) {
+		this.unfollowRequest = unfollowRequest;
+		apiCall = ApiCall.UNFOLLOW;
+	}
+
+	@Subscribe
+	public void onUnfollowResponse(UnfollowResponse event) {
+		unfollowResponse = event;
+		setCallComplete();
+	}
+
+	// ***********************
+
+
+	// update user ##################
+	private UpdateUserRequest updateUserRequest;
+	private UpdateUserResponse updateUserResponse;
+
+	public UpdateUserResponse getUpdateUserResponse() {
+		return updateUserResponse;
+	}
+
+	public void setUpdateUserRequest(UpdateUserRequest updateUserRequest) {
+		this.updateUserRequest = updateUserRequest;
+		apiCall = ApiCall.UPDATE_USER;
+	}
+
+	@Subscribe
+	public void onUpdateUserResponse(UpdateUserResponse event) {
+		updateUserResponse = event;
+		setCallComplete();
+	}
+
+	// ***********************
 
 	private Bus mBus;
 
@@ -157,6 +348,31 @@ public class ApiExActivity extends Activity {
 					break;
 				case GET_USERS:
 					mBus.post(getUsersRequest);
+					break;
+				case UPDATE_USER:
+					mBus.post(updateUserRequest);
+					break;
+				case GET_FOLLOWERS:
+					mBus.post(getFollowersRequest);
+					break;
+				case GET_FOLLOWED_USERS:
+					mBus.post(getFollowedUsersRequest);
+					break;
+				case GET_MICROPOSTS:
+					mBus.post(getMicropostsRequest);
+					break;
+				case CREATE_MICROPOST:
+					mBus.post(createMicropostRequest);
+					break;
+				case DELETE_MICROPOST:
+					mBus.post(deleteMicropostRequest);
+					break;
+				case FOLLOW:
+					mBus.post(followRequest);
+					break;
+				case UNFOLLOW:
+					mBus.post(unfollowRequest);
+					break;
 
 				}
 
@@ -190,10 +406,10 @@ public class ApiExActivity extends Activity {
 	public void clearCallComplete() {
 		mTextView.setText("running!");
 	}
-	
+
 	public void makeRequest(ApiCall apiCall) {
 		this.apiCall = apiCall;
-		mButton.performClick();		
+		mButton.performClick();
 	}
 
 }

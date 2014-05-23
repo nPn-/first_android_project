@@ -17,7 +17,7 @@ public class BaseResponse {
 	}
 
 	private Response rawResponse;
-	
+	   
 	
 	public BaseResponse() {
 		super();

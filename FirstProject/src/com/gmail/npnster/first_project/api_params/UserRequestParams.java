@@ -15,6 +15,7 @@ public class UserRequestParams {
 		user.email = email;
 		user.password = password;
 		user.password_confirmation = passwordConfirmation;
+		api_access_token = null;
 	}
 	
 	private class User {
@@ -22,6 +23,10 @@ public class UserRequestParams {
 		protected String email;
 		protected String password;
 		protected String password_confirmation;
+	}
+	
+	public void setApiAccessToken(String token) {
+		api_access_token = token;
 	}
 	
 

@@ -21,6 +21,7 @@ public class RailsApiCallback<T extends BaseResponse> implements Callback<T> {
 
 	@Override
 	public void failure(RetrofitError retrofitError) {
+		System.out.println(retrofitError.toString());
 		T response = (T) retrofitError.getBody() != null ? (T) retrofitError.getBody() : mResponse  ;
 		response.setRawResponse(retrofitError.getResponse());
 		response.setSuccessful(false);
