@@ -1,8 +1,8 @@
 package com.gmail.npnster.first_project.api_params;
 
-public class FollowRequest {
+public class FollowRequest extends TokenBasedRequest {
 	
-	private String api_access_token;
+//	private String api_access_token;
 	private String userId;
 	
 	public FollowRequest(String userId) {
@@ -13,9 +13,9 @@ public class FollowRequest {
 	public String getUserId() {
 		return userId;
 	}
-
-	public void setApi_access_token(String api_access_token) {
-		this.api_access_token = api_access_token;
-	}
-	
+//
+//	public void setApi_access_token(String api_access_token) {
+//		this.api_access_token = api_access_token;
+//	}
+//	
 }

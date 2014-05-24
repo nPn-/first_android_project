@@ -1,13 +1,31 @@
 package com.gmail.npnster.first_project.api_params;
 
-//public class SignoutRequest extends UserRequestParams {
-//	public SignoutRequest (String name, String email, String password, String passwordConfirmation)	{
-//		super(name,email,password,passwordConfirmation);
-//	}
-//}
-   
-// empty class no parameters are needed for this request
-public class SignoutRequest  {
+
+public class SignoutRequest extends TokenBasedRequest {
+	
+	private String email;
+	private String password;
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	
+	public SignoutRequest(String email, String password) {
+		super();
+		this.email = email;
+		this.password = password;
+	}
+	
+	public SignoutRequest() {
+		this.email = null;
+		this.password = null;
+	}
+
 
 }
 

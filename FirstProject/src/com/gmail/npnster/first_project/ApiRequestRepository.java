@@ -7,6 +7,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
+import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
+import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
 import com.gmail.npnster.first_project.api_params.CreateMicropostResponse;
 import com.gmail.npnster.first_project.api_params.DeleteMicropostRequest;
@@ -25,6 +27,10 @@ import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
+import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
+import com.gmail.npnster.first_project.api_params.SigninRequest;
+import com.gmail.npnster.first_project.api_params.SigninResponse;
 import com.gmail.npnster.first_project.api_params.SignoutRequest;
 import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.gmail.npnster.first_project.api_params.SignupRequest;
@@ -62,7 +68,10 @@ public class ApiRequestRepository {
 	@Subscribe
 	public void onSignout(SignoutRequest event) {
 		System.out.println("inside api repo - making signout request");
-		mRailsApi.signout(mApp.getToken(), mApp.getEmail(), "",
+		String token = event.getToken() == null ? mApp.getToken() : event.getToken();
+		String email = event.getEmail() == null ? mApp.getEmail() : event.getEmail();
+		String password = event.getPassword() == null ? "" : event.getPassword();
+		mRailsApi.signout(token, email, password,
 				new RailsApiCallback<SignoutResponse>(mBus, new SignoutResponse()));
 	}
 
@@ -75,8 +84,14 @@ public class ApiRequestRepository {
 	
 	@Subscribe
 	public void onSignup(SignupRequest event) {
-		System.out.println("inside api repo - making signin request");
+		System.out.println("inside api repo - making signup request");
 		mRailsApi.signup(event, new RailsApiCallback<SignupResponse>(mBus, new SignupResponse()));
+	}
+
+	@Subscribe
+	public void onSignin(SigninRequest event) {
+		System.out.println("inside api repo - making signin request");
+		mRailsApi.signup(event, new RailsApiCallback<SigninResponse>(mBus, new SigninResponse()));
 	}
 
 	@Subscribe
@@ -119,7 +134,7 @@ public class ApiRequestRepository {
 	@Subscribe
 	public void onFollow(FollowRequest event) {
 		System.out.println("inside api repo - making follow request");
-		event.setApi_access_token(mApp.getToken());
+		if (event.getToken() == null) event.setToken(mApp.getToken());
 		mRailsApi.follow(event.getUserId(), event, new RailsApiCallback<FollowResponse>(mBus, new FollowResponse()));
 	}
 
@@ -127,6 +142,20 @@ public class ApiRequestRepository {
 	public void onUnfollow(UnfollowRequest event) {
 		System.out.println("inside api repo - making unfollow request");
 		mRailsApi.unfollow(mApp.getToken(), event.getUserId(), new RailsApiCallback<UnfollowResponse>(mBus, new UnfollowResponse()));
+	}
+
+	@Subscribe
+	public void onGrantFollowerPermission(GrantFollowerPermissionRequest event) {
+		System.out.println("inside api repo - making grant follower permission request");
+		if (event.getToken() == null) event.setToken(mApp.getToken());
+		mRailsApi.grantFollowerPermission(event.getUserId(), event.getFollowerId(), event, new RailsApiCallback<GrantFollowerPermissionResponse>(mBus, new GrantFollowerPermissionResponse()));
+	}
+	@Subscribe
+	public void onRevokeFollowerPermission(RevokeFollowerPermissionRequest event) {
+		System.out.println("inside api repo - making revoke follower permission request");
+		String token;
+		token = event.getToken() == null ? mApp.getToken() : event.getToken();
+		mRailsApi.revokeFollowerPermission(token, event.getPermission(), event.getUserId(), event.getFollowerId(), new RailsApiCallback<RevokeFollowerPermissionResponse>(mBus, new RevokeFollowerPermissionResponse()));
 	}
 
 	@Subscribe

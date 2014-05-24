@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
+import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
 import com.gmail.npnster.first_project.api_params.CreateMicropostResponse;
 import com.gmail.npnster.first_project.api_params.DeleteMicropostResponse;
@@ -11,6 +13,9 @@ import com.gmail.npnster.first_project.api_params.GetMicropostsResponse;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
+import com.gmail.npnster.first_project.api_params.SigninRequest;
+import com.gmail.npnster.first_project.api_params.SigninResponse;
 import com.gmail.npnster.first_project.api_params.SignoutRequest;
 import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
@@ -46,6 +51,10 @@ public class RailsApiClient {
 		@POST(API_URL + "/signup")
 		void signup(@Body UserRequestParams requestParams,
 				Callback<SignupResponse> tokenParms);
+
+		@POST(API_URL + "/signin")
+		void signup(@Body SigninRequest request,
+				Callback<SigninResponse> response);
 
 		@DELETE(API_URL + "/leave")
 		void leave(@Query("email") String email,
@@ -92,6 +101,18 @@ public class RailsApiClient {
 		void unfollow(@Query("api_access_token") String token,
 				@Path("id")String id, 
 				Callback<UnfollowResponse> callback);
+
+		@POST(API_URL + "/users/{id}/followers/{follower_id}/permission")
+		void grantFollowerPermission(@Path("id") String id, @Path ("follower_id") String followerId,
+				@Body GrantFollowerPermissionRequest request,
+				Callback<GrantFollowerPermissionResponse> callback);
+
+		@DELETE(API_URL + "/users/{id}/followers/{follower_id}/permission")
+		void revokeFollowerPermission(@Query("api_access_token") String token,
+				  @Query("permission") String permission,
+				  @Path("id") String id,
+				  @Path ("follower_id") String followerId,
+				Callback<RevokeFollowerPermissionResponse> callback);
 
 	}
 

@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
+import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
 import com.gmail.npnster.first_project.api_params.CreateMicropostResponse;
 import com.gmail.npnster.first_project.api_params.DeleteMicropostRequest;
@@ -18,6 +20,12 @@ import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
+import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
+import com.gmail.npnster.first_project.api_params.SigninRequest;
+import com.gmail.npnster.first_project.api_params.SigninResponse;
+import com.gmail.npnster.first_project.api_params.SignoutRequest;
+import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.gmail.npnster.first_project.api_params.SignupRequest;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.gmail.npnster.first_project.api_params.UnfollowRequest;
@@ -48,7 +56,8 @@ public class ApiExActivity extends Activity {
 	public enum ApiCall {
 		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS, UPDATE_USER,
 		GET_FOLLOWERS, GET_FOLLOWED_USERS, GET_MICROPOSTS, CREATE_MICROPOST,
-		DELETE_MICROPOST, FOLLOW, UNFOLLOW
+		DELETE_MICROPOST, FOLLOW, UNFOLLOW, GRANT_FOLLOWER_PERMISSION, SIGNIN,
+		REVOKE_FOLLOWER_PERMISSION, SIGNOUT
 	}
 
 	private ApiCall apiCall;
@@ -95,6 +104,48 @@ public class ApiExActivity extends Activity {
 
 	// **********************
 
+	// signin ################
+	private SigninRequest signinRequest;
+	private SigninResponse signinResponse;
+
+	public SigninResponse getSigninResponse() {
+		return signinResponse;
+	}
+
+	public void setSigninRequest(SigninRequest signinRequest) {
+		this.signinRequest = signinRequest;
+		apiCall = ApiCall.SIGNIN;
+	}
+
+	@Subscribe
+	public void onSigninResponse(SigninResponse event) {
+		signinResponse = event;
+		setCallComplete();
+	}
+
+	// **********************
+
+	// signout ################
+	private SignoutRequest signoutRequest;
+	private SignoutResponse signoutResponse;
+
+	public SignoutResponse getSignoutResponse() {
+		return signoutResponse;
+	}
+
+	public void setSignoutRequest(SignoutRequest signoutRequest) {
+		this.signoutRequest = signoutRequest;
+		apiCall = ApiCall.SIGNOUT;
+	}
+
+	@Subscribe
+	public void onSignoutResponse(SignoutResponse event) {
+		signoutResponse = event;
+		setCallComplete();
+	}
+
+	// **********************
+	
 	// get user profile ##################
 	private GetUserProfileRequest getUserProfileRequest;
 	private GetUserProfileResponse getUserProfileResponse;
@@ -287,6 +338,50 @@ public class ApiExActivity extends Activity {
 
 	// ***********************
 
+	// grant follower permission ##################
+	private GrantFollowerPermissionRequest grantFollowerPermissionRequest;
+	private GrantFollowerPermissionResponse grantFollowerPermissionResponse;
+
+	public GrantFollowerPermissionResponse getGrantFollowerPermissionResponse() {
+		return grantFollowerPermissionResponse;
+	}
+
+	public void setGrantFollowerPermissionRequest(
+			GrantFollowerPermissionRequest grantFollowerPermissionRequest) {
+		this.grantFollowerPermissionRequest = grantFollowerPermissionRequest;
+		apiCall = ApiCall.GRANT_FOLLOWER_PERMISSION;
+	}
+
+	@Subscribe
+	public void onGrantFollowerPermissionResponse(GrantFollowerPermissionResponse event) {
+		grantFollowerPermissionResponse = event;
+		setCallComplete();
+	}
+	
+	// ***********************
+
+	// revoke follower permission ##################
+	private RevokeFollowerPermissionRequest revokeFollowerPermissionRequest;
+	private RevokeFollowerPermissionResponse revokeFollowerPermissionResponse;
+
+	public RevokeFollowerPermissionResponse getRevokeFollowerPermissionResponse() {
+		return revokeFollowerPermissionResponse;
+	}
+
+	public void setRevokeFollowerPermissionRequest(
+			RevokeFollowerPermissionRequest revokeFollowerPermissionRequest) {
+		this.revokeFollowerPermissionRequest = revokeFollowerPermissionRequest;
+		apiCall = ApiCall.REVOKE_FOLLOWER_PERMISSION;
+	}
+
+	@Subscribe
+	public void onRevokeFollowerPermissionResponse(RevokeFollowerPermissionResponse event) {
+		revokeFollowerPermissionResponse = event;
+		setCallComplete();
+	}
+	
+	// ***********************
+
 
 	// update user ##################
 	private UpdateUserRequest updateUserRequest;
@@ -343,6 +438,9 @@ public class ApiExActivity extends Activity {
 				case SIGNUP:
 					mBus.post(signupRequest);
 					break;
+				case SIGNIN:
+					mBus.post(signinRequest);
+					break;
 				case GET_USER_PROFILE:
 					mBus.post(getUserProfileRequest);
 					break;
@@ -372,6 +470,15 @@ public class ApiExActivity extends Activity {
 					break;
 				case UNFOLLOW:
 					mBus.post(unfollowRequest);
+					break;
+				case GRANT_FOLLOWER_PERMISSION:
+					mBus.post(grantFollowerPermissionRequest);
+					break;
+				case REVOKE_FOLLOWER_PERMISSION:
+					mBus.post(revokeFollowerPermissionRequest);
+					break;
+				case SIGNOUT:
+					mBus.post(signoutRequest);
 					break;
 
 				}
