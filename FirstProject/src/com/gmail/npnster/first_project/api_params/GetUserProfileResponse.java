@@ -2,6 +2,7 @@ package com.gmail.npnster.first_project.api_params;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GetUserProfileResponse extends BaseResponse {
@@ -13,6 +14,8 @@ public class GetUserProfileResponse extends BaseResponse {
 	private Integer microposts_count;
 	private Integer followed_users_count;
 	private Integer followers_count;
+	private List<String> permissions_granted_by_user_to_current_user;
+	private List<String> permissions_granted_by_current_user_to_user;
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
 	
@@ -74,6 +77,13 @@ public class GetUserProfileResponse extends BaseResponse {
 
 	public void setAdditionalProperty(String name, Object value) {
 		this.additionalProperties.put(name, value);
+	}
+	public List<String> getPermissionsGrantedByUserToCurrentUser() {
+		return permissions_granted_by_user_to_current_user;
+	}
+
+	public List<String> getPermissionsGrantedByCurrentUserToUser() {
+		return permissions_granted_by_current_user_to_user;
 	}
 
 }

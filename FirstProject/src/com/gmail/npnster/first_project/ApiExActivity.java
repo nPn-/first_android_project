@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
+import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
@@ -20,6 +22,8 @@ import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.PostLocationRequest;
+import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SigninRequest;
@@ -57,7 +61,7 @@ public class ApiExActivity extends Activity {
 		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS, UPDATE_USER,
 		GET_FOLLOWERS, GET_FOLLOWED_USERS, GET_MICROPOSTS, CREATE_MICROPOST,
 		DELETE_MICROPOST, FOLLOW, UNFOLLOW, GRANT_FOLLOWER_PERMISSION, SIGNIN,
-		REVOKE_FOLLOWER_PERMISSION, SIGNOUT
+		REVOKE_FOLLOWER_PERMISSION, SIGNOUT, CREATE_DEVICE, POST_LOCATION
 	}
 
 	private ApiCall apiCall;
@@ -404,6 +408,49 @@ public class ApiExActivity extends Activity {
 
 	// ***********************
 
+	// create device ##################
+	private CreateDeviceRequest createDeviceRequest;
+	private CreateDeviceResponse createDeviceResponse;
+
+	public CreateDeviceResponse getCreateDeviceResponse() {
+		return createDeviceResponse;
+	}
+
+	public void setCreateDeviceRequest(CreateDeviceRequest event) {
+		this.createDeviceRequest = event;
+		apiCall = ApiCall.CREATE_DEVICE;
+	}
+
+	@Subscribe
+	public void onCreateDeviceResponse(CreateDeviceResponse event) {
+		createDeviceResponse = event;
+		setCallComplete();
+	}
+
+	// ***********************
+	
+	// post location ##################
+	private PostLocationRequest postLocationRequest;
+	private PostLocationResponse postLocationResponse;
+
+	public PostLocationResponse getPostLocationResponse() {
+		return postLocationResponse;
+	}
+
+	public void setPostLocationRequest(PostLocationRequest event) {
+		this.postLocationRequest = event;
+		apiCall = ApiCall.POST_LOCATION;
+	}
+
+	@Subscribe
+	public void onPostLocationResponse(PostLocationResponse event) {
+		postLocationResponse = event;
+		setCallComplete();
+	}
+
+	// ***********************
+	
+	
 	private Bus mBus;
 
 	protected Bus getBus() {
@@ -479,6 +526,12 @@ public class ApiExActivity extends Activity {
 					break;
 				case SIGNOUT:
 					mBus.post(signoutRequest);
+					break;
+				case CREATE_DEVICE:
+					mBus.post(createDeviceRequest);
+					break;
+				case POST_LOCATION:
+					mBus.post(postLocationRequest);
 					break;
 
 				}

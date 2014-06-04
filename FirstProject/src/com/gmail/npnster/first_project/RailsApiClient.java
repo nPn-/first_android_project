@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
+import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
@@ -13,6 +15,8 @@ import com.gmail.npnster.first_project.api_params.GetMicropostsResponse;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.PostLocationRequest;
+import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SigninRequest;
 import com.gmail.npnster.first_project.api_params.SigninResponse;
@@ -113,6 +117,14 @@ public class RailsApiClient {
 				  @Path("id") String id,
 				  @Path ("follower_id") String followerId,
 				Callback<RevokeFollowerPermissionResponse> callback);
+
+		@POST(API_URL + "/devices")
+		void createDevice(@Body CreateDeviceRequest request,
+				Callback<CreateDeviceResponse> callback);
+		
+		@POST(API_URL + "/devices/{gcm_reg_key}/locations")
+		void postLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PostLocationRequest request,
+				Callback<PostLocationResponse> callback);
 
 	}
 

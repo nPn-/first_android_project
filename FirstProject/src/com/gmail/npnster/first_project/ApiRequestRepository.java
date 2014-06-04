@@ -7,6 +7,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
+import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
+import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
@@ -27,6 +29,8 @@ import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.PostLocationRequest;
+import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SigninRequest;
@@ -163,6 +167,20 @@ public class ApiRequestRepository {
 		System.out.println("inside api repo - making user update  request");
 		event.setApiAccessToken(MyApp.getToken());
 		mRailsApi.updateUser(MyApp.getUserId(), event, new RailsApiCallback<UpdateUserResponse>(mBus, new UpdateUserResponse()));
+	}
+	
+	@Subscribe
+	public void onCreateDevice(CreateDeviceRequest event) {
+		System.out.println("inside api repo - making create device  request");
+		event.setToken(MyApp.getToken());
+		mRailsApi.createDevice(event, new RailsApiCallback<CreateDeviceResponse>(mBus, new CreateDeviceResponse()));
+	}
+
+	@Subscribe
+	public void onPostLocation(PostLocationRequest event) {
+		System.out.println("inside api repo - making post location  request");
+		event.setToken(MyApp.getToken());
+		mRailsApi.postLocation(event.getGcmRegKey(), event, new RailsApiCallback<PostLocationResponse>(mBus, new PostLocationResponse()));
 	}
 
 

@@ -1,12 +1,18 @@
 package com.gmail.npnster.first_project.int_test;
 
+import java.security.SecureRandom;
+import java.sql.Timestamp;
+
 import android.app.Activity;
+import android.location.Location;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.gmail.npnster.first_project.ApiExActivity;
 import com.gmail.npnster.first_project.ApiExActivity.ApiCall;
 import com.gmail.npnster.first_project.MyApp;
 import com.gmail.npnster.first_project.PersistData;
+import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
+import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.BaseResponse;
@@ -28,6 +34,8 @@ import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
+import com.gmail.npnster.first_project.api_params.PostLocationRequest;
+import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SigninRequest;
@@ -201,6 +209,10 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 				getUserProfileResponse.getFollowed_users_count() >= 0);
 		assertTrue("followers count is >= 0",
 				getUserProfileResponse.getFollowers_count() >= 0);
+		assertTrue("permissions is not null",
+				getUserProfileResponse.getPermissionsGrantedByCurrentUserToUser().size() >= 0);
+		assertTrue("granted permissions is not null",
+				getUserProfileResponse.getPermissionsGrantedByUserToCurrentUser().size() >= 0);
 
 	}
 
@@ -518,10 +530,87 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		clickAndWait();
 		grantFollowerPermissionResponse = getActivity().getGrantFollowerPermissionResponse();
 		assertTrue("folloer has allow_email_id permission", grantFollowerPermissionResponse.getGrantedPermissions().contains("allow_email_id"));
-
-
+		
+	}
+	
+	public void testCreateDevice() throws Exception {
+		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
+		String name = "android_device" + dummyGcmRegId;
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		clickAndWait();
+		CreateDeviceResponse createDeviceResponse = getActivity()
+				.getCreateDeviceResponse();
+		assertEquals("returned device name is correct",
+				name, createDeviceResponse.getName());
+		assertEquals("returned device id is correct",
+				dummyGcmRegId, createDeviceResponse.getGcmRegId());
+		assertTrue("returned device isPrimary is true",
+				 createDeviceResponse.isPrimary());
+		assertEquals("response is created (201)", 201, createDeviceResponse
+				.getRawResponse().getStatus());
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+        clickAndWait();
+        createDeviceResponse = getActivity().getCreateDeviceResponse();
+		assertEquals("response is created (406)", 406, createDeviceResponse
+				.getRawResponse().getStatus());
+		assertTrue(
+		"errors includes - gcm_reg_id is already taken",
+		createDeviceResponse.getErrors().contains(
+				"gcm_reg_id is already taken"));
+		   
+        
 		
 
+	}
+
+	
+	public void testPostLocation() throws Exception {
+		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
+		String name = "android_device" + dummyGcmRegId;
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		clickAndWait();
+		CreateDeviceResponse createDeviceResponse = getActivity()
+				.getCreateDeviceResponse();
+		assertEquals("returned device name is correct",
+				name, createDeviceResponse.getName());
+		assertEquals("returned device id is correct",
+				dummyGcmRegId, createDeviceResponse.getGcmRegId());
+		assertTrue("returned device isPrimary is true",
+				 createDeviceResponse.isPrimary());
+		assertEquals("response is created (201)", 201, createDeviceResponse
+				.getRawResponse().getStatus());
+		Location location = new Location("test");
+		long locationTime = System.currentTimeMillis();
+		location.setTime(locationTime);
+		location.setAccuracy(5.5f);
+		location.setAltitude(100.5);
+		location.setBearing( 25.2f);
+		location.setLatitude(45.1234567);
+		location.setLongitude(-155.87654321);
+		location.setSpeed(55.2f);
+		getActivity().setPostLocationRequest(new PostLocationRequest(dummyGcmRegId,location)); 
+        clickAndWait();
+        PostLocationResponse postLocationResponse = getActivity().getPostLocationResponse();
+        Timestamp timestamp = new Timestamp(postLocationResponse.getLocation().getTime());
+        System.out.println(timestamp);
+		assertEquals("response is created (201)", 201, postLocationResponse
+				.getRawResponse().getStatus());
+		assertEquals("time is correct", new Timestamp(locationTime) ,  timestamp);
+		assertEquals("accuracy is correct", 5.5f, postLocationResponse.getLocation().getAccuracy());
+		assertEquals("altitude is correct", 100.5, postLocationResponse.getLocation().getAltitude());
+		assertEquals("bearing is correct", 25.2f, postLocationResponse.getLocation().getBearing());
+		assertEquals("latitude is correct", 45.1234567, postLocationResponse.getLocation().getLatitude());
+		assertEquals("longitude is correct", -155.87654321, postLocationResponse.getLocation().getLongitude());
+		assertEquals("speed is correct", 55.2f, postLocationResponse.getLocation().getSpeed());
+		assertTrue("has accuracy is correct", postLocationResponse.getLocation().hasAccuracy());
+		assertTrue("has altitude is correct", postLocationResponse.getLocation().hasAltitude());
+		assertTrue("has bearing is correct", postLocationResponse.getLocation().hasBearing());
+		assertTrue("has speed is correct", postLocationResponse.getLocation().hasSpeed());
+		
+		
+        
+		
 
 	}
+
 }
