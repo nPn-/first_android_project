@@ -14,84 +14,87 @@ import android.view.ViewGroup;
 public class MainActivity extends Activity {
 
 	protected PersistData persistData;
-	
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        persistData = MyApp.getPersistData();
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
-    }
-    
-    @Override
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		persistData = MyApp.getPersistData();
+		if (savedInstanceState == null) {
+			getFragmentManager().beginTransaction()
+					.add(R.id.container, new PlaceholderFragment()).commit();
+		}
+	}
+
+	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Log.i("info", "here");
 		Intent intent = null;
-		   
-		
-		if (persistData.readEmailId() == "" ) {
+
+		System.out.println(String.format("reg id = %s", MyApp.getGcmRegId()));
+
+		if (persistData.readEmailId() == "") {
 			intent = new Intent(this, SignUpActivity.class);
-		    intent.putExtra("ACTION", "signup");	
+			intent.putExtra("ACTION", "signup");
 		} else if (persistData.readAccessToken() == "") {
 			intent = new Intent(this, SignInActivity.class);
-		    intent.putExtra("ACTION", "signin");
+			intent.putExtra("ACTION", "signin");
+		} else if  (MyApp.getGcmRegId() == "") {
+			intent = new Intent(this, RegisterGcmActivity.class);
+			System.out.println("starting reg gcm activity");
 		} else {
-			System.out.println(String.format("user = %s , token = %s", persistData.readEmailId(), persistData.readAccessToken()));
+			System.out.println(String.format("user = %s , token = %s",
+					persistData.readEmailId(), persistData.readAccessToken()));
 			intent = new Intent(this, HomeActivity.class);
-		    intent.putExtra("ACTION", "home");
+			intent.putExtra("ACTION", "home");
 		}
 		
-		
+		if (intent != null) {
+			startActivity(intent);
+		}
+
 		// force launch userlist for now
-		//intent = new Intent(this, UsersListActivity.class);
-		
-	    if (intent != null) {
-	    	startActivity(intent);
-	    }
-	
+		// intent = new Intent(this, UsersListActivity.class);
+
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PlaceholderFragment extends Fragment {
 
-        public PlaceholderFragment() {
-        }
+		public PlaceholderFragment() {
+		}
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main, container,
+					false);
+			return rootView;
+		}
+	}
 
 }

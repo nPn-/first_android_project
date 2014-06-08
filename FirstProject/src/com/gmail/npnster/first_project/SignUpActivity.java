@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
+import com.gmail.npnster.first_project.api_params.SigninRequest;
+import com.gmail.npnster.first_project.api_params.SigninResponse;
 import com.gmail.npnster.first_project.api_params.SignupRequest;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.gmail.npnster.first_project.api_params.UserRequestParams;
@@ -227,8 +229,9 @@ public class SignUpActivity extends Activity {
 			showProgress(true);
 			PersistData persistData = MyApp.getPersistData();
 			System.out.println("postin signup request to bus");
-			mBus.post(new SignupRequest(mName, mEmail, mPassword,
-					mPasswordConfirmation));
+//			mBus.post(new SignupRequest(mName, mEmail, mPassword,
+//					mPasswordConfirmation));
+			mBus.post(new SigninRequest(mEmail, mPassword));
 
 			// mAuthTask = new UserLoginTask();
 			// mAuthTask.execute((Void) null);
@@ -246,6 +249,34 @@ public class SignUpActivity extends Activity {
 		String returnedToken = event.getToken();
 		System.out.println(String.format(
 				"in onSignupCompleted, got token = %s ", returnedToken));
+		showProgress(false);
+		requestInFlight = false;
+
+		if (event.isSuccessful()) {
+			if (returnedToken != null) {
+				MyApp.saveToken(returnedToken);
+				MyApp.saveEmailId(mEmail);
+			}
+		} else {
+			List<String> errors = event.getErrors();
+			Toast toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+			for (String error : errors) {
+				toast.setText(error);
+				toast.show();
+			}
+		}
+		finish();
+		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+		startActivity(intent);
+	}
+
+	@Subscribe
+	public void onSigninResponseAvailable(SigninResponse event) {
+		System.out.println("in onSigninCompleted");
+		System.out.println(event.toString());
+		String returnedToken = event.getToken();
+		System.out.println(String.format(
+				"in onSigninCompleted, got token = %s ", returnedToken));
 		showProgress(false);
 		requestInFlight = false;
 

@@ -2,23 +2,38 @@ package com.gmail.npnster.first_project;
 
 import retrofit.RestAdapter;
 
+import com.gmail.npnster.first_project.ApiExActivity.ApiCall;
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
+import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
+import com.gmail.npnster.first_project.api_params.PostLocationRequest;
+import com.gmail.npnster.first_project.api_params.PostLocationResponse;
+import com.google.android.gms.location.LocationListener;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import android.app.Application;
+import android.location.Location;
 
-public class MyApp extends Application {
+public class MyApp extends Application {    
 
-	private static final String API_ROOT_URL = "http://10.0.2.2:3000";
+//	private static final String API_ROOT_URL = "http://10.0.2.2:3000";
+//	private static final String API_ROOT_URL = "http://172.16.1.105:3000";        
+	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";
+
 	private static MyApp singleton;
 	private static String token;
 	private static ApiRequestRepository apiRequestRepository;
 	private static String user;
-	private static String email;
+	private static String email;    
+	private static String gcmRegId;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
 	protected RailsApi railsApi;
-	private Bus mBus = BusProvider.getInstance();
+	private static Bus mBus = BusProvider.getInstance();
+
+	public static Bus getBus() {
+		return mBus;
+	}
 
 	@Override
 	public void onCreate() {
@@ -31,6 +46,7 @@ public class MyApp extends Application {
 		token = persistData.readAccessToken();
 		email = persistData.readEmailId();
 		user = getUserFromToken();
+		gcmRegId = persistData.readGcmRegId();
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
 				API_ROOT_URL).build();
 		railsApi = restAdapter.create(RailsApi.class);
@@ -38,6 +54,10 @@ public class MyApp extends Application {
 				railsApi, mBus);
 		mBus.register(apiRequestRepository);
 		mBus.register(this);
+//		CreateDeviceRequest request = new CreateDeviceRequest("jdd_tests_device","phone", true);
+//		mBus.post(request);
+		// temp to try locations
+		DeviceLocationClient deviceLocationClient = new DeviceLocationClient(this);
 	}
 
 	public static ApiRequestRepository getApiRequester() {
@@ -56,6 +76,9 @@ public class MyApp extends Application {
 	public static String getEmail() {
 		return email;
 	}
+	public static String getGcmRegId() {
+		return gcmRegId;
+	}
 
 	public static String getUserId() {
 		return getUserFromToken();
@@ -71,13 +94,26 @@ public class MyApp extends Application {
 		cachedPersistData.saveEmailId(emailToSave);
 		email = emailToSave;
 	}
+	
+	public static void saveGcmRegId(String gcmRegIdToSave) {
+		cachedPersistData.saveGcmRegId(gcmRegIdToSave);
+		gcmRegId = gcmRegIdToSave;
+	}
 
 	public static PersistData getPersistData() {
 		return persistData;
 	}
-
+              
 	protected static String getUserFromToken() {
 		return token.split(":")[0];
 	}
+
+
+//	@Subscribe
+//	public void postLocationResponse(PostLocationResponse response) {
+//		System.out.println(response.getRawResponse().getStatus());
+//		System.out.println(response.getErrors());
+//		
+//	}
 
 }

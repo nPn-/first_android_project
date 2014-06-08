@@ -113,7 +113,7 @@ public class HomeActivity extends ActionBarActivity {
 			 getBus().register(this);
 			 System.out.println("posting get user profile request to the bus");
 			 mBus.post(new GetUserProfileRequest());
-			 mBus.post(new GetUsersRequest());  
+		//	 mBus.post(new GetUsersRequest());  
 		}
 		
 		@Subscribe
