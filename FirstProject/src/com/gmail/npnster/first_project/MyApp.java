@@ -21,7 +21,8 @@ public class MyApp extends Application {
 	
 //	private static final String API_ROOT_URL = "http://172.16.1.105:3000";    // for local server    
 //	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";  // heroku
-	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
+//	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
+	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix
 
 	private static MyApp singleton;
 	private static String token;
