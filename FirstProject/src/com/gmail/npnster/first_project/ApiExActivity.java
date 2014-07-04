@@ -22,6 +22,8 @@ import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
+import com.gmail.npnster.first_project.api_params.PatchLocationResponse;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
@@ -61,7 +63,7 @@ public class ApiExActivity extends Activity {
 		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS, UPDATE_USER,
 		GET_FOLLOWERS, GET_FOLLOWED_USERS, GET_MICROPOSTS, CREATE_MICROPOST,
 		DELETE_MICROPOST, FOLLOW, UNFOLLOW, GRANT_FOLLOWER_PERMISSION, SIGNIN,
-		REVOKE_FOLLOWER_PERMISSION, SIGNOUT, CREATE_DEVICE, POST_LOCATION
+		REVOKE_FOLLOWER_PERMISSION, SIGNOUT, CREATE_DEVICE, POST_LOCATION, PATCH_LOCATION
 	}
 
 	private ApiCall apiCall;
@@ -432,19 +434,40 @@ public class ApiExActivity extends Activity {
 	// post location ##################
 	private PostLocationRequest postLocationRequest;
 	private PostLocationResponse postLocationResponse;
-
+	
 	public PostLocationResponse getPostLocationResponse() {
 		return postLocationResponse;
 	}
-
+	
 	public void setPostLocationRequest(PostLocationRequest event) {
 		this.postLocationRequest = event;
 		apiCall = ApiCall.POST_LOCATION;
 	}
-
+	
 	@Subscribe
 	public void onPostLocationResponse(PostLocationResponse event) {
 		postLocationResponse = event;
+		setCallComplete();
+	}
+	
+	// ***********************
+	
+	// patch location ##################
+	private PatchLocationRequest patchLocationRequest;
+	private PatchLocationResponse patchLocationResponse;
+
+	public PatchLocationResponse getPatchLocationResponse() {
+		return patchLocationResponse;
+	}
+
+	public void setPatchLocationRequest(PatchLocationRequest event) {
+		this.patchLocationRequest = event;
+		apiCall = ApiCall.PATCH_LOCATION;
+	}
+
+	@Subscribe
+	public void onPatchLocationResponse(PatchLocationResponse event) {
+		patchLocationResponse = event;
 		setCallComplete();
 	}
 
@@ -532,6 +555,9 @@ public class ApiExActivity extends Activity {
 					break;
 				case POST_LOCATION:
 					mBus.post(postLocationRequest);
+					break;
+				case PATCH_LOCATION:
+					mBus.post(patchLocationRequest);
 					break;
 
 				}

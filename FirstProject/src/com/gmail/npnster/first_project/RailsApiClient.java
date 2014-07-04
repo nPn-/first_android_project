@@ -15,6 +15,8 @@ import com.gmail.npnster.first_project.api_params.GetMicropostsResponse;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
+import com.gmail.npnster.first_project.api_params.PatchLocationResponse;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
@@ -35,6 +37,7 @@ import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.PATCH;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -125,6 +128,11 @@ public class RailsApiClient {
 		@POST(API_URL + "/devices/{gcm_reg_key}/locations")
 		void postLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PostLocationRequest request,
 				Callback<PostLocationResponse> callback);
+		
+		// changed to put for now - bluemix does not support patch?
+		@PUT(API_URL + "/devices/{gcm_reg_key}/locations")
+		void patchLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PatchLocationRequest request,
+				Callback<PatchLocationResponse> callback);
 
 	}
 

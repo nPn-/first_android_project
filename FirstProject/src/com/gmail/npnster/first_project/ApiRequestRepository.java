@@ -29,6 +29,8 @@ import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
 import com.gmail.npnster.first_project.api_params.LeaveResponse;
+import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
+import com.gmail.npnster.first_project.api_params.PatchLocationResponse;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
@@ -179,8 +181,17 @@ public class ApiRequestRepository {
 	@Subscribe
 	public void onPostLocation(PostLocationRequest event) {
 		System.out.println("inside api repo - making post location  request");
+		System.out.println(event.getClass().toString());
 		event.setToken(MyApp.getToken());
 		mRailsApi.postLocation(event.getGcmRegKey(), event, new RailsApiCallback<PostLocationResponse>(mBus, new PostLocationResponse()));
+	}
+	
+	@Subscribe
+	public void onPatchLocation(PatchLocationRequest event) {
+		System.out.println("inside api repo - making patch location  request");
+		System.out.println(event.getClass().toString());
+		event.setToken(MyApp.getToken());
+		mRailsApi.patchLocation(event.getGcmRegKey(), event, new RailsApiCallback<PatchLocationResponse>(mBus, new PatchLocationResponse()));
 	}
 
 

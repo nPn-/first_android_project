@@ -34,6 +34,8 @@ import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.LeaveRequest;
+import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
+import com.gmail.npnster.first_project.api_params.PatchLocationResponse;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
@@ -57,7 +59,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	private Solo solo;
 	private Activity activity;
 	private String valid_android_token;
-	private final Integer TIMEOUT = 2000;
+	private final Integer TIMEOUT = 4000;
 
 	PersistData persistData = MyApp.getPersistData();
 
@@ -576,7 +578,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		assertEquals("returned device id is correct",
 				dummyGcmRegId, createDeviceResponse.getGcmRegId());
 		assertTrue("returned device isPrimary is true",
-				 createDeviceResponse.isPrimary());
+				createDeviceResponse.isPrimary());
 		assertEquals("response is created (201)", 201, createDeviceResponse
 				.getRawResponse().getStatus());
 		Location location = new Location("test");
@@ -589,10 +591,10 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		location.setLongitude(-155.87654321);
 		location.setSpeed(55.2f);
 		getActivity().setPostLocationRequest(new PostLocationRequest(dummyGcmRegId,location)); 
-        clickAndWait();
-        PostLocationResponse postLocationResponse = getActivity().getPostLocationResponse();
-        Timestamp timestamp = new Timestamp(postLocationResponse.getLocation().getTime());
-        System.out.println(timestamp);
+		clickAndWait();
+		PostLocationResponse postLocationResponse = getActivity().getPostLocationResponse();
+		Timestamp timestamp = new Timestamp(postLocationResponse.getLocation().getTime());
+		System.out.println(timestamp);
 		assertEquals("response is created (201)", 201, postLocationResponse
 				.getRawResponse().getStatus());
 		assertEquals("time is correct", new Timestamp(locationTime) ,  timestamp);
@@ -607,10 +609,51 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		assertTrue("has bearing is correct", postLocationResponse.getLocation().hasBearing());
 		assertTrue("has speed is correct", postLocationResponse.getLocation().hasSpeed());
 		
+	}
+	
+	public void testPatchLocation() throws Exception {
+		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
+		String name = "android_device" + dummyGcmRegId;
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		clickAndWait();
+		CreateDeviceResponse createDeviceResponse = getActivity()
+				.getCreateDeviceResponse();
+		assertEquals("returned device name is correct",
+				name, createDeviceResponse.getName());
+		assertEquals("returned device id is correct",
+				dummyGcmRegId, createDeviceResponse.getGcmRegId());
+		assertTrue("returned device isPrimary is true",
+				 createDeviceResponse.isPrimary());
+		assertEquals("response is created (201)", 201, createDeviceResponse
+				.getRawResponse().getStatus());
+		Location location = new Location("test");
+		long locationTime = System.currentTimeMillis();
+		location.setTime(locationTime);
+		location.setAccuracy(5.5f);
+		location.setAltitude(100.5);
+		location.setBearing( 25.2f);
+		location.setLatitude(45.1234567);
+		location.setLongitude(-155.87654321);
+		location.setSpeed(55.2f);
+		getActivity().setPatchLocationRequest(new PatchLocationRequest(dummyGcmRegId,location)); 
+        clickAndWait();
+        PatchLocationResponse patchLocationResponse = getActivity().getPatchLocationResponse();
+        Timestamp timestamp = new Timestamp(patchLocationResponse.getLocation().getTime());
+        System.out.println(timestamp);
+		assertEquals("response is created (201)", 201, patchLocationResponse
+				.getRawResponse().getStatus());
+		assertEquals("time is correct", new Timestamp(locationTime) ,  timestamp);
+		assertEquals("accuracy is correct", 5.5f, patchLocationResponse.getLocation().getAccuracy());
+		assertEquals("altitude is correct", 100.5, patchLocationResponse.getLocation().getAltitude());
+		assertEquals("bearing is correct", 25.2f, patchLocationResponse.getLocation().getBearing());
+		assertEquals("latitude is correct", 45.1234567, patchLocationResponse.getLocation().getLatitude());
+		assertEquals("longitude is correct", -155.87654321, patchLocationResponse.getLocation().getLongitude());
+		assertEquals("speed is correct", 55.2f, patchLocationResponse.getLocation().getSpeed());
+		assertTrue("has accuracy is correct", patchLocationResponse.getLocation().hasAccuracy());
+		assertTrue("has altitude is correct", patchLocationResponse.getLocation().hasAltitude());
+		assertTrue("has bearing is correct", patchLocationResponse.getLocation().hasBearing());
+		assertTrue("has speed is correct", patchLocationResponse.getLocation().hasSpeed());
 		
-        
-		
-
 	}
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 
+import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.UpdateLocationRequest;
 import com.google.android.gms.common.ConnectionResult;
@@ -28,9 +29,8 @@ public class DeviceLocationClient implements GooglePlayServicesClient.Connection
 	@Override
 	public void onLocationChanged(Location location) {
 		System.out.println("got a location update");
-		PostLocationRequest postLocationRequest = new PostLocationRequest(MyApp.getGcmRegId(),location);
-		mBus.post(postLocationRequest);
-		
+		PatchLocationRequest patchLocationRequest = new PatchLocationRequest(MyApp.getGcmRegId(),location);
+		mBus.post(patchLocationRequest);	
 	}
 
 	public DeviceLocationClient(Context context) {
