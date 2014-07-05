@@ -11,5 +11,6 @@
     <string name="title_activity_api_ex">ApiExActivity</string>
     <string name="title_activity_register_gcm">RegisterGcmActivity</string>
     <string name="reg_progress_message">registering device</string>
+    
 
 </resources>

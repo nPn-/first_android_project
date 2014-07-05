@@ -26,6 +26,21 @@ public class PersistData {
 			generalSettingsFileEditor.putString("GCM_REG_ID", gcmRegId);
 			generalSettingsFileEditor.commit();
 		}
+		public void clearAccessToken() {
+			generalSettingsFileEditor.putString("ACCESS_TOKEN", "");
+			generalSettingsFileEditor.commit();
+		}
+		public void clearGcmRegId() {
+			generalSettingsFileEditor.putString("GCM_REG_ID", "");
+			generalSettingsFileEditor.commit();
+		}
+		public void clearUserId() {
+			generalSettingsFileEditor.putString("USER_ID", "");
+			generalSettingsFileEditor.commit();
+		}
+
+
+		
 	}
 	
 	public PersistData(Context context) {
@@ -40,20 +55,12 @@ public class PersistData {
 		return(token);
 	}
 	
-	public void clearAccessToken() {
-		generalSettingsFileEditor.putString("ACCESS_TOKEN", "");
-		generalSettingsFileEditor.commit();
-	}
-	
+
 	public String readGcmRegId() {
 		String gcmRegId = generalSettingsFile.getString("GCM_REG_ID","");
 		return(gcmRegId);
 	}
 	
-	public void clearGcmRegId() {
-		generalSettingsFileEditor.putString("GCM_REG_ID", "");
-		generalSettingsFileEditor.commit();
-	}
 
 
 	public String readEmailId() {
@@ -65,9 +72,5 @@ public class PersistData {
 		return readAccessToken().split(":")[0];
 	}
 	
-	public void clearUserId() {
-		generalSettingsFileEditor.putString("USER_ID", "");
-		generalSettingsFileEditor.commit();
-	}
 
 }

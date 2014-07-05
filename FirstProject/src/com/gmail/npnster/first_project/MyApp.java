@@ -16,13 +16,13 @@ import android.location.Location;
 
 public class MyApp extends Application {    
 
-//	private static final String API_ROOT_URL = "http://10.0.2.2:3000";   // for android test suite
+	private static final String API_ROOT_URL = "http://10.0.2.2:3000";   // for android test suite
 	
 	
 //	private static final String API_ROOT_URL = "http://172.16.1.105:3000";    // for local server    
 //	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";  // heroku
 //	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
-	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix
+//	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix
 
 	private static MyApp singleton;
 	private static String token;
@@ -93,16 +93,33 @@ public class MyApp extends Application {
 		user = tokenToSave.split(":")[0];
 		token = tokenToSave;
 	}
+	
+	public static void clearToken() {
+		token = "";
+		cachedPersistData.clearAccessToken();
+	}
 
 	public static void saveEmailId(String emailToSave) {
 		cachedPersistData.saveEmailId(emailToSave);
 		email = emailToSave;
 	}
 	
+	public static void clearEmailId() {
+		cachedPersistData.clearUserId();
+		email = "";
+	}
+
+	
 	public static void saveGcmRegId(String gcmRegIdToSave) {
 		cachedPersistData.saveGcmRegId(gcmRegIdToSave);
 		gcmRegId = gcmRegIdToSave;
 	}
+	
+	public static void clearGcmRegId() {
+		cachedPersistData.clearGcmRegId();
+		gcmRegId = "";
+	}
+
 
 	public static PersistData getPersistData() {
 		return persistData;

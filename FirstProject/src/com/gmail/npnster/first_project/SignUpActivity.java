@@ -30,6 +30,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,10 +73,19 @@ public class SignUpActivity extends Activity {
 
 	private View mLoginFormView;
 	private View mLoginStatusView;
+	private CheckBox mCreateAccountCheckbox;
 	private TextView mLoginStatusMessageView;
 	private boolean requestInFlight = false;
 
+	private enum FormType {
+		SIGNUP, SIGNIN
+	};
+
+	private FormType formType;
+
 	private Bus mBus;
+
+	private Button mSignInButton;
 
 	private Bus getBus() {
 		if (mBus == null) {
@@ -115,14 +127,59 @@ public class SignUpActivity extends Activity {
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+		mCreateAccountCheckbox = (CheckBox) findViewById(R.id.create_account_checkbox);
+		mSignInButton = (Button) findViewById(R.id.sign_in_button);
 
-		findViewById(R.id.sign_in_button).setOnClickListener(
-				new View.OnClickListener() {
+		mSignInButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				attemptLogin();
+			}
+		});
+
+		mCreateAccountCheckbox
+				.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+
 					@Override
-					public void onClick(View view) {
-						attemptLogin();
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						System.out.println(isChecked);
+						if (isChecked) {
+							configureForSignup();
+
+						} else {
+							configureForSignin();
+
+						}
+
 					}
+
 				});
+		mCreateAccountCheckbox.setChecked(false);
+		configureForSignin();
+
+	}
+
+	public void configureForSignup() {
+		formType = FormType.SIGNUP;
+		mNameView.setEnabled(true);
+		mNameView.setVisibility(View.VISIBLE);
+		mPasswordConfirmationView.setEnabled(true);
+		mPasswordConfirmationView.setVisibility(View.VISIBLE);
+		mSignInButton.setText("Sign Up!");
+		mNameView.requestFocus();
+
+	}
+
+	public void configureForSignin() {
+		formType = FormType.SIGNIN;
+		mNameView.setEnabled(false);
+		mNameView.setVisibility(View.INVISIBLE);
+		mPasswordConfirmationView.setEnabled(false);
+		mPasswordConfirmationView.setVisibility(View.INVISIBLE);
+		mSignInButton.setText("Sign In!");
+		mEmailView.requestFocus();
+
 	}
 
 	@Override
@@ -176,15 +233,27 @@ public class SignUpActivity extends Activity {
 
 		boolean cancel = false;
 		View focusView = null;
-		// Check for a valid name
-		if (TextUtils.isEmpty(mName)) {
-			mNameView.setError(getString(R.string.error_field_required));
-			focusView = mNameView;
-			cancel = true;
-		} else if (mName.length() < 1) {
-			mNameView.setError(getString(R.string.error_invalid_name));
-			focusView = mPasswordView;
-			cancel = true;
+		if (formType == FormType.SIGNUP) {
+
+			// Check for a valid name
+			if (TextUtils.isEmpty(mName)) {
+				mNameView.setError(getString(R.string.error_field_required));
+				focusView = mNameView;
+				cancel = true;
+			} else if (mName.length() < 1) {
+				mNameView.setError(getString(R.string.error_invalid_name));
+				focusView = mPasswordView;
+				cancel = true;
+			}
+
+			// Check for a valid password confirmation.
+			if (!mPasswordConfirmation.equals(mPassword)) {
+				mPasswordConfirmationView
+						.setError(getString(R.string.error_passwords_dont_match));
+				focusView = mPasswordConfirmationView;
+				cancel = true;
+			}
+
 		}
 
 		// Check for a valid password.
@@ -195,14 +264,6 @@ public class SignUpActivity extends Activity {
 		} else if (mPassword.length() < 6) {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
-			cancel = true;
-		}
-
-		// Check for a valid password confirmation.
-		if (!mPasswordConfirmation.equals(mPassword)) {
-			mPasswordConfirmationView
-					.setError(getString(R.string.error_passwords_dont_match));
-			focusView = mPasswordConfirmationView;
 			cancel = true;
 		}
 
@@ -228,16 +289,20 @@ public class SignUpActivity extends Activity {
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
 			PersistData persistData = MyApp.getPersistData();
-			System.out.println("postin signup request to bus");
-//			mBus.post(new SignupRequest(mName, mEmail, mPassword,
-//					mPasswordConfirmation));
-			mBus.post(new SigninRequest(mEmail, mPassword));
+
+			if (formType == FormType.SIGNUP) {
+				System.out.println("postin signup request to bus");
+				mBus.post(new SignupRequest(mName, mEmail, mPassword,
+						mPasswordConfirmation));
+			} else if (formType == FormType.SIGNIN) {
+				mBus.post(new SigninRequest(mEmail, mPassword));
+			}
 
 			// mAuthTask = new UserLoginTask();
 			// mAuthTask.execute((Void) null);
 		}
 	}
-	
+
 	public void leave(String email, String password) {
 		mBus.post(new LeaveRequest(email, password));
 	}
@@ -266,8 +331,9 @@ public class SignUpActivity extends Activity {
 			}
 		}
 		finish();
-		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-		startActivity(intent);
+		// Intent intent = new Intent(getApplicationContext(),
+		// MainActivity.class);
+		// startActivity(intent);
 	}
 
 	@Subscribe
@@ -285,17 +351,16 @@ public class SignUpActivity extends Activity {
 				MyApp.saveToken(returnedToken);
 				MyApp.saveEmailId(mEmail);
 			}
-		} else {
-			List<String> errors = event.getErrors();
+		} else if (event.getRawResponse().getStatus() == 401) {
 			Toast toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
-			for (String error : errors) {
-				toast.setText(error);
-				toast.show();
-			}
+			toast.setText("Invalid email/password combination");
+			toast.show();
 		}
+
 		finish();
-		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-		startActivity(intent);
+		// Intent intent = new Intent(getApplicationContext(),
+		// MainActivity.class);
+		// startActivity(intent);
 	}
 
 	/**

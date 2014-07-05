@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,8 +103,12 @@ public class HomeActivity extends ActionBarActivity {
 		@Subscribe
 		public void onSignoutCompletedEvent(SignoutResponse event) {
 			System.out.println("inside home activity, onSignoutCompleted");
-			MyApp.getPersistData().clearAccessToken();
-			MyApp.getPersistData().clearUserId();
+			MyApp.clearToken();
+			MyApp.clearEmailId();
+			MyApp.clearGcmRegId();
+			this.getActivity().finish();
+		
+			
 		}
 
 		@Override

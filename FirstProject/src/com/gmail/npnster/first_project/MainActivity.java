@@ -33,6 +33,8 @@ public class MainActivity extends Activity {
 		Log.i("info", "here");
 		Intent intent = null;
 
+		System.out.println(String.format("email id = %s", persistData.readEmailId()));
+		System.out.println(String.format("access token = %s", persistData.readEmailId()));
 		System.out.println(String.format("reg id = %s", MyApp.getGcmRegId()));
 
 		if (persistData.readEmailId() == "") {

@@ -7,9 +7,9 @@ import com.gmail.npnster.first_project.PersistData;
 import com.gmail.npnster.first_project.SignUpActivity;
 import com.robotium.solo.Solo;
 
-public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity> {
+public class SignupTestx extends ActivityInstrumentationTestCase2<SignUpActivity> {
 
-	public SignupTest() {
+	public SignupTestx() {
 		super(SignUpActivity.class);
 		
 
