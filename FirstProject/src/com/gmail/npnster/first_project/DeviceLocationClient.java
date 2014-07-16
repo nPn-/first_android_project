@@ -15,68 +15,105 @@ import com.google.android.gms.location.LocationListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-public class DeviceLocationClient implements GooglePlayServicesClient.ConnectionCallbacks,
-                                             GooglePlayServicesClient.OnConnectionFailedListener,
-                                             LocationListener
-                                             {
-	
+public class DeviceLocationClient implements
+		GooglePlayServicesClient.ConnectionCallbacks,
+		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+
 	private Context context;
 	private LocationClient locationClient;
-	private boolean isConnected ;
+	private boolean isConnected;
 	private LocationRequest request;
 	private Bus mBus;
-	
+
 	@Override
 	public void onLocationChanged(Location location) {
 		System.out.println("got a location update");
-		PatchLocationRequest patchLocationRequest = new PatchLocationRequest(MyApp.getGcmRegId(),location);
-		mBus.post(patchLocationRequest);	
+		PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
+				MyApp.getGcmRegId(), location);
+		mBus.post(patchLocationRequest);
 	}
 
 	public DeviceLocationClient(Context context) {
 		this.context = context;
 		mBus = MyApp.getBus();
+		System.out.println("connecting to google play services");
 		locationClient = new LocationClient(context, this, this);
-		locationClient.connect();
 		isConnected = false;
-		request = new LocationRequest();
-		request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		request.setExpirationDuration(60 *1000);  
-		request.setFastestInterval(5 *1000);
-		request.setInterval(10 * 1000);
-		
+		locationClient.connect();
+
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("connection to google play services FAILED!");
+
 	}
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
+		System.out.println("google play servies connected");
 		isConnected = true;
-		//locationClient.requestLocationUpdates(request, this);
+		// locationClient.requestLocationUpdates(request, this);
 		mBus.register(this);
-		
+		request = new LocationRequest();
+		request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		request.setExpirationDuration(60 * 1000);
+		request.setFastestInterval(5 * 1000);
+		request.setInterval(10 * 1000);
+		isConnected = true;
+		requestLLocationUpdates();
+
 	}
 
 	@Override
 	public void onDisconnected() {
 		// TODO Auto-generated method stub
+		System.out
+				.println("google play services got disconnected - reconnecting");
 		mBus.unregister(this);
-		
+		locationClient.connect();
+
 	}
-	
+
 	@Subscribe
-	public void onUpdateLocationRequest(UpdateLocationRequest event) {	
+	public void onUpdateLocationRequest(UpdateLocationRequest event) {
 		System.out.println("got the location request");
 		request = new LocationRequest();
 		request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		request.setExpirationDuration(60 *1000);  
-		request.setFastestInterval(5 *1000);
+		request.setExpirationDuration(60 * 1000);
+		request.setFastestInterval(5 * 1000);
 		request.setInterval(10 * 1000);
 		locationClient.requestLocationUpdates(request, this);
+	}
+
+	public void requestLLocationUpdates() {
+		System.out.println("got the location request from the service");
+
+
+		if (isConnected) {
+			System.out.println("processing request");
+			System.out.println("sending latest location");
+			Location lastLocation = locationClient.getLastLocation();
+			PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
+					MyApp.getGcmRegId(), lastLocation);
+			mBus.post(patchLocationRequest);
+			request = new LocationRequest();
+			request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+			request.setExpirationDuration(60 * 1000);
+			request.setFastestInterval(5 * 1000);
+			request.setInterval(10 * 1000);
+			System.out.println("requesting updates");
+			locationClient.requestLocationUpdates(request, this);
+		} else {
+			if (locationClient.isConnecting()) {
+				System.out.println("google play services is connecting");
+			} else {
+				System.out.println("attempting to connect to google play services");
+				locationClient.connect();
+			}
+
+		}
 	}
 
 }

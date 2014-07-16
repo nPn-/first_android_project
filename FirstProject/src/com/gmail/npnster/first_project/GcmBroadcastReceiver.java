@@ -32,7 +32,9 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         	if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
         		System.out.println(extras.toString());
-        		mBus.post(updateLocationRequest);
+        		Intent serviceIntent = new Intent(context, LocationMonitorService.class);
+        		context.startService(serviceIntent);
+        		//mBus.post(updateLocationRequest);
         		      		
         	}
         	

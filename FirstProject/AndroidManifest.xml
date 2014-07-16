@@ -79,6 +79,8 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </receiver>
+        <service  android:name="com.gmail.npnster.first_project.LocationMonitorService" />
+            
     </application>
 
 </manifest>

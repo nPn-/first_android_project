@@ -19,6 +19,8 @@ import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
 import com.gmail.npnster.first_project.api_params.PatchLocationResponse;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
+import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestRequest;
+import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SigninRequest;
 import com.gmail.npnster.first_project.api_params.SigninResponse;
@@ -133,6 +135,10 @@ public class RailsApiClient {
 		@PUT(API_URL + "/devices/{gcm_reg_key}/locations")
 		void patchLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PatchLocationRequest request,
 				Callback<PatchLocationResponse> callback);
+		
+		@POST(API_URL + "/locations_update_requests")
+		void postPushLocationsUpdateRequest(@Body PushLocationsUpdateRequestRequest request,
+				Callback<PushLocationsUpdateRequestResponse> callback);
 
 	}
 

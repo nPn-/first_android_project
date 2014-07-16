@@ -12,17 +12,18 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import android.app.Application;
+import android.content.Intent;
 import android.location.Location;
 
 public class MyApp extends Application {    
 
-	private static final String API_ROOT_URL = "http://10.0.2.2:3000";   // for android test suite
+//	private static final String API_ROOT_URL = "http://10.0.2.2:3000";   // for android test suite
 	
 	
 //	private static final String API_ROOT_URL = "http://172.16.1.105:3000";    // for local server    
 //	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";  // heroku
 //	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
-//	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix
+	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix  
 
 	private static MyApp singleton;
 	private static String token;
@@ -61,7 +62,8 @@ public class MyApp extends Application {
 //		CreateDeviceRequest request = new CreateDeviceRequest("jdd_tests_device","phone", true);
 //		mBus.post(request);
 		// temp to try locations
-		DeviceLocationClient deviceLocationClient = new DeviceLocationClient(this);
+		startService(new Intent(getApplicationContext(), LocationMonitorService.class));
+//		DeviceLocationClient deviceLocationClient = new DeviceLocationClient(this);
 	}
 
 	public static ApiRequestRepository getApiRequester() {
