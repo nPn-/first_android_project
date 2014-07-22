@@ -13,6 +13,8 @@ import com.gmail.npnster.first_project.MyApp;
 import com.gmail.npnster.first_project.PersistData;
 import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.BaseResponse;
@@ -38,6 +40,8 @@ import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
 import com.gmail.npnster.first_project.api_params.PatchLocationResponse;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
+import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestRequest;
+import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SigninRequest;
@@ -623,7 +627,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		assertEquals("returned device id is correct",
 				dummyGcmRegId, createDeviceResponse.getGcmRegId());
 		assertTrue("returned device isPrimary is true",
-				 createDeviceResponse.isPrimary());
+				createDeviceResponse.isPrimary());
 		assertEquals("response is created (201)", 201, createDeviceResponse
 				.getRawResponse().getStatus());
 		Location location = new Location("test");
@@ -636,10 +640,10 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		location.setLongitude(-155.87654321);
 		location.setSpeed(55.2f);
 		getActivity().setPatchLocationRequest(new PatchLocationRequest(dummyGcmRegId,location)); 
-        clickAndWait();
-        PatchLocationResponse patchLocationResponse = getActivity().getPatchLocationResponse();
-        Timestamp timestamp = new Timestamp(patchLocationResponse.getLocation().getTime());
-        System.out.println(timestamp);
+		clickAndWait();
+		PatchLocationResponse patchLocationResponse = getActivity().getPatchLocationResponse();
+		Timestamp timestamp = new Timestamp(patchLocationResponse.getLocation().getTime());
+		System.out.println(timestamp);
 		assertEquals("response is created (201)", 201, patchLocationResponse
 				.getRawResponse().getStatus());
 		assertEquals("time is correct", new Timestamp(locationTime) ,  timestamp);
@@ -653,6 +657,95 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		assertTrue("has altitude is correct", patchLocationResponse.getLocation().hasAltitude());
 		assertTrue("has bearing is correct", patchLocationResponse.getLocation().hasBearing());
 		assertTrue("has speed is correct", patchLocationResponse.getLocation().hasSpeed());
+		
+	}
+	
+	public void testPostLocationsUpdateRequest() throws Exception {
+		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
+		String name = "android_device" + dummyGcmRegId;
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		clickAndWait();
+		CreateDeviceResponse createDeviceResponse = getActivity()
+				.getCreateDeviceResponse();
+		assertEquals("returned device name is correct",
+				name, createDeviceResponse.getName());
+		getActivity().setPushLocationsUpdateRequestRequest(new PushLocationsUpdateRequestRequest());
+		clickAndWait();
+		PushLocationsUpdateRequestResponse pushLocationsUpdateRequestResponse = getActivity()
+				.getPushLocationsUpdateRequestResponse();
+		assertEquals("rails status code is 200",
+				200, pushLocationsUpdateRequestResponse.getRailsStatusCode());
+		assertEquals("bogus gcm_id should give failed count of 1",
+				1, pushLocationsUpdateRequestResponse.getGcmFailedCount());
+		assertEquals("bogus gcm_id should give success count of 0",
+				0, pushLocationsUpdateRequestResponse.getGcmSuccessCount());
+						
+		
+	}
+	
+	public void testGetMapMarkers() throws Exception {
+		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
+		String name = "android_device" + dummyGcmRegId;
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		clickAndWait();
+		CreateDeviceResponse createDeviceResponse = getActivity()
+				.getCreateDeviceResponse();
+		assertEquals("returned device name is correct",
+				name, createDeviceResponse.getName());
+		assertEquals("returned device id is correct",
+				dummyGcmRegId, createDeviceResponse.getGcmRegId());
+		assertTrue("returned device isPrimary is true",
+				createDeviceResponse.isPrimary());
+		assertEquals("response is created (201)", 201, createDeviceResponse
+				.getRawResponse().getStatus());
+		Location location = new Location("test");
+		long locationTime = System.currentTimeMillis();
+		location.setTime(locationTime);
+		location.setAccuracy(5.5f);
+		location.setAltitude(100.5);
+		location.setBearing( 25.2f);
+		location.setLatitude(45.1234567);
+		location.setLongitude(-155.87654321);
+		location.setSpeed(55.2f);
+		getActivity().setPostLocationRequest(new PostLocationRequest(dummyGcmRegId,location)); 
+		clickAndWait();
+		PostLocationResponse postLocationResponse = getActivity().getPostLocationResponse();
+		Timestamp timestamp = new Timestamp(postLocationResponse.getLocation().getTime());
+		System.out.println(timestamp);
+		assertEquals("response is created (201)", 201, postLocationResponse
+				.getRawResponse().getStatus());
+		assertEquals("time is correct", new Timestamp(locationTime) ,  timestamp);
+		assertEquals("accuracy is correct", 5.5f, postLocationResponse.getLocation().getAccuracy());
+		assertEquals("altitude is correct", 100.5, postLocationResponse.getLocation().getAltitude());
+		assertEquals("bearing is correct", 25.2f, postLocationResponse.getLocation().getBearing());
+		assertEquals("latitude is correct", 45.1234567, postLocationResponse.getLocation().getLatitude());
+		assertEquals("longitude is correct", -155.87654321, postLocationResponse.getLocation().getLongitude());
+		assertEquals("speed is correct", 55.2f, postLocationResponse.getLocation().getSpeed());
+		assertTrue("has accuracy is correct", postLocationResponse.getLocation().hasAccuracy());
+		assertTrue("has altitude is correct", postLocationResponse.getLocation().hasAltitude());
+		assertTrue("has bearing is correct", postLocationResponse.getLocation().hasBearing());
+		assertTrue("has speed is correct", postLocationResponse.getLocation().hasSpeed());
+		
+		getActivity().setGetMapMarkersRequest(new GetMapMarkersRequest()); 
+		clickAndWait();
+		GetMapMarkersResponse getGetMapMarkersResponse = getActivity()
+				.getGetMapMarkersResponse();
+		assertEquals("response is created (200)", 200, getGetMapMarkersResponse
+				.getRawResponse().getStatus());
+		assertEquals("number of markers is 1 ", 1, getGetMapMarkersResponse.getMarkers().size());
+		assertEquals("latitude is correct", 45.1234567, getGetMapMarkersResponse.getMarkers().get(0).getLatitude());
+		assertEquals("longitude is correct", -155.87654321, getGetMapMarkersResponse.getMarkers().get(0).getLongitude());
+		assertEquals("name is correct", "robot", getGetMapMarkersResponse.getMarkers().get(0).getName());
+		assertEquals("provider is correct", "test", getGetMapMarkersResponse.getMarkers().get(0).getLocationProvider());
+		assertEquals("bearing is correct", 25.2f, getGetMapMarkersResponse.getMarkers().get(0).getBearing());
+		assertEquals("speed is correct", 55.2f, getGetMapMarkersResponse.getMarkers().get(0).getSpeed());
+		assertEquals("altitude is correct", 100.5, getGetMapMarkersResponse.getMarkers().get(0).getAltitude());
+		assertTrue("has accuracy is correct", getGetMapMarkersResponse.getMarkers().get(0).hasAccuracy());
+		assertTrue("has altitude is correct", getGetMapMarkersResponse.getMarkers().get(0).hasAltitude());
+		assertTrue("has bearing is correct", getGetMapMarkersResponse.getMarkers().get(0).hasBearing());
+		assertTrue("has speed is correct", getGetMapMarkersResponse.getMarkers().get(0).hasSpeed());
+		
+		
 		
 	}
 

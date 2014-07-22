@@ -16,15 +16,16 @@ public class RailsApiCallback<T extends BaseResponse> implements Callback<T> {
 	public RailsApiCallback(Bus bus, T response) {
 		super();
 		mBus = bus;
-		mResponse = response; 
+		mResponse = response;     
 	}
 
-	@Override
+	@Override 
 	public void failure(RetrofitError retrofitError) {
 		System.out.println(retrofitError.toString());
-		T response = (T) retrofitError.getBody() != null ? (T) retrofitError.getBody() : mResponse  ;
+		T response = retrofitError != null && retrofitError.getBody() != null ? (T) retrofitError.getBody() : mResponse  ;
 		response.setRawResponse(retrofitError.getResponse());
 		response.setSuccessful(false);
+		System.out.println("posting response to bus");
 		mBus.post(response);
 	}
 

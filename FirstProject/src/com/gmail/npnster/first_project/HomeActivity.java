@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,8 +39,10 @@ public class HomeActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_home);
 
 		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+			android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+					transaction.add(R.id.container, new PlaceholderFragment());
+//					transaction.addToBackStack(null);
+					transaction.commit();
 		}
 	}
 
@@ -75,8 +78,13 @@ public class HomeActivity extends ActionBarActivity {
 			getBus().unregister(this);
 		}
 
+		@InjectView(R.id.map_button) 
+		Button mapButton;
+		
 		@InjectView(R.id.sign_out_button)
 		Button signOutButton;
+		
+
 		
 		private Bus mBus;
 		
@@ -92,12 +100,21 @@ public class HomeActivity extends ActionBarActivity {
 		  }
 		
 		
+		  
+		  @OnClick(R.id.sign_out_button)
+		  void signOut() {
+			  System.out.println("posting signout request to the bus");
+			  Log.i("signout", "signout");
+			  mBus.post(new SignoutRequest());
+		  }
+		  
 
-		@OnClick(R.id.sign_out_button)
-		void signOut() {
-			System.out.println("posting signout request to the bus");
-			Log.i("signout", "signout");
-			mBus.post(new SignoutRequest());
+		@OnClick(R.id.map_button)
+		void onMapButton() {
+			System.out.println("launching map activity");
+			Intent intent = new Intent(getActivity(), MapActivity.class);
+			getActivity().startActivity(intent);
+			
 		}
 		
 		@Subscribe
@@ -127,11 +144,13 @@ public class HomeActivity extends ActionBarActivity {
 			//GetUserProfileResponse params = event.getParams();
 			String gravatarURL = "http://www.gravatar.com/avatar/"
 					+ event.getGravatar_id();
+		
+//			Picasso.with(getActivity()).setDebugging(true);
 			Picasso.with(getActivity())
 			.load(gravatarURL)
 			.into((ImageView) getActivity().findViewById(
 					R.id.imageButton1));
-			
+			System.out.println("leaving onProfileRequestCompleted");
 		}
 		
 		// just tying to see if the user list is working

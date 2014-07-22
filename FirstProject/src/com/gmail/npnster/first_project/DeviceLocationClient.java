@@ -90,14 +90,15 @@ public class DeviceLocationClient implements
 	public void requestLLocationUpdates() {
 		System.out.println("got the location request from the service");
 
-
 		if (isConnected) {
 			System.out.println("processing request");
 			System.out.println("sending latest location");
 			Location lastLocation = locationClient.getLastLocation();
-			PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
-					MyApp.getGcmRegId(), lastLocation);
-			mBus.post(patchLocationRequest);
+			if (lastLocation != null) {
+				PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
+						MyApp.getGcmRegId(), lastLocation);
+				mBus.post(patchLocationRequest);
+			}
 			request = new LocationRequest();
 			request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 			request.setExpirationDuration(60 * 1000);
@@ -109,7 +110,8 @@ public class DeviceLocationClient implements
 			if (locationClient.isConnecting()) {
 				System.out.println("google play services is connecting");
 			} else {
-				System.out.println("attempting to connect to google play services");
+				System.out
+						.println("attempting to connect to google play services");
 				locationClient.connect();
 			}
 

@@ -2,6 +2,7 @@ package com.gmail.npnster.first_project;
 
 import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
@@ -139,6 +140,10 @@ public class RailsApiClient {
 		@POST(API_URL + "/locations_update_requests")
 		void postPushLocationsUpdateRequest(@Body PushLocationsUpdateRequestRequest request,
 				Callback<PushLocationsUpdateRequestResponse> callback);
+		
+		@GET(API_URL + "/map_markers")
+		void getMapMarkersRequest(@Query("api_access_token") String token,
+				Callback<GetMapMarkersResponse> callback);
 
 	}
 

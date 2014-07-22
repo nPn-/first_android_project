@@ -9,6 +9,8 @@ import retrofit.client.Response;
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
 import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
@@ -201,7 +203,14 @@ public class ApiRequestRepository {
 		System.out.println("inside api repo - making locations update  request");
 		System.out.println(event.getClass().toString());
 		event.setToken(MyApp.getToken());
-//		mRailsApi.postPushLocationsUpdateRequest(event, new RailsApiCallback<PushLocationsUpdateRequestResponse>(mBus, new PushLocationsUpdateRequestResponse()));
+		mRailsApi.postPushLocationsUpdateRequest(event, new RailsApiCallback<PushLocationsUpdateRequestResponse>(mBus, new PushLocationsUpdateRequestResponse()));
+	}
+	
+	@Subscribe
+	public void onGetMapMarkersRequest(GetMapMarkersRequest event) {
+		System.out.println("inside api repo - making get map markers request");
+		System.out.println(event.getClass().toString());
+		mRailsApi.getMapMarkersRequest(MyApp.getToken(), new RailsApiCallback<GetMapMarkersResponse>(mBus, new GetMapMarkersResponse()));
 	}
 
 

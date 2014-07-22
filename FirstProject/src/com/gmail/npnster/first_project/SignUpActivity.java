@@ -13,9 +13,9 @@ import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.gmail.npnster.first_project.api_params.UserRequestParams;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.turbomanage.httpclient.HttpResponse;
-import com.turbomanage.httpclient.ParameterMap;
-import com.turbomanage.httpclient.android.AndroidHttpClient;
+//import com.turbomanage.httpclient.HttpResponse;
+//import com.turbomanage.httpclient.ParameterMap;
+//import com.turbomanage.httpclient.android.AndroidHttpClient;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -312,8 +312,11 @@ public class SignUpActivity extends Activity {
 		System.out.println("in onSignupCompleted");
 		System.out.println(event.toString());
 		String returnedToken = event.getToken();
+		System.out.println(event.isSuccessful());
+		System.out.println(event.getErrors());
 		System.out.println(String.format(
-				"in onSignupCompleted, got token = %s ", returnedToken));
+				"in onSignupCompleted, got token == %s ", returnedToken));
+
 		showProgress(false);
 		requestInFlight = false;
 
@@ -325,6 +328,7 @@ public class SignUpActivity extends Activity {
 		} else {
 			List<String> errors = event.getErrors();
 			Toast toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+			System.out.println("here");
 			for (String error : errors) {
 				toast.setText(error);
 				toast.show();
@@ -341,22 +345,23 @@ public class SignUpActivity extends Activity {
 		System.out.println("in onSigninCompleted");
 		System.out.println(event.toString());
 		String returnedToken = event.getToken();
+		System.out.println(event.isSuccessful());
 		System.out.println(String.format(
 				"in onSigninCompleted, got token = %s ", returnedToken));
 		showProgress(false);
 		requestInFlight = false;
-
+		System.out.println(event.getErrors());
 		if (event.isSuccessful()) {
 			if (returnedToken != null) {
 				MyApp.saveToken(returnedToken);
 				MyApp.saveEmailId(mEmail);
 			}
-		} else if (event.getRawResponse().getStatus() == 401) {
+		} else if (event.getRawResponse() != null && event.getRawResponse().getStatus() == 401) {
 			Toast toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 			toast.setText("Invalid email/password combination");
 			toast.show();
 		}
-
+		
 		finish();
 		// Intent intent = new Intent(getApplicationContext(),
 		// MainActivity.class);

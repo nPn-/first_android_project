@@ -2,6 +2,8 @@ package com.gmail.npnster.first_project;
 
 import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
@@ -26,6 +28,8 @@ import com.gmail.npnster.first_project.api_params.PatchLocationRequest;
 import com.gmail.npnster.first_project.api_params.PatchLocationResponse;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
+import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestRequest;
+import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SigninRequest;
@@ -63,7 +67,8 @@ public class ApiExActivity extends Activity {
 		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS, UPDATE_USER,
 		GET_FOLLOWERS, GET_FOLLOWED_USERS, GET_MICROPOSTS, CREATE_MICROPOST,
 		DELETE_MICROPOST, FOLLOW, UNFOLLOW, GRANT_FOLLOWER_PERMISSION, SIGNIN,
-		REVOKE_FOLLOWER_PERMISSION, SIGNOUT, CREATE_DEVICE, POST_LOCATION, PATCH_LOCATION
+		REVOKE_FOLLOWER_PERMISSION, SIGNOUT, CREATE_DEVICE, POST_LOCATION, PATCH_LOCATION,
+		PUSH_LOCATIONS_UPDATE, GET_MAP_MARKERS
 	}
 
 	private ApiCall apiCall;
@@ -455,19 +460,61 @@ public class ApiExActivity extends Activity {
 	// patch location ##################
 	private PatchLocationRequest patchLocationRequest;
 	private PatchLocationResponse patchLocationResponse;
-
+	
 	public PatchLocationResponse getPatchLocationResponse() {
 		return patchLocationResponse;
 	}
-
+	
 	public void setPatchLocationRequest(PatchLocationRequest event) {
 		this.patchLocationRequest = event;
 		apiCall = ApiCall.PATCH_LOCATION;
 	}
-
+	
 	@Subscribe
 	public void onPatchLocationResponse(PatchLocationResponse event) {
 		patchLocationResponse = event;
+		setCallComplete();
+	}
+	
+	// ***********************
+	
+	// push location update requests ##################
+	private PushLocationsUpdateRequestRequest pushLocationsUpdateRequestRequest;
+	private PushLocationsUpdateRequestResponse pushLocationsUpdateRequestResponse;
+	
+	public PushLocationsUpdateRequestResponse getPushLocationsUpdateRequestResponse() {
+		return pushLocationsUpdateRequestResponse;
+	}
+	
+	public void setPushLocationsUpdateRequestRequest(PushLocationsUpdateRequestRequest event) {
+		this.pushLocationsUpdateRequestRequest = event;
+		apiCall = ApiCall.PUSH_LOCATIONS_UPDATE;
+	}
+	
+	@Subscribe
+	public void onPushLocationsUpdateRequestResponse(PushLocationsUpdateRequestResponse event) {
+		pushLocationsUpdateRequestResponse = event;
+		setCallComplete();
+	}
+	
+	// ***********************
+	
+	// get map markers requests ##################
+	private GetMapMarkersRequest getMapMarkersRequest;
+	private GetMapMarkersResponse getMapMarkersResponse;
+
+	public GetMapMarkersResponse getGetMapMarkersResponse() {
+		return getMapMarkersResponse;
+	}
+
+	public void setGetMapMarkersRequest(GetMapMarkersRequest event) {
+		this.getMapMarkersRequest = event;
+		apiCall = ApiCall.GET_MAP_MARKERS;
+	}
+
+	@Subscribe
+	public void onGetMapMarkersResponse(GetMapMarkersResponse event) {
+		getMapMarkersResponse = event;
 		setCallComplete();
 	}
 
@@ -558,6 +605,12 @@ public class ApiExActivity extends Activity {
 					break;
 				case PATCH_LOCATION:
 					mBus.post(patchLocationRequest);
+					break;
+				case PUSH_LOCATIONS_UPDATE:
+					mBus.post(pushLocationsUpdateRequestRequest);
+					break;
+				case GET_MAP_MARKERS:
+					mBus.post(getMapMarkersRequest);
 					break;
 
 				}

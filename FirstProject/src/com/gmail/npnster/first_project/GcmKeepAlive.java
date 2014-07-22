@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 
-public class GcmKeepAlive extends CountDownTimer {
+public class GcmKeepAlive  {
 
 	protected CountDownTimer timer;
 	protected Context mContext;
@@ -12,27 +12,11 @@ public class GcmKeepAlive extends CountDownTimer {
 	protected Intent mcsHeartBeatIntent;
 
 	public GcmKeepAlive(Context context) {
-		super(4 * 60 * 1000, 4 * 60 * 1000);
 		mContext = context;
 		gTalkHeartBeatIntent = new Intent(
 				"com.google.android.intent.action.GTALK_HEARTBEAT");
 		mcsHeartBeatIntent = new Intent(
-				"com.google.android.intent.action.MCS_HEARTBEAT");
-		System.out.println("stariing heartbeat countdown timer");
-		this.start();
-	}
-
-	@Override
-	public void onTick(long millisUntilFinished) {
-
-	}
-
-	@Override
-	public void onFinish() {
-
-		broadcastIntents();
-		this.start();
-
+				"com.google.android.intent.action.MCS_HEARTBEAT");	
 	}
 
 	public void broadcastIntents() {
