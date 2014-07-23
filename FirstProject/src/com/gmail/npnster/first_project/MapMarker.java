@@ -16,6 +16,16 @@ import com.squareup.picasso.Target;
 
 public class MapMarker implements Target {
 	Marker mMarker;
+	public String getName() {
+		return mMarker.getName();
+	}
+
+	public String getGravatarUrl() {
+		return mMarker.getGravatarUrl();
+	}
+
+
+
 	GoogleMap mMap;
 
 	public MapMarker(Context context, Marker marker, GoogleMap map) {
@@ -47,6 +57,8 @@ public class MapMarker implements Target {
 	     .icon(BitmapDescriptorFactory.fromBitmap(bitMap)));
 	    
 	}
+	
+
 
 	@Override
 	public void onPrepareLoad(Drawable arg0) {

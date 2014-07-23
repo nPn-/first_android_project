@@ -20,9 +20,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import android.app.Activity;
+import android.app.ActionBar;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -31,65 +30,78 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.os.Build;
 
-public class MapActivity extends ActionBarActivity {
-	
+public class MapActivity extends Activity {
+
 	private Bus mBus;
 	private GoogleMap map;
-	private ArrayList<MapMarker> mapMarkerList;
-	
+	private MapMarkers mapMarkerList;
+	private CenterOnSpinnerAdapter centerOnSpinnerAdapter;
+	private View actionBarView;
+
 	private Bus getBus() {
-	    if (mBus == null) {
-	      mBus = BusProvider.getInstance();
-	    }
-	    return mBus;
-	  }
-
-	  public void setBus(Bus bus) {
-	    mBus = bus;
-	  }
-
-	  
-		@Override
-		public void onResume() {
-			// TODO Auto-generated method stub
-			super.onResume();
-			 getBus().register(this);
-			 map = ((MapFragment) getFragmentManager()
-		                .findFragmentById(R.id.map)).getMap();
-			 System.out.println("posting get markers request to the bus");
-			 mapMarkerList = new ArrayList<MapMarker>();
-			 mBus.post(new PushLocationsUpdateRequestRequest());
-			 mBus.post(new GetMapMarkersRequest());
-		//	 mBus.post(new GetUsersRequest());  
+		if (mBus == null) {
+			mBus = BusProvider.getInstance();
 		}
-		
-		@Override
-		public void onPause() {
-			// TODO Auto-generated method stub
-			super.onPause();
-			getBus().unregister(this);
-		}
-	  
+		return mBus;
+	}
+
+	public void setBus(Bus bus) {
+		mBus = bus;
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		getBus().register(this);
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+				.getMap();
+		System.out.println("posting get markers request to the bus");
+
+		mBus.post(new PushLocationsUpdateRequestRequest());
+		mBus.post(new GetMapMarkersRequest());
+		// android.app.ActionBar actionBar = getActionBar();
+		// View actionBarView = actionBar.getCustomView();
+		// Spinner spinner = (Spinner) actionBarView.findViewById(R.id.spinner);
+		// centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(this,
+		// mapMarkerList.toArrayList());
+		// System.out.println(centerOnSpinnerAdapter.getCount());
+
+		// mBus.post(new GetUsersRequest());
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		getBus().unregister(this);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-		
-		 
-//		if (savedInstanceState == null) {
-//			getSupportFragmentManager().beginTransaction()
-//					.add(R.id.container, new PlaceholderFragment()).commit();
-//		}
+		setupCustomActionBar();
+		mapMarkerList = new MapMarkers();
+
+		// if (savedInstanceState == null) {
+		// getSupportFragmentManager().beginTransaction()
+		// .add(R.id.container, new PlaceholderFragment()).commit();
+		// }
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.map, menu);
+		// getMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
 
@@ -104,61 +116,152 @@ public class MapActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Subscribe
 	public void onGetMapMarkersRequestCompleted(GetMapMarkersResponse event) {
-		System.out.println("inside map activity - onGetMapMarkersRequestCompleted");
-		
-		//GetUserProfileResponse params = event.getParams();
+		System.out
+				.println("inside map activity - onGetMapMarkersRequestCompleted");
+
+		// GetUserProfileResponse params = event.getParams();
 		System.out.println(event.getMarkers().size());
 		mapMarkerList.clear();
-//		ArrayList<com.google.android.gms.maps.model.Marker> markerList = new ArrayList<com.google.android.gms.maps.model.Marker>();
-//		markerList.get(0).
+		// ArrayList<com.google.android.gms.maps.model.Marker> markerList = new
+		// ArrayList<com.google.android.gms.maps.model.Marker>();
+		// markerList.get(0).
 		map.clear();
 		for (Marker m : event.getMarkers()) {
-			LatLng pos = new LatLng(m.getLatitude(),m.getLongitude());
+			LatLng pos = new LatLng(m.getLatitude(), m.getLongitude());
 			System.out.println(m.getLatitude());
 			System.out.println(m.getLongitude());
 			System.out.println(new Date(m.getLocationFixTime()));
-			
-//			MarkerOptions markerOptions = new MarkerOptions();
-//			markerOptions.position(pos);
-//			markerOptions.title(m.getName());
-//			markerOptions.icon(BitmapDescriptorFactory
-//		              .fromResource(R.drawable.ic_launcher));
-//			map.addMarker(markerOptions);
-//			System.out.println(pos.toString());
-//			 com.google.android.gms.maps.model.Marker marker = map.addMarker(new MarkerOptions()
-//		     .position(new LatLng(37.7750d, 122.4183d))
-//		     .title("San Francisco")
-//		     .snippet("Population: 776733"));
-//			MapMarker mapMarker = new MapMarker(this, m, map);
+
 			mapMarkerList.add(new MapMarker(this, m, map));
-//			map.addMarker(new MarkerOptions()
-//			    .position(pos)
-//			    .title(m.getName())
-//			    .icon(BitmapDescriptorFactory
-//		              .fromResource(R.drawable.ic_launcher)));
+
 			map.setMyLocationEnabled(true);
 		}
+		android.app.ActionBar actionBar = getActionBar();
+		// View actionBarView = actionBar.getCustomView();
+		Spinner spinner = (Spinner) actionBarView.findViewById(R.id.spinner);
+		centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(this,
+				mapMarkerList.toArrayList());
+		spinner.setAdapter(centerOnSpinnerAdapter);
+		System.out.println(String.format(
+				"number items in spinner adapter = %d",
+				centerOnSpinnerAdapter.getCount()));
+		// centerOnSpinnerAdapter.notifyDataSetChanged();
+		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				System.out.println(String.format("person number = %d, id = %d",
+						position, id));
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		System.out.println("finished processing returned markers");
+
+	}
+
+	void setupCustomActionBar() {
+		ActionBar actionBar = getActionBar();
+
+		// add the custom view to the action bar
+		actionBar.setCustomView(R.layout.map_actionbar_view);
+		actionBarView = actionBar.getCustomView();
+
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+				| ActionBar.DISPLAY_SHOW_HOME);
+
+		Integer[] imageArray = new Integer[] { R.drawable.ic_action_person,
+				R.drawable.ic_action_group };
+		ImageArrayAdapter imageArrayAdapter = new ImageArrayAdapter(this,
+				imageArray);
+		Spinner centerOnMode = (Spinner) actionBarView
+				.findViewById(R.id.center_on_mode_spinner);
+		centerOnMode.setAdapter(imageArrayAdapter);
+		centerOnMode
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int position, long id) {
+						System.out.println(String.format(
+								"center on Mode  = %d, id = %d", position, id));
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+					}
+				});
+
+		ImageButton refresh = (ImageButton) actionBarView
+				.findViewById(R.id.refresh);
+		refresh.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				System.out.println("refresh button clicked");
+
+			}
+		});
+
+		ImageButton centerOn = (ImageButton) actionBarView
+				.findViewById(R.id.center_on);
+		centerOn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				System.out.println("recenter button clicked");
+
+			}
+		});
+
+		ImageButton nextPerson = (ImageButton) actionBarView
+				.findViewById(R.id.next);
+		nextPerson.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				System.out.println("next button clicked");
+
+			}
+		});
+
+		ImageButton previousPerson = (ImageButton) actionBarView
+				.findViewById(R.id.previous);
+		previousPerson.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				System.out.println("pervious button clicked");
+
+			}
+		});
 
 	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-//	public static class PlaceholderFragment extends Fragment {
-//
-//		public PlaceholderFragment() {
-//		}
-//
-//		@Override
-//		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//				Bundle savedInstanceState) {
-//			View rootView = inflater.inflate(R.layout.fragment_map, container,
-//					false);
-//			return rootView;
-//		}
-//	}
+	// public static class PlaceholderFragment extends Fragment {
+	//
+	// public PlaceholderFragment() {
+	// }
+	//
+	// @Override
+	// public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	// Bundle savedInstanceState) {
+	// View rootView = inflater.inflate(R.layout.fragment_map, container,
+	// false);
+	// return rootView;
+	// }
+	// }
 
 }

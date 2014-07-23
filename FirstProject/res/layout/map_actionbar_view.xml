@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <ImageButton
+        android:id="@+id/refresh"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".10"
+        android:src="@drawable/ic_action_refresh" />
+
+    <ImageButton
+        android:id="@+id/center_on"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".10"
+        android:src="@drawable/ic_action_location_found" />
+
+
+
+    <ImageButton
+        android:id="@+id/previous"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".05"
+        android:src="@drawable/ic_action_previous_item" />
+
+        <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.55" />
+        
+<!-- 
+    <ImageButton
+        android:id="@+id/gravatar"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".10"
+        android:src="@drawable/ic_launcher" />
+-->
+
+    <ImageButton
+        android:id="@+id/next"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".05"
+        android:src="@drawable/ic_action_next_item" />
+    
+    <Spinner
+        android:id="@+id/center_on_mode_spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15" />
+    
+     <!-- 
+    
+        <ImageButton
+        android:id="@+id/fit"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".10"
+        android:src="@drawable/ic_action_full_screen" />
+
+   
+    
+    <ImageButton
+        android:id="@+id/dropdown"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".10"
+        android:src="@drawable/ic_action_expand" />
+
+  
+    <Button
+        android:id="@+id/center_on_name"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_weight=".40"
+        android:layout_height="wrap_content"
+      
+      
+       android:scrollHorizontally="true" 
+    android:lines="1"
+    android:ellipsize="end"
+        android:text="Jane Davis" />
+        
+       -->  
+     <!-- 
+ 
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.51" />
+        
+		 />
+-->
+</LinearLayout>
