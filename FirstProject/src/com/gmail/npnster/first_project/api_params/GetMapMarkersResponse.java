@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class GetMapMarkersResponse extends BaseResponse {
 	@Expose
-	private List<Marker> markers = new ArrayList<Marker>();
+	private ArrayList<Marker> markers = new ArrayList<Marker>();
 
-	public List<Marker> getMarkers() {
+	public ArrayList<Marker> getMarkers() {
 	return markers;
 	}
 
-	public void setMarkers(List<Marker> markers) {
+	public void setMarkers(ArrayList<Marker> markers) {
 	this.markers = markers;
 	}
 	
@@ -61,6 +61,8 @@ public class GetMapMarkersResponse extends BaseResponse {
 		private Float bearing;
 		@Expose
 		private Float speed;
+		@Expose
+		private Float accuracy;
 		@SerializedName("location_fix_time")
 		@Expose
 		private Long locationFixTime;
@@ -194,9 +196,17 @@ public class GetMapMarkersResponse extends BaseResponse {
 		public Float getSpeed() {
 			return speed;
 		}
-
+		
 		public void setSpeed(Float speed) {
 			this.speed = speed;
+		}
+		
+		public Float getAccuracy() {
+			return accuracy;
+		}
+
+		public void setAccuracy(Float accuracy) {
+			this.accuracy = accuracy;
 		}
 
 		public Long getLocationFixTime() {
