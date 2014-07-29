@@ -28,23 +28,35 @@ public class CenterOnSpinnerAdapter extends ArrayAdapter<MapMarker> implements S
 	
 	@Override
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		return getCommonView(position, convertView, parent);
+		return getCustomDropDownView(position, convertView, parent);
 		
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return getCommonView(position, convertView, parent);
+		return getCustomView(position, convertView, parent);
 		
 	}
 	
-	public View getCommonView(int position, View convertView, ViewGroup parent) {
-		System.out.println("inside getCommonView for centeron spinner adapter");
+	public View getCustomDropDownView(int position, View convertView, ViewGroup parent) {
+//		System.out.println("inside getCommonView for centeron spinner adapter");
+		LayoutInflater inflater = (LayoutInflater) mContext
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View rowView = inflater.inflate(R.layout.center_on_spinner_row, parent, false);
+		ImageView imageViewPerson = (ImageView) rowView.findViewById(R.id.center_on_image);
+		Picasso.with(mContext).load(mMarkers.get(position).getGravatarUrl()).into(imageViewPerson);
+		TextView textViewCenterOnDisplayName = (TextView) rowView.findViewById(R.id.center_on_name);		    		;
+		textViewCenterOnDisplayName.setText(mMarkers.get(position).getName());
+		return rowView;
+	}
+	
+	public View getCustomView(int position, View convertView, ViewGroup parent) {
+//		System.out.println("inside getCommonView for centeron spinner adapter");
 		LayoutInflater inflater = (LayoutInflater) mContext
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		    View rowView = inflater.inflate(R.layout.center_on_spinner_row, parent, false);
-		    ImageView imageViewPerson = (ImageView) rowView.findViewById(R.id.center_on_image);
-		    Picasso.with(mContext).load(mMarkers.get(position).getGravatarUrl()).into(imageViewPerson);
+		    View rowView = inflater.inflate(R.layout.center_on_spinner_row_selected_item, parent, false);
+//		    ImageView imageViewPerson = (ImageView) rowView.findViewById(R.id.center_on_image);
+//		    Picasso.with(mContext).load(mMarkers.get(position).getGravatarUrl()).into(imageViewPerson);
 		    TextView textViewCenterOnDisplayName = (TextView) rowView.findViewById(R.id.center_on_name);		    		;
 		    textViewCenterOnDisplayName.setText(mMarkers.get(position).getName());
 		return rowView;

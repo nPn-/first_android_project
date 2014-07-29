@@ -12,29 +12,38 @@
         android:layout_weight=".10"
         android:src="@drawable/ic_action_refresh" />
 
+        <ImageButton
+        android:id="@+id/previous"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".10"
+        android:src="@drawable/ic_action_previous_item" />
+    
+  
     <ImageButton
         android:id="@+id/center_on"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".10"
+        android:layout_weight=".15"
         android:src="@drawable/ic_action_location_found" />
 
-
-
     <ImageButton
-        android:id="@+id/previous"
+        android:id="@+id/next"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight=".05"
-        android:src="@drawable/ic_action_previous_item" />
+        android:layout_weight=".10"
+        android:src="@drawable/ic_action_next_item" />
+    
+
 
         <Spinner
         android:id="@+id/spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.55" />
+        android:layout_weight="0.40" />
         
 <!-- 
     <ImageButton
@@ -46,14 +55,7 @@
         android:src="@drawable/ic_launcher" />
 -->
 
-    <ImageButton
-        android:id="@+id/next"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".05"
-        android:src="@drawable/ic_action_next_item" />
-    
+
     <Spinner
         android:id="@+id/center_on_mode_spinner"
         android:layout_width="0dp"

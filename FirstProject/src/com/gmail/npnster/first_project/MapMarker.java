@@ -114,6 +114,10 @@ public class MapMarker implements Target {
 	public Double getLongitude() {
 		return mMarker.getLongitude();
 	}
+	
+	public LatLng getLatLng() {
+		return new LatLng(mMarker.getLatitude(), mMarker.getLongitude());
+	}
 
 
 
@@ -140,6 +144,7 @@ public class MapMarker implements Target {
 
 
 	public MapMarker(Context context, Marker marker) {
+		System.out.println("building marker");
 		mMarker = marker;
 		mBitmap = null;
 		mBus = BusProvider.getInstance();
@@ -159,7 +164,7 @@ public class MapMarker implements Target {
 	@Override
 	public void onBitmapLoaded(Bitmap bitmap, LoadedFrom loadedFrom) {
 		// TODO Auto-generated method stub
-		System.out.println("loaded bit map for gravatar");
+		System.out.println(String.format("loaded bit map from gravatar url = %s, for userid = %s",getGravatarUrl(), getUserId()));
 		System.out.println("bit map was loaded from");
 		System.out.println(loadedFrom.toString());
 		mBitmap = bitmap;
@@ -172,6 +177,10 @@ public class MapMarker implements Target {
 		// TODO Auto-generated method stub
 		System.out.println("inside MapMarker onPrepareLoad");
 		
+	}
+
+	public GoogleMapMarkerParameters getGoogleMapMarkerParameters() {
+		return new GoogleMapMarkerParameters(getUserId()).setLatLng(getLatLng());
 	}
 
 }

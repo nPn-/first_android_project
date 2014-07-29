@@ -2,6 +2,8 @@ package com.gmail.npnster.first_project.api_params;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.gmail.npnster.first_project.GoogleMapMarkerParameters;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -232,6 +234,8 @@ public class GetMapMarkersResponse extends BaseResponse {
 		public void setMarkerUpdatedTime(Long markerUpdatedTime) {
 			this.markerUpdatedTime = markerUpdatedTime;
 		}
+
+
 
 	}
 

@@ -50,6 +50,8 @@ public class LocationMonitorService extends Service {
 	}
 
 	private void requestMarkerUpdates() {
+		mBus.post(new GetMapMarkersRequest());
+		markerRequestTimer.cancel();
 		markerRequestTimer.start();
 		
 	}
