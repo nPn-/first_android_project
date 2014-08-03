@@ -10,6 +10,7 @@ public class GoogleMapMarkerParameters {
 	private String mUserId;
 	private String mTitle;
 	private Boolean mIsCenterOn ;
+	private Float mRadius;
 	
 	public GoogleMapMarkerParameters(String userId) {
 		mUserId = userId;
@@ -40,6 +41,15 @@ public class GoogleMapMarkerParameters {
 	
 	public GoogleMapMarkerParameters setTitle(String title) {
 		mTitle = title;
+		return this;
+	}
+	
+	public Float getCircleRadius() {
+		return mRadius;
+	}
+	
+	public GoogleMapMarkerParameters setCircleRadius(Float radius) {
+		mRadius = radius;
 		return this;
 	}
 	

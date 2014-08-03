@@ -43,6 +43,7 @@
         android:id="@+id/spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+               android:layout_gravity="bottom"
         android:layout_weight="0.40" />
         
 <!-- 
@@ -60,6 +61,7 @@
         android:id="@+id/center_on_mode_spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_weight="0.15" />
     
      <!-- 

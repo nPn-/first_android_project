@@ -3,6 +3,7 @@ package com.gmail.npnster.first_project;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.text.format.DateUtils;
 
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
 import com.google.android.gms.maps.GoogleMap;
@@ -91,6 +92,10 @@ public class MapMarker implements Target {
 		return mMarker.hasSpeed();
 	}
 
+	public Float getAccuracy() {
+		return mMarker.getAccuracy();
+	}
+	
 	public Double getAltitude() {
 		return mMarker.getAltitude();
 	}
@@ -180,7 +185,26 @@ public class MapMarker implements Target {
 	}
 
 	public GoogleMapMarkerParameters getGoogleMapMarkerParameters() {
-		return new GoogleMapMarkerParameters(getUserId()).setLatLng(getLatLng());
+		GoogleMapMarkerParameters googleMapMarkerParameters = new GoogleMapMarkerParameters(getUserId());
+		googleMapMarkerParameters.setLatLng(getLatLng());
+		if (hasAccuracy()) {
+			googleMapMarkerParameters.setCircleRadius(getAccuracy());
+		} else {
+			googleMapMarkerParameters.setCircleRadius(0.0f);
+		}
+		System.out.println(String.format("rad = %f",googleMapMarkerParameters.getCircleRadius() ));
+		return googleMapMarkerParameters;
+	}
+
+	public String getInfoWindowData() {
+		String infoWindowData = new String();
+		infoWindowData = DateUtils.getRelativeTimeSpanString(getLocationFixTime()).toString();
+		System.out.println(String.format("hasAccuracy = %b, accuracy = %f", hasAccuracy(), getAccuracy()));
+		if (hasAccuracy()) infoWindowData = infoWindowData + String.format("\nAccuracy: %4.0f feet",getAccuracy()*3.28);
+		if (hasSpeed()) infoWindowData = infoWindowData +    String.format("\nSpeed: %3.0f mph",getSpeed()*2.237);
+		if (hasBearing()) infoWindowData = infoWindowData +  String.format("\nBearing: %3.0f degrees",getBearing());
+		System.out.println(String.format("infoWindow in MapMarker  = %s", infoWindowData));
+		return infoWindowData;
 	}
 
 }

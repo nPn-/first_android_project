@@ -3,21 +3,30 @@ package com.gmail.npnster.first_project;
 import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.internal.widget.ActionBarView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
+import com.gmail.npnster.first_project.R.color;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.CancelableCallback;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
-public class MapView {
+public class MapView implements OnMarkerClickListener {
 
 	private GoogleMap mMap;
 	private View mActionBarView;
@@ -29,6 +38,7 @@ public class MapView {
 	private Spinner spinner;
 	private GoogleMapMarkerList mMarkers;
 	private DummyInfoWindowAdapter dummyInfoWindowAdapter;
+	private RealInfoWindowAdapter realInfoWindowAdapter;
 	private GoogleMap.OnMarkerClickListener dummyMarkerOnClickListener ;
 
 	public MapView(Context context, GoogleMap map, View actionBarView) {
@@ -37,8 +47,9 @@ public class MapView {
 		mContext = context;
 		mMarkers = new GoogleMapMarkerList();
 		dummyInfoWindowAdapter = new DummyInfoWindowAdapter(context);
+		realInfoWindowAdapter = new RealInfoWindowAdapter(context);
 		setupCustomActionBar();
-		
+		mMap.setOnMarkerClickListener(this);
 	}
 
 	public void setmMapPresenter(MapPresenter mapPresenter) {
@@ -57,18 +68,27 @@ public class MapView {
 	public void addMarkerToMap(GoogleMapMarkerParameters parameters) {
 		Bitmap bitmap = parameters.getBitmap();
 		BitmapDescriptor bitmapDescriptor;
+		System.out.println(String.format("rad = %f",parameters.getCircleRadius() ));
 		if (bitmap == null) {
 			bitmapDescriptor = BitmapDescriptorFactory
 					.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
 		} else {
 			bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
 		}
+		
 		com.google.android.gms.maps.model.Marker gMarker = mMap
 				.addMarker(new MarkerOptions()
-						.position(parameters.getLatLng())
-						.title(parameters.getTitle())
-						.icon(bitmapDescriptor));
-		GoogleMapMarker googleMapMarker = new GoogleMapMarker(gMarker, parameters.getUserId());
+				.position(parameters.getLatLng())
+				.title(parameters.getTitle())
+				.icon(bitmapDescriptor));
+		com.google.android.gms.maps.model.Circle gCircle = mMap
+				.addCircle(new CircleOptions()
+						.center(parameters.getLatLng())
+						.fillColor(0x200000ff)
+						.strokeColor(Color.BLUE)
+						.strokeWidth(3.0f)
+						.radius(parameters.getCircleRadius()));
+		GoogleMapMarker googleMapMarker = new GoogleMapMarker( parameters.getUserId(), gMarker, gCircle);
 		// add any other parameters not covered by the constructor here
 		googleMapMarker.setIsCenterOn(parameters.isCenterOn());
 		mMarkers.add(googleMapMarker);
@@ -102,7 +122,7 @@ public class MapView {
 	void setupCustomActionBar() {
 
 		Integer[] imageArray = new Integer[] { R.drawable.ic_action_person,
-				R.drawable.ic_action_group };
+				R.drawable.ic_action_group, R.drawable.ic_action_place };
 		ImageArrayAdapter imageArrayAdapter = new ImageArrayAdapter(mContext,
 				imageArray);
 		Spinner centerOnMode = (Spinner) mActionBarView
@@ -144,6 +164,7 @@ public class MapView {
 			@Override
 			public void onClick(View v) {
 				System.out.println("recenter button clicked");
+				mMapPresenter.centerOnImageclicked();
 
 			}
 		});
@@ -171,6 +192,8 @@ public class MapView {
 
 			}
 		});
+		
+		
 
 	}  
 
@@ -205,18 +228,17 @@ public class MapView {
 		});
 	}
 
+	
+	public void centerMapAt(LatLng latlng, LatLngBounds bounds) {
+		int padding = 100; 
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+			getMap().animateCamera(cameraUpdate);		
+	}
+	
 	public void centerMapAt(LatLng latLng) {
 		mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//		mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 	}
 
-//	public int getCenterOnPersonSelectedPosition() {
-//		return centerOnPersonSelectedPosition;
-//	}
-//
-//	public int getCenterOnModePosition() {
-//		return centerOnModePosition;
-//	}
 
 	public void setCenterOnSpinnerSelection(int position) {
 		spinner.setSelection(position);
@@ -242,8 +264,94 @@ public class MapView {
 	public void updateMarker(GoogleMapMarkerParameters parameters) {
 		String userId = parameters.getUserId();
 		GoogleMapMarker marker = mMarkers.findMarkerForUserId(userId);
-		if (marker != null) marker.getMarker().setPosition(parameters.getLatLng());
+		if (marker != null) { 
+			marker.getMarker().setPosition(parameters.getLatLng());
+			marker.getCircle().setRadius(parameters.getCircleRadius());
+			marker.getCircle().setCenter(parameters.getLatLng());
+		}
 		
 	}
+
+	@Override
+	public boolean onMarkerClick(Marker marker) {
+		mMapPresenter.markerClicked(marker);
+		return true;
+	}
+
+	public String getUserIdForMarker(
+			com.google.android.gms.maps.model.Marker marker) {
+		String found = null;
+		for (GoogleMapMarker m : mMarkers.getMarkerList() ) {
+			
+			if ( m.getMarker().getId().equals(marker.getId()) ) {
+				found = m.getUserId();
+			}
+			
+		}
+		return found;
+	}
+
+	public void setUserInfoWindow(String userId, String string) {
+		System.out.println(String.format("info window = %s",string));
+		com.google.android.gms.maps.model.Marker marker = findMarkerForUserId(userId);
+		System.out.println(String.format("marker = %s",marker));
+
+		if (marker != null) {
+			System.out.println(String.format("setting title to %s",string));
+		    mMap.setInfoWindowAdapter(realInfoWindowAdapter);
+			marker.setSnippet(string);
+			marker.showInfoWindow();
+			
+		}
+		
+	}
+
+	private Marker findMarkerForUserId(String userId) {
+		Marker found = null;
+		for (GoogleMapMarker m : mMarkers.getMarkerList() ) {
+			
+			if ( m.getUserId().equals(userId) ) {
+				found = m.getMarker();
+			}
+			
+		}
+		return found;
+		
+	}
+
+	public void clickOnMarkerForUserId(String userId) {
+		Marker marker = findMarkerForUserId(userId);
+		if (marker != null) mMapPresenter.markerClicked(marker);
+		
+	}
+
+	public LatLngBounds getCurrentMapBounds() {
+		return getMap().getProjection().getVisibleRegion().latLngBounds;
+	}
+
+	public void setMapBounds(LatLngBounds newBounds) {
+		int padding = 50; 
+		System.out.println(String.format("newBounds = %s", newBounds));
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(newBounds, padding);
+			getMap().animateCamera(cameraUpdate);
+		
+		
+	}
+
+	public Projection getCurrentMapProjection() {
+		Projection currentProjection = null;
+		if (mMap != null) { 
+			currentProjection = mMap.getProjection();
+		}
+		return currentProjection;
+	}
+
+	public void centerMapAt(LatLng newMapCenter,
+			CancelableCallback mExpandMapCallback) {
+		mMap.animateCamera(CameraUpdateFactory.newLatLng(newMapCenter), mExpandMapCallback);
+		
+	}
+
+
 
 }

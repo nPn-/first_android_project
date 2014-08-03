@@ -13,7 +13,7 @@
         android:textColor="#FFFFFFFF" 
         style="?android:attr/spinnerItemStyle"
         android:ellipsize="marquee"
-   android:gravity="center"
+   android:layout_gravity="center"
         android:text="TextView" />
     
 
