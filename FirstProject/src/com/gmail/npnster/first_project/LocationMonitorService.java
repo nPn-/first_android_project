@@ -42,7 +42,7 @@ public class LocationMonitorService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		System.out.println("inside service making request for location updates");
 		deviceLocationClient.requestLLocationUpdates();
-		if (intent.hasCategory("REQUEST_MARKERS")) {
+		if (intent != null && intent.hasCategory("REQUEST_MARKERS")) {
 			System.out.println("inside service .. requesting new map markers");
 			requestMarkerUpdates();
 		}
