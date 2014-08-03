@@ -245,6 +245,11 @@ public class MapView implements OnMarkerClickListener {
 
 	}
 	
+	public void setCenterOnMode(int position) {
+		Spinner centerOnModeSpinner = (Spinner) mActionBarView.findViewById(R.id.center_on_mode_spinner);
+		centerOnModeSpinner.setSelection(position);
+	}
+	
 	public void setCenterOnButtonImage(Bitmap bitmap) {
 		ImageButton imageButton = (ImageButton) mActionBarView.findViewById(R.id.center_on);
 		imageButton.setImageBitmap(bitmap);
