@@ -35,15 +35,15 @@ public class MapPresenter {
 	private Intent requestMarkers;
 	private int centerOnModeIndex = 0;
 	private int centerOnPersonIndex = 0;
+	private boolean mMarkersAreDirty = false;
 	private GoogleMap.CancelableCallback mExpandMapCallback;
 
-	public MapPresenter(Context context, MapView mapView, MapMarkers mapMarkers) {
-		mMapView = mapView;
+	public MapPresenter(Context context,  MapMarkers mapMarkers) {
+        System.out.println("Constructing MapPresenter");
 		mMapMarkers = mapMarkers;
 		mContext = context;
 		mBus = BusProvider.getInstance();
-		mBus.register(this);
-		mapView.setmMapPresenter(this);
+//		mBus.register(this);
 		requestMarkers = new Intent(context, LocationMonitorService.class);
 		requestMarkers.addCategory("REQUEST_MARKERS");
 		setExpandMapCallback();
@@ -65,7 +65,8 @@ public class MapPresenter {
 		}
 		if (event != null && event.isSuccessful()) {
 			// mMapView.clearMap();
-			if (mMapMarkers.hasSameUserList(event.getMarkers())) {
+			if (!mMarkersAreDirty && mMapMarkers.hasSameUserList(event.getMarkers())) {
+				mMarkersAreDirty = false;
 				System.out.println(String.format("updating %d markers",
 						mMapMarkers.size()));
 
@@ -96,8 +97,8 @@ public class MapPresenter {
 					// from the model
 
 				}
-				mMapView.setupCenterOnSpinner(mMapMarkers);
-				mMapView.setIntialCenterOnImage(mMapMarkers.get(0));
+				mMapView.setupCenterOnSpinner(mMapMarkers,centerOnPersonIndex);
+				mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
 			}
 			isMapReady = true;
 			recenterMap();
@@ -252,6 +253,21 @@ public class MapPresenter {
 		};
 			
 		
+		
+	}
+	
+	public void setMapView(MapView mapView) {
+		mMapView = mapView;
+		mapView.setmMapPresenter(this);
+	}
+	
+	public void reinitMapView() {
+		mMapView.setupCustomActionBar();
+		mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
+		mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
+		mMapView.setCenterOnMode(centerOnModeIndex);
+//		mMapView.clearMap();
+//		mMarkersAreDirty = true;
 		
 	}
 	

@@ -44,15 +44,15 @@ import android.os.Build;
 
 public class MapActivity extends Activity {
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
+		MapFragment wrapperFragment = new WrapperFragment();
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-					.add(R.id.map_container, new WrapperFragment()).commit();
+					.add(R.id.map_container, wrapperFragment).commit();
 		}
 	}
 
@@ -68,21 +68,24 @@ public class MapActivity extends Activity {
 		super.onPause();
 	}
 
-	public static class WrapperFragment extends Fragment {
+	public static class WrapperFragment extends MapFragment {
 		private Bus mBus;
-		
+
 		private MapMarkers mapMarkerList;
 		private MapView mapView;
 		private MapPresenter mapPresenter;
 		private MapFragment mapFragment;
-		
+
 		private Context context;
-		
-		
-		private GoogleMap map; 
 
+		private GoogleMap map;
+		private ActionBar actionBar;
+		private View actionBarView;
+		private boolean isViewReady = false;
 
-		private View actionBarView;  
+		public WrapperFragment() {
+			super();
+		}
 
 		private Bus getBus() {
 			if (mBus == null) {
@@ -99,17 +102,41 @@ public class MapActivity extends Activity {
 		public void onResume() {
 			// TODO Auto-generated method stub
 			super.onResume();
-			getBus().register(this);
+			System.out.println("resuming map fragment");
+			System.out.println(String.format("actionBarView = %s", actionBarView));
+			actionBar = getActivity().getActionBar();
+			actionBar.setCustomView(R.layout.map_actionbar_view);
+			actionBarView = actionBar.getCustomView();
+			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+					| ActionBar.DISPLAY_SHOW_HOME);
+			System.out.println(String.format("actionBarView = %s", actionBarView));
+			if (!isViewReady) {
+//				actionBar = getActivity().getActionBar();
+//				actionBar.setCustomView(R.layout.map_actionbar_view);
+//				actionBarView = actionBar.getCustomView();
+//				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+//						| ActionBar.DISPLAY_SHOW_HOME);
+				mapView = new MapView(context, map, actionBarView);
 
-			System.out.println("resuming map activity");
+
+				mapPresenter.setMapView(mapView);
+				isViewReady = true;
+			}
+            mapView.setActionBarView(actionBarView);
+			mapPresenter.reinitMapView();
+			getBus().register(mapPresenter);
+
 			System.out.println("posting get markers request to the bus");
 
 			mBus.post(new PushLocationsUpdateRequestRequest());
 			mBus.post(new GetMapMarkersRequest());
+
 			mapPresenter.refreshMap();
+
 			// android.app.ActionBar actionBar = getActionBar();
 			// View actionBarView = actionBar.getCustomView();
-			// Spinner spinner = (Spinner) actionBarView.findViewById(R.id.spinner);
+			// Spinner spinner = (Spinner)
+			// actionBarView.findViewById(R.id.spinner);
 			// centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(this,
 			// mapMarkerList.toArrayList());
 			// System.out.println(centerOnSpinnerAdapter.getCount());
@@ -121,25 +148,44 @@ public class MapActivity extends Activity {
 		public void onPause() {
 			// TODO Auto-generated method stub
 			super.onPause();
-			System.out.println("pausing map activity");
-			getBus().unregister(this);
+			System.out.println("pausing map fragment");
+			getBus().unregister(mapPresenter);
 		}
 
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-
+			setRetainInstance(true);
+			getBus().register(this);
+			context = getActivity();
+			mapMarkerList = new MapMarkers();
+			mapPresenter = new MapPresenter(context, mapMarkerList);
+			System.out.println("mapwrapper fragment created");
 
 		}
-		
+
+		@Override
+		public void onDestroy() {
+			// TODO Auto-generated method stub
+			getBus().unregister(this);
+			super.onDestroy();
+		}
+
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_map_wrapper, container,
-					false);
-            mapFragment = new MapFragment().newInstance();
-			getChildFragmentManager().beginTransaction().add(R.id.map_wrapper_container,mapFragment).commit();
 
+			// View rootView = inflater.inflate(R.layout.fragment_map_wrapper,
+			// container,
+			// false);
+			View rootView = super.onCreateView(inflater, container,
+					savedInstanceState);
+			map = getMap();
+			System.out.println(String.format("map = %s", map));
+
+			// mapFragment = MapFragment.newInstance();
+			// getChildFragmentManager().beginTransaction().add(R.id.map_wrapper_container,mapFragment).commit();
+			System.out.println("wrapper fragment view created");
 			return rootView;
 		}
 
@@ -147,22 +193,10 @@ public class MapActivity extends Activity {
 		public void onActivityCreated(Bundle savedInstanceState) {
 			// TODO Auto-generated method stub
 			super.onActivityCreated(savedInstanceState);
+			System.out.println("wrapper fragment hosting activity created");
 
-				map = mapFragment.getMap();
-				System.out.println(String.format("map = %s", map));
-			    context = getActivity();
-				mapMarkerList = new MapMarkers();
-
-				ActionBar actionBar = getActivity().getActionBar();
-				actionBar.setCustomView(R.layout.map_actionbar_view);
-				actionBarView = actionBar.getCustomView();
-				mapView = new MapView(context,map,actionBarView);
-				mapPresenter = new MapPresenter(context,mapView,mapMarkerList);
-				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
-						| ActionBar.DISPLAY_SHOW_HOME);
 		}
 
 	}
- 
 
 }
