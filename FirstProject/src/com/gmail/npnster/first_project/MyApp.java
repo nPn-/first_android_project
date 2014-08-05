@@ -8,6 +8,7 @@ import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -31,6 +32,7 @@ public class MyApp extends Application {
 	private static String user;
 	private static String email;    
 	private static String gcmRegId;
+	private static LatLngBounds mapBounds;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
 	protected RailsApi railsApi;
@@ -52,6 +54,7 @@ public class MyApp extends Application {
 		email = persistData.readEmailId();
 		user = getUserFromToken();
 		gcmRegId = persistData.readGcmRegId();
+		mapBounds = persistData.getMapBounds();
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
 				API_ROOT_URL).build();
 		railsApi = restAdapter.create(RailsApi.class);
@@ -82,8 +85,13 @@ public class MyApp extends Application {
 	public static String getEmail() {
 		return email;
 	}
+	
 	public static String getGcmRegId() {
 		return gcmRegId;
+	}
+	
+	public static LatLngBounds getMapBounds() {
+		return mapBounds;
 	}
 
 	public static String getUserId() {
@@ -115,6 +123,11 @@ public class MyApp extends Application {
 	public static void saveGcmRegId(String gcmRegIdToSave) {
 		cachedPersistData.saveGcmRegId(gcmRegIdToSave);
 		gcmRegId = gcmRegIdToSave;
+	}
+	
+	public static void saveMapBounds(LatLngBounds bounds) {
+		cachedPersistData.saveMapBounds(bounds);
+		mapBounds = bounds;
 	}
 	
 	public static void clearGcmRegId() {

@@ -1,7 +1,11 @@
 package com.gmail.npnster.first_project;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Parcel;
 
 public class PersistData {
 	
@@ -38,6 +42,14 @@ public class PersistData {
 			generalSettingsFileEditor.putString("USER_ID", "");
 			generalSettingsFileEditor.commit();
 		}
+		
+		public void saveMapBounds(LatLngBounds bounds) {
+			generalSettingsFileEditor.putFloat("SOUTHWEST_LAT",(float) bounds.southwest.latitude);
+			generalSettingsFileEditor.putFloat("SOUTHWEST_LNG",(float) bounds.southwest.longitude);
+			generalSettingsFileEditor.putFloat("NORTHEAST_LAT",(float) bounds.northeast.latitude);
+			generalSettingsFileEditor.putFloat("NORTHEAST_LNG",(float) bounds.northeast.longitude);
+			generalSettingsFileEditor.commit();
+		}
 
 
 		
@@ -71,6 +83,16 @@ public class PersistData {
 	public String readUserId() {
 		return readAccessToken().split(":")[0];
 	}
+	
+	public LatLngBounds getMapBounds() {
+		float southwestLat = generalSettingsFile.getFloat("SOUTHWEST_LAT",1.0f);
+		float southwestLng = generalSettingsFile.getFloat("SOUTHWEST_LNG",-179f);
+		float northeastLat = generalSettingsFile.getFloat("NORTHEAST_LAT",89.0f);
+		float northeastLng = generalSettingsFile.getFloat("NORTHEAST_LNG",179f);
+        return new LatLngBounds(new LatLng(southwestLat, southwestLng), new LatLng(northeastLat, northeastLng));
+	}
+
+	
 	
 
 }

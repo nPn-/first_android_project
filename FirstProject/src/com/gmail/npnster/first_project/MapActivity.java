@@ -130,7 +130,14 @@ public class MapActivity extends Activity {
 
 			mBus.post(new PushLocationsUpdateRequestRequest());
 			mBus.post(new GetMapMarkersRequest());
-
+			mapView.getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+				
+				@Override
+				public void onMapLoaded() {
+					mapView.setMapBounds(MyApp.getMapBounds());
+					
+				}
+			});
 			mapPresenter.refreshMap();
 
 			// android.app.ActionBar actionBar = getActionBar();
@@ -150,6 +157,7 @@ public class MapActivity extends Activity {
 			super.onPause();
 			System.out.println("pausing map fragment");
 			getBus().unregister(mapPresenter);
+			MyApp.saveMapBounds(mapView.getCurrentMapBounds());
 		}
 
 		@Override
