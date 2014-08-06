@@ -174,10 +174,12 @@ public class MapPresenter {
 	}
 
 	public void refreshMap() {
-		mContext.startService(requestMarkers);
-		mBus.post(new PushLocationsUpdateRequestRequest());
+		// no longer needed map is refresehd while fragment is active - remove calls to this method
+		System.out.println("inside map presenter method refreshMap - this no longer does anything please remove calls");
+//		mContext.startService(requestMarkers);
+//		mBus.post(new PushLocationsUpdateRequestRequest());
 		// mBus.post(new GetMapMarkersRequest());
-
+  
 	}
 
 	public void nextButtonClicked() {

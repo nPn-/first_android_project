@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -75,6 +76,8 @@ public class MapActivity extends Activity {
 		private MapView mapView;
 		private MapPresenter mapPresenter;
 		private MapFragment mapFragment;
+		private Intent startTracking;
+		private Intent endTracking;
 
 		private Context context;
 
@@ -128,8 +131,8 @@ public class MapActivity extends Activity {
 
 			System.out.println("posting get markers request to the bus");
 
-			mBus.post(new PushLocationsUpdateRequestRequest());
-			mBus.post(new GetMapMarkersRequest());
+//			mBus.post(new PushLocationsUpdateRequestRequest());
+//			mBus.post(new GetMapMarkersRequest());
 			mapView.getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
 				
 				@Override
@@ -138,8 +141,8 @@ public class MapActivity extends Activity {
 					
 				}
 			});
-			mapPresenter.refreshMap();
-
+//			mapPresenter.refreshMap();
+    		context.startService(startTracking);
 			// android.app.ActionBar actionBar = getActionBar();
 			// View actionBarView = actionBar.getCustomView();
 			// Spinner spinner = (Spinner)
@@ -158,14 +161,19 @@ public class MapActivity extends Activity {
 			System.out.println("pausing map fragment");
 			getBus().unregister(mapPresenter);
 			MyApp.saveMapBounds(mapView.getCurrentMapBounds());
+    		context.startService(endTracking);
 		}
 
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+			context = getActivity();
+			startTracking = new Intent(context, LocationMonitorService.class);
+			startTracking.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_RESUMED");
+    		endTracking = new Intent(context, LocationMonitorService.class);
+    		endTracking.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_PAUSED");
 			setRetainInstance(true);
 			getBus().register(this);
-			context = getActivity();
 			mapMarkerList = new MapMarkers();
 			mapPresenter = new MapPresenter(context, mapMarkerList);
 			System.out.println("mapwrapper fragment created");
