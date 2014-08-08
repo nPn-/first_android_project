@@ -32,20 +32,20 @@ public class MapPresenter {
 	private MapMarkers mMapMarkers;
 	private Context mContext;
 	private Bus mBus;
-	private Intent requestMarkers;
+//	private Intent requestMarkers;
 	private int centerOnModeIndex = 0;
 	private int centerOnPersonIndex = 0;
 	private boolean mMarkersAreDirty = false;
 	private GoogleMap.CancelableCallback mExpandMapCallback;
 
-	public MapPresenter(Context context, MapMarkers mapMarkers) {
+	public MapPresenter(MapMarkers mapMarkers) {
 		System.out.println("Constructing MapPresenter");
 		mMapMarkers = mapMarkers;
-		mContext = context;
+//		mContext = context;
 		mBus = BusProvider.getInstance();
 		// mBus.register(this);
-		requestMarkers = new Intent(context, LocationMonitorService.class);
-		requestMarkers.addCategory("REQUEST_MARKERS");
+//		requestMarkers = new Intent(context, LocationMonitorService.class);
+//		requestMarkers.addCategory("REQUEST_MARKERS");
 		setExpandMapCallback();
 
 	}

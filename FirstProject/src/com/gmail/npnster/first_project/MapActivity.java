@@ -181,7 +181,7 @@ public class MapActivity extends Activity {
 			setRetainInstance(true);
 			getBus().register(this);
 			mapMarkerList = new MapMarkers();
-			mapPresenter = new MapPresenter(context, mapMarkerList);
+			mapPresenter = new MapPresenter(mapMarkerList);
 			System.out.println("mapwrapper fragment created");
 
 		}
