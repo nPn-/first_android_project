@@ -33,6 +33,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
         		System.out.println(extras.toString());
         		Intent serviceIntent = new Intent(context, LocationMonitorService.class);
+        		serviceIntent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.LOCATION_UPDATE_REQUEST_RECEIVED");
         		context.startService(serviceIntent);
         		//mBus.post(updateLocationRequest);
         		      		

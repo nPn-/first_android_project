@@ -197,7 +197,7 @@ public class MapView implements OnMarkerClickListener {
 
 	}  
 
-	public void setupCenterOnSpinner(MapMarkers mapMarkers) {
+	public void setupCenterOnSpinner(MapMarkers mapMarkers,int initialPosition) {
 		spinner = (Spinner) mActionBarView.findViewById(R.id.spinner);
 		centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(mContext,
 				mapMarkers.toArrayList());
@@ -206,6 +206,7 @@ public class MapView implements OnMarkerClickListener {
 				"number items in spinner adapter = %d",
 				centerOnSpinnerAdapter.getCount()));
 		// centerOnSpinnerAdapter.notifyDataSetChanged();
+		spinner.setSelection(initialPosition);
 		
 		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 		
@@ -243,6 +244,11 @@ public class MapView implements OnMarkerClickListener {
 	public void setCenterOnSpinnerSelection(int position) {
 		spinner.setSelection(position);
 
+	}
+	
+	public void setCenterOnMode(int position) {
+		Spinner centerOnModeSpinner = (Spinner) mActionBarView.findViewById(R.id.center_on_mode_spinner);
+		centerOnModeSpinner.setSelection(position);
 	}
 	
 	public void setCenterOnButtonImage(Bitmap bitmap) {
@@ -349,6 +355,11 @@ public class MapView implements OnMarkerClickListener {
 	public void centerMapAt(LatLng newMapCenter,
 			CancelableCallback mExpandMapCallback) {
 		mMap.animateCamera(CameraUpdateFactory.newLatLng(newMapCenter), mExpandMapCallback);
+		
+	}
+
+	public void setActionBarView(View actionBarView) {
+		mActionBarView = actionBarView;
 		
 	}
 

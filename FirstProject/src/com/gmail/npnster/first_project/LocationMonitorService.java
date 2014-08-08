@@ -21,6 +21,7 @@ public class LocationMonitorService extends Service {
     private PendingIntent gcmKeepAlivePendingIntent;
 	private Bus mBus;
 	private GetMarkerRequestTimer markerRequestTimer;
+	private PushRequestTimer pushRequestTimer;
 
 	@Override
 	public void onCreate() {
@@ -28,7 +29,8 @@ public class LocationMonitorService extends Service {
 		System.out.println("creating the LocationMonitorService");
 		mBus = BusProvider.getInstance();
 		mBus.register(this);
-		markerRequestTimer = new GetMarkerRequestTimer(60000,10000);
+		markerRequestTimer = new GetMarkerRequestTimer(10*60000,10000);
+		pushRequestTimer = new PushRequestTimer(10*60000,60000);
 		deviceLocationClient = new DeviceLocationClient(this);
 		gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
 		gcmKeepAlivePendingIntent = PendingIntent.getBroadcast(this, 0, gcmKeepAliveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -41,19 +43,44 @@ public class LocationMonitorService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		System.out.println("inside service making request for location updates");
-		deviceLocationClient.requestLLocationUpdates();
-		if (intent != null && intent.hasCategory("REQUEST_MARKERS")) {
-			System.out.println("inside service .. requesting new map markers");
-			requestMarkerUpdates();
+		if (intent != null) {
+			if (intent.hasCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_RESUMED")) {
+				startRequestMarkerUpdates();	
+				startLocationPushRequests();
+			} else if (intent.hasCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_PAUSED")) {
+				endRequestMarkerUpdates();
+				endLocationPushRequests();
+			} else if (intent.hasCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.LOCATION_UPDATE_REQUEST_RECEIVED")) {
+				deviceLocationClient.requestLLocationUpdates();
+			}
 		}
+
 		return START_STICKY;
 	}
 
-	private void requestMarkerUpdates() {
+	private void startRequestMarkerUpdates() {
+		System.out.println("starting cycle of request for markers from server");
 		mBus.post(new GetMapMarkersRequest());
 		markerRequestTimer.cancel();
-		markerRequestTimer.start();
-		
+		markerRequestTimer.start();		
+	}
+	
+	private void endRequestMarkerUpdates() {
+		System.out.println("canceling request for new updates");	
+		markerRequestTimer.cancel();
+	}
+	
+	private void startLocationPushRequests() {
+		System.out.println("starting cycle of push requests for remote device locations");
+		mBus.post(new PushLocationsUpdateRequestRequest());
+		mBus.post(new GetMapMarkersRequest());
+		pushRequestTimer.cancel();
+		pushRequestTimer.start();		
+	}
+	
+	private void endLocationPushRequests() {
+		System.out.println("canceling renewal of push request for remote device locations");	
+		pushRequestTimer.cancel();
 	}
 
 	@Override
@@ -63,22 +90,48 @@ public class LocationMonitorService extends Service {
 	
 	
 	class GetMarkerRequestTimer extends CountDownTimer {
-
+		
 		public GetMarkerRequestTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
 			// TODO Auto-generated constructor stub
 		}
-
+		
 		@Override
 		public void onTick(long millisUntilFinished) {
 			System.out.println("requesting new markers from server");
 			mBus.post(new GetMapMarkersRequest());
 			
 		}
+		
+		@Override
+		public void onFinish() {
+			System.out.println("time out reached ending request for markers from the server");	
+//			System.out.println("renewing request for markers from the server");	
+//			start();
+			
+		}
+		
+	}
+	
+	class PushRequestTimer extends CountDownTimer {
+
+		public PushRequestTimer(long millisInFuture, long countDownInterval) {
+			super(millisInFuture, countDownInterval);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void onTick(long millisUntilFinished) {
+			System.out.println("sending request for gcm push notifications to ask for updated locations");
+			mBus.post(new PushLocationsUpdateRequestRequest());
+			
+		}
 
 		@Override
 		public void onFinish() {
-			System.out.println("done requesting new markers from server");	
+			System.out.println("time out reached ending push notifcation renewal ending - for now");	
+//			System.out.println("renewing request for markers from the server");	
+//			start();
 			
 		}
 		

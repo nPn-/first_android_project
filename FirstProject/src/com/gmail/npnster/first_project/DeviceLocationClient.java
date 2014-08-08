@@ -84,6 +84,7 @@ public class DeviceLocationClient implements
 		request.setExpirationDuration(60 * 1000);
 		request.setFastestInterval(5 * 1000);
 		request.setInterval(10 * 1000);
+		locationClient.removeLocationUpdates(this);
 		locationClient.requestLocationUpdates(request, this);
 	}
 
@@ -105,6 +106,7 @@ public class DeviceLocationClient implements
 			request.setFastestInterval(5 * 1000);
 			request.setInterval(10 * 1000);
 			System.out.println("requesting updates");
+			locationClient.removeLocationUpdates(this);
 			locationClient.requestLocationUpdates(request, this);
 		} else {
 			if (locationClient.isConnecting()) {

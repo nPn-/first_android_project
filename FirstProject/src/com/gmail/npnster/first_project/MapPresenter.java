@@ -35,19 +35,18 @@ public class MapPresenter {
 	private Intent requestMarkers;
 	private int centerOnModeIndex = 0;
 	private int centerOnPersonIndex = 0;
+	private boolean mMarkersAreDirty = false;
 	private GoogleMap.CancelableCallback mExpandMapCallback;
 
-	public MapPresenter(Context context, MapView mapView, MapMarkers mapMarkers) {
-		mMapView = mapView;
+	public MapPresenter(Context context, MapMarkers mapMarkers) {
+		System.out.println("Constructing MapPresenter");
 		mMapMarkers = mapMarkers;
 		mContext = context;
 		mBus = BusProvider.getInstance();
-		mBus.register(this);
-		mapView.setmMapPresenter(this);
+		// mBus.register(this);
 		requestMarkers = new Intent(context, LocationMonitorService.class);
 		requestMarkers.addCategory("REQUEST_MARKERS");
 		setExpandMapCallback();
-		
 
 	}
 
@@ -65,7 +64,9 @@ public class MapPresenter {
 		}
 		if (event != null && event.isSuccessful()) {
 			// mMapView.clearMap();
-			if (mMapMarkers.hasSameUserList(event.getMarkers())) {
+			if (!mMarkersAreDirty
+					&& mMapMarkers.hasSameUserList(event.getMarkers())) {
+				mMarkersAreDirty = false;
 				System.out.println(String.format("updating %d markers",
 						mMapMarkers.size()));
 
@@ -80,6 +81,7 @@ public class MapPresenter {
 			} else {
 				System.out.println("replacing markers");
 				mMapMarkers.clear();
+				mMapView.clearMap();
 				// ArrayList<com.google.android.gms.maps.model.Marker>
 				// markerList =
 				// new
@@ -96,8 +98,9 @@ public class MapPresenter {
 					// from the model
 
 				}
-				mMapView.setupCenterOnSpinner(mMapMarkers);
-				mMapView.setIntialCenterOnImage(mMapMarkers.get(0));
+				mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
+				mMapView.setIntialCenterOnImage(mMapMarkers
+						.get(centerOnPersonIndex));
 			}
 			isMapReady = true;
 			recenterMap();
@@ -108,7 +111,8 @@ public class MapPresenter {
 	}
 
 	public void recenterMap() {
-		if (!isMapReady) return;
+		if (!isMapReady)
+			return;
 		MapMarker mapMarker = mMapMarkers.get(centerOnPersonIndex);
 		switch (centerOnModeIndex) {
 		case 0:
@@ -121,23 +125,26 @@ public class MapPresenter {
 		case 1:
 			LatLng newMapCenter = mMapMarkers.getCenterOfMarkers();
 			if (newMapCenter != null)
-//				mMapView.centerMapAt(newMapCenter);
+				// mMapView.centerMapAt(newMapCenter);
 				System.out.println("recentering on group");
-			 	recenterAndExpandMapViewIfNeeded(newMapCenter);
-//			 	mMapView.centerMapAt(newMapCenter);
+			recenterAndExpandMapViewIfNeeded(newMapCenter);
+			// mMapView.centerMapAt(newMapCenter);
 			break;
 		}
-		if (mapMarker != null)  mMapView.bringMarkerForUserIdToFront(mapMarker.getUserId());
+		if (mapMarker != null)
+			mMapView.bringMarkerForUserIdToFront(mapMarker.getUserId());
 
 	}
 
 	private void recenterAndExpandMapViewIfNeeded(LatLng newMapCenter) {
-		mMapView.centerMapAt(newMapCenter,mExpandMapCallback);
-//		Projection currentProjection = mMapView.getCurrentMapProjection();
-//		MapViewPortRegion mapViewPortRegion = new MapViewPortRegion(currentProjection);
-//		LatLngBounds requiredBounds = mMapMarkers.getLatLngBounds();
-//		LatLngBounds newBounds = mapViewPortRegion.getNextBounds(requiredBounds, 100, 100);
-//		mMapView.setMapBounds(newBounds);
+		mMapView.centerMapAt(newMapCenter, mExpandMapCallback);
+		// Projection currentProjection = mMapView.getCurrentMapProjection();
+		// MapViewPortRegion mapViewPortRegion = new
+		// MapViewPortRegion(currentProjection);
+		// LatLngBounds requiredBounds = mMapMarkers.getLatLngBounds();
+		// LatLngBounds newBounds =
+		// mapViewPortRegion.getNextBounds(requiredBounds, 100, 100);
+		// mMapView.setMapBounds(newBounds);
 
 	}
 
@@ -163,9 +170,9 @@ public class MapPresenter {
 		recenterMap();
 		MapMarker mapMarker = mMapMarkers.get(position);
 		if (mapMarker != null) {
-//			LatLng latLng = new LatLng(mapMarker.getLatitude(),
-//					mapMarker.getLongitude());
-//			mMapView.centerMapAt(latLng);
+			// LatLng latLng = new LatLng(mapMarker.getLatitude(),
+			// mapMarker.getLongitude());
+			// mMapView.centerMapAt(latLng);
 			mMapView.setCenterOnButtonImage(mapMarker.getBitmap());
 
 		}
@@ -173,8 +180,12 @@ public class MapPresenter {
 	}
 
 	public void refreshMap() {
-		mContext.startService(requestMarkers);
-		mBus.post(new PushLocationsUpdateRequestRequest());
+		// no longer needed map is refresehd while fragment is active - remove
+		// calls to this method
+		System.out
+				.println("inside map presenter method refreshMap - this no longer does anything please remove calls");
+		// mContext.startService(requestMarkers);
+		// mBus.post(new PushLocationsUpdateRequestRequest());
 		// mBus.post(new GetMapMarkersRequest());
 
 	}
@@ -224,21 +235,22 @@ public class MapPresenter {
 				.getUserId());
 
 	}
-	
+
 	public void setExpandMapCallback() {
 		mExpandMapCallback = new GoogleMap.CancelableCallback() {
 
 			@Override
 			public void onCancel() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void onFinish() {
 				System.out.println("map is now centered on the group");
 				LatLngBounds mapBounds = mMapView.getCurrentMapBounds();
-				boolean areAllMarkersContained = mMapMarkers.areAllMarkersContained(mapBounds);
+				boolean areAllMarkersContained = mMapMarkers
+						.areAllMarkersContained(mapBounds);
 				if (areAllMarkersContained) {
 					System.out.println("map size is OK");
 				} else {
@@ -246,16 +258,44 @@ public class MapPresenter {
 					LatLngBounds markerBounds = mMapMarkers.getLatLngBounds();
 					mMapView.setMapBounds(markerBounds);
 				}
-				
+
 			}
-			
+
 		};
-			
-		
-		
+
 	}
-	
 
+	public void setMapView(MapView mapView) {
+		mMapView = mapView;
+		mapView.setmMapPresenter(this);
+	}
 
+	public void reinitMapView() {
+		mMapView.setupCustomActionBar();
+		mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
+		mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
+		mMapView.setCenterOnMode(centerOnModeIndex);
+		// mMapView.clearMap();
+		// mMarkersAreDirty = true;
+
+	}
+
+	public int getGenterOnPosition() {
+		return centerOnPersonIndex;
+	}
+
+	public int getGenterOnMode() {
+		return centerOnModeIndex;
+	}
+
+	public void setCenterOnPosition(int position) {
+		centerOnPersonIndex = position;
+		mMapView.setCenterOnSpinnerSelection(position);
+	}
+
+	public void setCenterOnMode(int mode) {
+		centerOnModeIndex = mode;
+		mMapView.setCenterOnMode(mode);
+	}
 
 }

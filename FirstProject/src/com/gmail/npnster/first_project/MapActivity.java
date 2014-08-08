@@ -3,6 +3,9 @@ package com.gmail.npnster.first_project;
 import java.util.ArrayList;
 import java.util.Date;
 
+import butterknife.ButterKnife;
+
+import com.gmail.npnster.first_project.MainActivity.PlaceholderFragment;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
@@ -22,7 +25,9 @@ import com.squareup.picasso.Target;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -40,118 +45,180 @@ import android.os.Build;
 
 public class MapActivity extends Activity {
 
-	private Bus mBus;
-	
-	private MapMarkers mapMarkerList;
-	private MapView mapView;
-	private MapPresenter mapPresenter;
-	
-	private Context context;
-	
-	
-	private GoogleMap map; 
-
-
-	private View actionBarView;  
-
-	private Bus getBus() {
-		if (mBus == null) {
-			mBus = BusProvider.getInstance();
-		}
-		return mBus;
-	}
-
-	public void setBus(Bus bus) {
-		mBus = bus;
-	}
-
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		getBus().register(this);
-
-		System.out.println("posting get markers request to the bus");
-
-		mBus.post(new PushLocationsUpdateRequestRequest());
-		mBus.post(new GetMapMarkersRequest());
-		mapPresenter.refreshMap();
-		// android.app.ActionBar actionBar = getActionBar();
-		// View actionBarView = actionBar.getCustomView();
-		// Spinner spinner = (Spinner) actionBarView.findViewById(R.id.spinner);
-		// centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(this,
-		// mapMarkerList.toArrayList());
-		// System.out.println(centerOnSpinnerAdapter.getCount());
-
-		// mBus.post(new GetUsersRequest());
-	}
-
-	@Override
-	public void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		getBus().unregister(this);
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-	    context = getApplicationContext();
-		mapMarkerList = new MapMarkers();
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-				.getMap();
-		ActionBar actionBar = getActionBar();
-		actionBar.setCustomView(R.layout.map_actionbar_view);
-		actionBarView = actionBar.getCustomView();
-		mapView = new MapView(context,map,actionBarView);
-		mapPresenter = new MapPresenter(context,mapView,mapMarkerList);
-		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
-				| ActionBar.DISPLAY_SHOW_HOME);
-
-		// if (savedInstanceState == null) {
-		// getSupportFragmentManager().beginTransaction()
-		// .add(R.id.container, new PlaceholderFragment()).commit();
-		// }
+		MapFragment wrapperFragment = new WrapperFragment();
+		if (savedInstanceState == null) {
+			getFragmentManager().beginTransaction()
+					.add(R.id.map_container, wrapperFragment).commit();
+		}
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//
-//		// Inflate the menu; this adds items to the action bar if it is present.
-//		// getMenuInflater().inflate(R.menu.map, menu);
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		// Handle action bar item clicks here. The action bar will
-//		// automatically handle clicks on the Home/Up button, so long
-//		// as you specify a parent activity in AndroidManifest.xml.
-//		int id = item.getItemId();
-//		if (id == R.id.action_settings) {
-//			return true;
-//		}
-//		return super.onOptionsItemSelected(item);
-//	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
+
+	public static class WrapperFragment extends MapFragment {
+		private Bus mBus;
+
+		private MapMarkers mapMarkerList;
+		private MapView mapView;
+		private MapPresenter mapPresenter;
+		private MapFragment mapFragment;
+		private Intent startTracking;
+		private Intent endTracking;
+
+		private Context context;
+
+		private GoogleMap map;
+		private ActionBar actionBar;
+		private View actionBarView;
+		private boolean isViewReady = false;
+
+		public WrapperFragment() {
+			super();
+		}
+
+		private Bus getBus() {
+			if (mBus == null) {
+				mBus = BusProvider.getInstance();
+			}
+			return mBus;
+		}
+
+		public void setBus(Bus bus) {
+			mBus = bus;
+		}
+
+		@Override
+		public void onResume() {
+			// TODO Auto-generated method stub
+			super.onResume();
+			System.out.println("resuming map fragment");
+			System.out.println(String.format("actionBarView = %s", actionBarView));
+			actionBar = getActivity().getActionBar();
+			actionBar.setCustomView(R.layout.map_actionbar_view);
+			actionBarView = actionBar.getCustomView();
+			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+					| ActionBar.DISPLAY_SHOW_HOME);
+			System.out.println(String.format("actionBarView = %s", actionBarView));
+			if (!isViewReady) {
+//				actionBar = getActivity().getActionBar();
+//				actionBar.setCustomView(R.layout.map_actionbar_view);
+//				actionBarView = actionBar.getCustomView();
+//				actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+//						| ActionBar.DISPLAY_SHOW_HOME);
+				mapView = new MapView(context, map, actionBarView);
 
 
+				mapPresenter.setMapView(mapView);
+				isViewReady = true;
+			}
+            mapView.setActionBarView(actionBarView);
+			mapPresenter.reinitMapView();
+			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",MyApp.getCenterOnPosition() ,MyApp.getCenterOnMode() ));
+            mapPresenter.setCenterOnPosition(MyApp.getCenterOnPosition());
+            mapPresenter.setCenterOnMode(MyApp.getCenterOnMode());
+			getBus().register(mapPresenter);
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	// public static class PlaceholderFragment extends Fragment {
-	//
-	// public PlaceholderFragment() {
-	// }
-	//
-	// @Override
-	// public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	// Bundle savedInstanceState) {
-	// View rootView = inflater.inflate(R.layout.fragment_map, container,
-	// false);
-	// return rootView;
-	// }
-	// }
+//			System.out.println("posting get markers request to the bus");
+
+//			mBus.post(new PushLocationsUpdateRequestRequest());
+//			mBus.post(new GetMapMarkersRequest());
+			mapView.getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+				
+				@Override
+				public void onMapLoaded() {
+					mapView.setMapBounds(MyApp.getMapBounds());
+					
+				}
+			});
+//			mapPresenter.refreshMap();
+    		context.startService(startTracking);
+			// android.app.ActionBar actionBar = getActionBar();
+			// View actionBarView = actionBar.getCustomView();
+			// Spinner spinner = (Spinner)
+			// actionBarView.findViewById(R.id.spinner);
+			// centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(this,
+			// mapMarkerList.toArrayList());
+			// System.out.println(centerOnSpinnerAdapter.getCount());
+
+			// mBus.post(new GetUsersRequest());
+		}
+
+		@Override
+		public void onPause() {
+			// TODO Auto-generated method stub
+			super.onPause();
+			System.out.println("pausing map fragment");
+			System.out.println(String.format("state = centerOnIndex = %d,  centerOnMode = %d",mapPresenter.getGenterOnPosition() ,mapPresenter.getGenterOnMode() ));
+			getBus().unregister(mapPresenter);
+			MyApp.saveMapBounds(mapView.getCurrentMapBounds());
+			MyApp.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
+			MyApp.saveCenterOnMode(mapPresenter.getGenterOnMode());
+    		context.startService(endTracking);
+		}
+
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			context = getActivity();
+			startTracking = new Intent(context, LocationMonitorService.class);
+			startTracking.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_RESUMED");
+    		endTracking = new Intent(context, LocationMonitorService.class);
+    		endTracking.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_PAUSED");
+			setRetainInstance(true);
+			getBus().register(this);
+			mapMarkerList = new MapMarkers();
+			mapPresenter = new MapPresenter(context, mapMarkerList);
+			System.out.println("mapwrapper fragment created");
+
+		}
+
+		@Override
+		public void onDestroy() {
+			// TODO Auto-generated method stub
+			getBus().unregister(this);
+			super.onDestroy();
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+
+			// View rootView = inflater.inflate(R.layout.fragment_map_wrapper,
+			// container,
+			// false);
+			View rootView = super.onCreateView(inflater, container,
+					savedInstanceState);
+			map = getMap();
+			System.out.println(String.format("map = %s", map));
+
+			// mapFragment = MapFragment.newInstance();
+			// getChildFragmentManager().beginTransaction().add(R.id.map_wrapper_container,mapFragment).commit();
+			System.out.println("wrapper fragment view created");
+			return rootView;
+		}
+
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onActivityCreated(savedInstanceState);
+			System.out.println("wrapper fragment hosting activity created");
+
+		}
+
+	}
 
 }

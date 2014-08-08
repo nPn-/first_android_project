@@ -8,6 +8,7 @@ import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -31,6 +32,9 @@ public class MyApp extends Application {
 	private static String user;
 	private static String email;    
 	private static String gcmRegId;
+	private static LatLngBounds mapBounds;
+	private static int centerOnPosition;
+	private static int centerOnMode;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
 	protected RailsApi railsApi;
@@ -52,6 +56,9 @@ public class MyApp extends Application {
 		email = persistData.readEmailId();
 		user = getUserFromToken();
 		gcmRegId = persistData.readGcmRegId();
+		mapBounds = persistData.readMapBounds();
+		centerOnPosition = persistData.readCenterOnPosition();
+		centerOnMode = persistData.readCenterOnMode();
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
 				API_ROOT_URL).build();
 		railsApi = restAdapter.create(RailsApi.class);
@@ -82,10 +89,23 @@ public class MyApp extends Application {
 	public static String getEmail() {
 		return email;
 	}
+	
 	public static String getGcmRegId() {
 		return gcmRegId;
 	}
-
+	
+	public static LatLngBounds getMapBounds() {
+		return mapBounds;
+	}
+	
+	public static int getCenterOnPosition() {
+		return centerOnPosition;
+	}
+	
+	public static int getCenterOnMode() {
+		return centerOnMode;
+	}
+	
 	public static String getUserId() {
 		return getUserFromToken();
 	}
@@ -115,6 +135,21 @@ public class MyApp extends Application {
 	public static void saveGcmRegId(String gcmRegIdToSave) {
 		cachedPersistData.saveGcmRegId(gcmRegIdToSave);
 		gcmRegId = gcmRegIdToSave;
+	}
+	
+	public static void saveMapBounds(LatLngBounds bounds) {
+		cachedPersistData.saveMapBounds(bounds);
+		mapBounds = bounds;
+	}
+	
+	public static void saveCenterOnPosition(int position) {
+		cachedPersistData.saveCenterOnPosition(position);
+		centerOnPosition = position;
+	}
+	
+	public static void saveCenterOnMode(int mode) {
+		cachedPersistData.saveCenterOnMode(mode);
+		centerOnMode = mode;
 	}
 	
 	public static void clearGcmRegId() {
