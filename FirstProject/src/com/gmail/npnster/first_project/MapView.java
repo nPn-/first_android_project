@@ -1,16 +1,13 @@
 package com.gmail.npnster.first_project;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.support.v7.internal.widget.ActionBarView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
-import com.gmail.npnster.first_project.R.color;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,8 +30,6 @@ public class MapView implements OnMarkerClickListener {
 	private MapPresenter mMapPresenter;
 	private Context mContext;
 	private CenterOnSpinnerAdapter centerOnSpinnerAdapter;
-//	private int centerOnPersonSelectedPosition = 0;
-//	private int centerOnModePosition = 0;
 	private Spinner spinner;
 	private GoogleMapMarkerList mMarkers;
 	private DummyInfoWindowAdapter dummyInfoWindowAdapter;
@@ -113,7 +108,6 @@ public class MapView implements OnMarkerClickListener {
 	
 	void bringMarkerToFront(GoogleMapMarker m) {
 		// hack to get center user to be shown
-		// seems to really slow down the map
 		mMap.setInfoWindowAdapter(dummyInfoWindowAdapter);
 		m.getMarker().showInfoWindow();
 		mMap.setInfoWindowAdapter(null);
@@ -137,7 +131,6 @@ public class MapView implements OnMarkerClickListener {
 						System.out.println(String.format(
 								"center on Mode  = %d, id = %d", position, id));
 						mMapPresenter.centerOnModeSelected(position);
-//						centerOnModePosition = position;
 					}
 
 					@Override
@@ -205,7 +198,6 @@ public class MapView implements OnMarkerClickListener {
 		System.out.println(String.format(
 				"number items in spinner adapter = %d",
 				centerOnSpinnerAdapter.getCount()));
-		// centerOnSpinnerAdapter.notifyDataSetChanged();
 		spinner.setSelection(initialPosition);
 		
 		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -216,14 +208,12 @@ public class MapView implements OnMarkerClickListener {
 					int position, long id) {
 				System.out.println(String.format("person number = %d, id = %d",
 						position, id));
-//				centerOnPersonSelectedPosition = position;
 				mMapPresenter.centerOnPersonSelected(position);
 
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
 
 			}
 		});

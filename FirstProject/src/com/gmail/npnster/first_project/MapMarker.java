@@ -6,11 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Picasso;
@@ -22,6 +18,7 @@ public class MapMarker implements Target {
 	private Bus mBus;
 	private Marker mMarker;
 	private com.google.android.gms.maps.model.Marker mGoogleMapMarker;
+	private Bitmap mBitmap;
 	
 	public com.google.android.gms.maps.model.Marker getGoogleMapMarker() {
 		return mGoogleMapMarker;
@@ -124,13 +121,7 @@ public class MapMarker implements Target {
 		return new LatLng(mMarker.getLatitude(), mMarker.getLongitude());
 	}
 
-
-
-	private Bitmap mBitmap;
-		
-
 	public String getName() {
-
 		return mMarker.getName();
 	}
 
@@ -146,21 +137,17 @@ public class MapMarker implements Target {
 		return mMarker.getUserId();
 	}
 
-
-
 	public MapMarker(Context context, Marker marker) {
 		System.out.println("building marker");
 		mMarker = marker;
 		mBitmap = null;
 		mBus = BusProvider.getInstance();
-//		mBus.register(this);
 		Picasso.with(context).load(marker.getGravatarUrl()).into(this);
 	}
 
 
 	@Override
 	public void onBitmapFailed(Drawable arg0) {
-		// TODO Auto-generated method stub    
 		System.out.println("failed to load bit map for gravatar");
 		mBus.post(new MarkerReadyEvent(this));
 		
@@ -168,7 +155,6 @@ public class MapMarker implements Target {
 
 	@Override
 	public void onBitmapLoaded(Bitmap bitmap, LoadedFrom loadedFrom) {
-		// TODO Auto-generated method stub
 		System.out.println(String.format("loaded bit map from gravatar url = %s, for userid = %s",getGravatarUrl(), getUserId()));
 		System.out.println("bit map was loaded from");
 		System.out.println(loadedFrom.toString());
@@ -179,7 +165,6 @@ public class MapMarker implements Target {
 	
 	@Override
 	public void onPrepareLoad(Drawable arg0) {
-		// TODO Auto-generated method stub
 		System.out.println("inside MapMarker onPrepareLoad");
 		
 	}

@@ -56,13 +56,10 @@ public class MapMarkers {
 		return this.getUserList().equals(newMarkersUserIds);
 	}
 
-
 	public void updateLocationInfo(List<Marker> markers, int centerOnMarkerIndex) {
 		int i = 0;
-//		MapMarker lastMarkerToDraw = null;
 		for (Marker m : markers) {
 			MapMarker marker = get(i);
-//			if (i == centerOnMarkerIndex) lastMarkerToDraw = marker;
 			marker.setLatitude(m.getLatitude());
 			marker.setLongitude(m.getLongitude());
 			marker.setAltitude(m.getAltitude());
@@ -75,11 +72,8 @@ public class MapMarkers {
 			marker.setHasSpeed(m.hasSpeed());
 			marker.setLocationFixTime(m.getLocationFixTime());
 			i++;
-//			mBus.post(new MarkerReadyEvent(marker));
-//			if ( i != centerOnMarkerIndex) mBus.post(new MarkerReadyEvent(marker));
 						
 		}
-//		mBus.post(new MarkerReadyEvent(lastMarkerToDraw));
 		
 	}
 
@@ -103,7 +97,6 @@ public class MapMarkers {
 	public LatLng getCenterOfMarkers() {
 		LatLngBounds.Builder builder = LatLngBounds.builder();
 		LatLng center = null;
-//		LatLngBounds bounds = builder.build();
 		for (MapMarker m : toArrayList()) {
 			builder = builder.include(m.getLatLng());
 		}
@@ -140,8 +133,5 @@ public class MapMarkers {
 		}
 		return areAllContained;
 	}
-
-
-
 
 }

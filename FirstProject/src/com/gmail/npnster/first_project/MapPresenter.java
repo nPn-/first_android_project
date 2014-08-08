@@ -1,27 +1,11 @@
 package com.gmail.npnster.first_project;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Spinner;
-import android.text.format.DateUtils;
-
-import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
-import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestRequest;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -32,20 +16,14 @@ public class MapPresenter {
 	private MapMarkers mMapMarkers;
 	private Context mContext;
 	private Bus mBus;
-//	private Intent requestMarkers;
 	private int centerOnModeIndex = 0;
 	private int centerOnPersonIndex = 0;
-	private boolean mMarkersAreDirty = false;
 	private GoogleMap.CancelableCallback mExpandMapCallback;
 
 	public MapPresenter(MapMarkers mapMarkers) {
 		System.out.println("Constructing MapPresenter");
 		mMapMarkers = mapMarkers;
-//		mContext = context;
 		mBus = BusProvider.getInstance();
-		// mBus.register(this);
-//		requestMarkers = new Intent(context, LocationMonitorService.class);
-//		requestMarkers.addCategory("REQUEST_MARKERS");
 		setExpandMapCallback();
 
 	}
@@ -54,7 +32,6 @@ public class MapPresenter {
 	public void onGetMapMarkersRequestCompleted(GetMapMarkersResponse event) {
 		System.out
 				.println("inside map activity - onGetMapMarkersRequestCompleted");
-		// GetUserProfileResponse params = event.getParams();
 		if (event != null && event.getRawResponse() != null) {
 			System.out
 					.println(String
@@ -63,10 +40,7 @@ public class MapPresenter {
 									event.isSuccessful()));
 		}
 		if (event != null && event.isSuccessful()) {
-			// mMapView.clearMap();
-			if (!mMarkersAreDirty
-					&& mMapMarkers.hasSameUserList(event.getMarkers())) {
-				mMarkersAreDirty = false;
+			if (mMapMarkers.hasSameUserList(event.getMarkers())) {
 				System.out.println(String.format("updating %d markers",
 						mMapMarkers.size()));
 
@@ -82,20 +56,9 @@ public class MapPresenter {
 				System.out.println("replacing markers");
 				mMapMarkers.clear();
 				mMapView.clearMap();
-				// ArrayList<com.google.android.gms.maps.model.Marker>
-				// markerList =
-				// new
-				// ArrayList<com.google.android.gms.maps.model.Marker>();
-				// markerList.get(0).
 
 				for (Marker m : event.getMarkers()) {
 					mMapMarkers.add(new MapMarker(mContext, m));
-					// it takes time to construct the new marker (download a bit
-					// map)
-					// so loading to the mapView is defered until the maker is
-					// ready
-					// maker is loaded on the map when we get a MakerReadyEvent
-					// from the model
 
 				}
 				mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
@@ -104,7 +67,6 @@ public class MapPresenter {
 			}
 			isMapReady = true;
 			recenterMap();
-
 			System.out.println("finished processing returned markers");
 		}
 
@@ -125,10 +87,8 @@ public class MapPresenter {
 		case 1:
 			LatLng newMapCenter = mMapMarkers.getCenterOfMarkers();
 			if (newMapCenter != null)
-				// mMapView.centerMapAt(newMapCenter);
 				System.out.println("recentering on group");
 			recenterAndExpandMapViewIfNeeded(newMapCenter);
-			// mMapView.centerMapAt(newMapCenter);
 			break;
 		}
 		if (mapMarker != null)
@@ -138,13 +98,6 @@ public class MapPresenter {
 
 	private void recenterAndExpandMapViewIfNeeded(LatLng newMapCenter) {
 		mMapView.centerMapAt(newMapCenter, mExpandMapCallback);
-		// Projection currentProjection = mMapView.getCurrentMapProjection();
-		// MapViewPortRegion mapViewPortRegion = new
-		// MapViewPortRegion(currentProjection);
-		// LatLngBounds requiredBounds = mMapMarkers.getLatLngBounds();
-		// LatLngBounds newBounds =
-		// mapViewPortRegion.getNextBounds(requiredBounds, 100, 100);
-		// mMapView.setMapBounds(newBounds);
 
 	}
 
@@ -159,8 +112,6 @@ public class MapPresenter {
 				mMapMarkers.get(centerOnPersonIndex).getUserId())) {
 			markerParameters.setIsCenterOn(true);
 		}
-		// System.out.println(String.format("marker for %s , fix time = %s",
-		// mapMarker.getName(),new Date(mapMarker.getLocationFixTime())));
 		mMapView.addMarkerToMap(markerParameters);
 
 	}
@@ -170,11 +121,7 @@ public class MapPresenter {
 		recenterMap();
 		MapMarker mapMarker = mMapMarkers.get(position);
 		if (mapMarker != null) {
-			// LatLng latLng = new LatLng(mapMarker.getLatitude(),
-			// mapMarker.getLongitude());
-			// mMapView.centerMapAt(latLng);
 			mMapView.setCenterOnButtonImage(mapMarker.getBitmap());
-
 		}
 
 	}
@@ -184,9 +131,6 @@ public class MapPresenter {
 		// calls to this method
 		System.out
 				.println("inside map presenter method refreshMap - this no longer does anything please remove calls");
-		// mContext.startService(requestMarkers);
-		// mBus.post(new PushLocationsUpdateRequestRequest());
-		// mBus.post(new GetMapMarkersRequest());
 
 	}
 
@@ -241,7 +185,6 @@ public class MapPresenter {
 
 			@Override
 			public void onCancel() {
-				// TODO Auto-generated method stub
 
 			}
 
@@ -275,8 +218,6 @@ public class MapPresenter {
 		mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
 		mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
 		mMapView.setCenterOnMode(centerOnModeIndex);
-		// mMapView.clearMap();
-		// mMarkersAreDirty = true;
 
 	}
 
