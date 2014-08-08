@@ -127,9 +127,12 @@ public class MapActivity extends Activity {
 			}
             mapView.setActionBarView(actionBarView);
 			mapPresenter.reinitMapView();
+			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",MyApp.getCenterOnPosition() ,MyApp.getCenterOnMode() ));
+            mapPresenter.setCenterOnPosition(MyApp.getCenterOnPosition());
+            mapPresenter.setCenterOnMode(MyApp.getCenterOnMode());
 			getBus().register(mapPresenter);
 
-			System.out.println("posting get markers request to the bus");
+//			System.out.println("posting get markers request to the bus");
 
 //			mBus.post(new PushLocationsUpdateRequestRequest());
 //			mBus.post(new GetMapMarkersRequest());
@@ -159,8 +162,11 @@ public class MapActivity extends Activity {
 			// TODO Auto-generated method stub
 			super.onPause();
 			System.out.println("pausing map fragment");
+			System.out.println(String.format("state = centerOnIndex = %d,  centerOnMode = %d",mapPresenter.getGenterOnPosition() ,mapPresenter.getGenterOnMode() ));
 			getBus().unregister(mapPresenter);
 			MyApp.saveMapBounds(mapView.getCurrentMapBounds());
+			MyApp.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
+			MyApp.saveCenterOnMode(mapPresenter.getGenterOnMode());
     		context.startService(endTracking);
 		}
 

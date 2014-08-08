@@ -50,6 +50,16 @@ public class PersistData {
 			generalSettingsFileEditor.putFloat("NORTHEAST_LNG",(float) bounds.northeast.longitude);
 			generalSettingsFileEditor.commit();
 		}
+		
+		public void saveCenterOnPosition(int position) {
+			generalSettingsFileEditor.putInt("CENTER_ON_POSITION", position);
+			generalSettingsFileEditor.commit();
+		}
+		
+		public void saveCenterOnMode(int mode) {
+			generalSettingsFileEditor.putInt("CENTER_ON_MODE", mode);
+			generalSettingsFileEditor.commit();
+		}
 
 
 		
@@ -84,12 +94,22 @@ public class PersistData {
 		return readAccessToken().split(":")[0];
 	}
 	
-	public LatLngBounds getMapBounds() {
+	public LatLngBounds readMapBounds() {
 		float southwestLat = generalSettingsFile.getFloat("SOUTHWEST_LAT",1.0f);
 		float southwestLng = generalSettingsFile.getFloat("SOUTHWEST_LNG",-179f);
 		float northeastLat = generalSettingsFile.getFloat("NORTHEAST_LAT",89.0f);
 		float northeastLng = generalSettingsFile.getFloat("NORTHEAST_LNG",179f);
-        return new LatLngBounds(new LatLng(southwestLat, southwestLng), new LatLng(northeastLat, northeastLng));
+		return new LatLngBounds(new LatLng(southwestLat, southwestLng), new LatLng(northeastLat, northeastLng));
+	}
+	
+	public int readCenterOnPosition() {
+		int position = generalSettingsFile.getInt("CENTER_ON_POSITION", 0);
+		return position;
+	}
+	
+	public int readCenterOnMode() {
+		int mode = generalSettingsFile.getInt("CENTER_ON_MODE", 0);
+		return mode;
 	}
 
 	

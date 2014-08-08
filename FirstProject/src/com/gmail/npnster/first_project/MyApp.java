@@ -33,6 +33,8 @@ public class MyApp extends Application {
 	private static String email;    
 	private static String gcmRegId;
 	private static LatLngBounds mapBounds;
+	private static int centerOnPosition;
+	private static int centerOnMode;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
 	protected RailsApi railsApi;
@@ -54,7 +56,9 @@ public class MyApp extends Application {
 		email = persistData.readEmailId();
 		user = getUserFromToken();
 		gcmRegId = persistData.readGcmRegId();
-		mapBounds = persistData.getMapBounds();
+		mapBounds = persistData.readMapBounds();
+		centerOnPosition = persistData.readCenterOnPosition();
+		centerOnMode = persistData.readCenterOnMode();
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
 				API_ROOT_URL).build();
 		railsApi = restAdapter.create(RailsApi.class);
@@ -93,7 +97,15 @@ public class MyApp extends Application {
 	public static LatLngBounds getMapBounds() {
 		return mapBounds;
 	}
-
+	
+	public static int getCenterOnPosition() {
+		return centerOnPosition;
+	}
+	
+	public static int getCenterOnMode() {
+		return centerOnMode;
+	}
+	
 	public static String getUserId() {
 		return getUserFromToken();
 	}
@@ -128,6 +140,16 @@ public class MyApp extends Application {
 	public static void saveMapBounds(LatLngBounds bounds) {
 		cachedPersistData.saveMapBounds(bounds);
 		mapBounds = bounds;
+	}
+	
+	public static void saveCenterOnPosition(int position) {
+		cachedPersistData.saveCenterOnPosition(position);
+		centerOnPosition = position;
+	}
+	
+	public static void saveCenterOnMode(int mode) {
+		cachedPersistData.saveCenterOnMode(mode);
+		centerOnMode = mode;
 	}
 	
 	public static void clearGcmRegId() {

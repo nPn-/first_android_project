@@ -73,6 +73,7 @@ public class LocationMonitorService extends Service {
 	private void startLocationPushRequests() {
 		System.out.println("starting cycle of push requests for remote device locations");
 		mBus.post(new PushLocationsUpdateRequestRequest());
+		mBus.post(new GetMapMarkersRequest());
 		pushRequestTimer.cancel();
 		pushRequestTimer.start();		
 	}
