@@ -19,7 +19,11 @@ public class GetMapMarkersResponse extends BaseResponse {
 	this.markers = markers;
 	}
 	
-	public class Marker {
+	public static class Marker {
+		
+		public Marker() {
+			
+		}
 
 		@Expose
 		private String name;

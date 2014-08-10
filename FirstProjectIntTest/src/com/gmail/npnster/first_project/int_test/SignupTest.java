@@ -9,8 +9,13 @@ import com.robotium.solo.Solo;
 
 public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity> {
 
+	
+	private String storedEmailId = null;
+	private String storedToken = null ;
+	
 	public SignupTest() {
 		super(SignUpActivity.class);
+
 		
 
 		// TODO Auto-generated constructor stub
@@ -21,13 +26,24 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 	PersistData persistData = MyApp.getPersistData();
 
 	protected void setUp() throws Exception {
-		super.setUp();  
+		super.setUp(); 
+		System.out.println("setting up test");
+//		PersistData persistData =  new PersistData(getActivity());
+//		if (storedEmailId == null) storedEmailId = persistData.readEmailId();
+//		if (storedToken == null) storedToken = persistData.readAccessToken();
+//		System.out.println(String.format("got the following from the device email = %s token = %s", storedEmailId, storedToken));
+		MyApp.setApiRootUrl("http://10.0.2.2:3000"); 
+
 		solo = new Solo(getInstrumentation(), getActivity());
 
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		System.out.println("tearing down test");
+//		System.out.println(String.format("saving the following from the device email = %s. token = %s", storedEmailId, storedToken));
+//		MyApp.saveEmailId(storedEmailId);
+//		MyApp.saveToken(storedToken);
 
 	}
 

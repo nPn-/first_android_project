@@ -17,6 +17,8 @@ public class MapMarker implements Target {
 	
 	private Bus mBus;
 	private Marker mMarker;
+
+
 	private com.google.android.gms.maps.model.Marker mGoogleMapMarker;
 	private Bitmap mBitmap;
 	
@@ -144,6 +146,10 @@ public class MapMarker implements Target {
 		mBus = BusProvider.getInstance();
 		Picasso.with(context).load(marker.getGravatarUrl()).into(this);
 	}
+	
+	public MapMarker() {
+		
+	}
 
 
 	@Override
@@ -190,6 +196,14 @@ public class MapMarker implements Target {
 		if (hasBearing()) infoWindowData = infoWindowData +  String.format("\nBearing: %3.0f degrees",getBearing());
 		System.out.println(String.format("infoWindow in MapMarker  = %s", infoWindowData));
 		return infoWindowData;
+	}
+	
+	protected Marker getMarker() {
+		return mMarker;
+	}
+
+	protected void setMarker(Marker mMarker) {
+		this.mMarker = mMarker;
 	}
 
 }

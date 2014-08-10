@@ -18,13 +18,14 @@ import android.location.Location;
 
 public class MyApp extends Application {    
 
-//	private static final String API_ROOT_URL = "http://10.0.2.2:3000";   // for android test suite
+	private static String mApiRootUrl = "http://10.0.2.2:3000";   // for android test suite  
 	
 	
 //	private static final String API_ROOT_URL = "http://172.16.1.105:3000";    // for local server    
 //	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";  // heroku
 //	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
-	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix  
+//	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix
+//	private static  String mApiRootUrl = "https://ourlatitude.mybluemix.net";  // bluemix
 
 	private static MyApp singleton;
 	private static String token;
@@ -60,7 +61,7 @@ public class MyApp extends Application {
 		centerOnPosition = persistData.readCenterOnPosition();
 		centerOnMode = persistData.readCenterOnMode();
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
-				API_ROOT_URL).build();
+				mApiRootUrl).build();
 		railsApi = restAdapter.create(RailsApi.class);
 		apiRequestRepository = new ApiRequestRepository(getInstance(),
 				railsApi, mBus);
@@ -167,6 +168,16 @@ public class MyApp extends Application {
 	}
 
 
+	public static String getApiRootUrl() {
+		return mApiRootUrl;
+	}
+	
+	public static void setApiRootUrl(String apiRootUrl) {
+		mApiRootUrl = apiRootUrl;
+	}
+
+
+	
 //	@Subscribe
 //	public void postLocationResponse(PostLocationResponse response) {
 //		System.out.println(response.getRawResponse().getStatus());

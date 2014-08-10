@@ -63,6 +63,8 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	private Solo solo;
 	private Activity activity;
 	private String valid_android_token;
+	private String storedEmailId;
+	private String storedToken;
 	private final Integer TIMEOUT = 4000;
 
 	PersistData persistData = MyApp.getPersistData();
@@ -84,6 +86,10 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 
 	protected void setUp() throws Exception {
 		super.setUp();
+//		storedEmailId = MyApp.getEmail();
+//		storedToken = MyApp.getToken();
+		MyApp.setApiRootUrl("http://10.0.2.2:3000");
+		System.out.println(String.format("got the following from the device email = %s. token = %s", storedEmailId, storedToken));
 		solo = new Solo(getInstrumentation(), getActivity());
 		getActivity().setLeaveRequest(
 				new LeaveRequest("valid_android_user@example.com", "foobar"));
@@ -103,6 +109,9 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
+//		System.out.println(String.format("saving the following from the device email = %s. token = %s", storedEmailId, storedToken));
+//		MyApp.saveEmailId(storedEmailId);
+//		MyApp.saveToken(storedToken);
 
 	}
 
