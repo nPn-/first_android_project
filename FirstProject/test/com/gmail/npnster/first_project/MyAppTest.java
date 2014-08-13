@@ -6,10 +6,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
-import com.gmail.npnster.first_project.api_params.MarkerBuilder;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
+import com.gmail.npnster.first_project.api_params.RailsMarkerBuilder;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+
 
 
 
@@ -189,7 +190,7 @@ public class MyAppTest  {
 	@Test
 	public void testMarkerFactory() {
 		
-		Marker myMarker = new MarkerBuilder().withName("john").build();
+		RailsMarker myMarker = new RailsMarkerBuilder().withName("john").build();
 		System.out.println(String.format("marker name  = %s", myMarker.getName()));
 	}
 	

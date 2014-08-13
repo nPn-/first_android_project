@@ -2,7 +2,7 @@ package com.gmail.npnster.first_project;
 
 import android.content.Context;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
-import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.GoogleMap;
@@ -57,7 +57,7 @@ public class MapPresenter {
 				mMapMarkers.clear();
 				mMapView.clearMap();
 
-				for (Marker m : event.getMarkers()) {
+				for (RailsMarker m : event.getMarkers()) {
 					mMapMarkers.add(new MapMarker(mContext, m));
 
 				}

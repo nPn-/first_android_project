@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 
-import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso.LoadedFrom;
@@ -16,7 +16,7 @@ public class MapMarker implements Target {
 	
 	
 	private Bus mBus;
-	private Marker mMarker;
+	private RailsMarker mMarker;
 
 
 	private com.google.android.gms.maps.model.Marker mGoogleMapMarker;
@@ -74,6 +74,12 @@ public class MapMarker implements Target {
 	public void setLocationFixTime(Long locationFixTime) {
 		mMarker.setLocationFixTime(locationFixTime);
 	}
+	
+	public void setGravatarUrl(String gravatarUrl) {
+		mMarker.setGravatarUrl(gravatarUrl);
+	}
+
+
 
 	public Boolean hasAccuracy() {
 		return mMarker.hasAccuracy();
@@ -139,7 +145,7 @@ public class MapMarker implements Target {
 		return mMarker.getUserId();
 	}
 
-	public MapMarker(Context context, Marker marker) {
+	public MapMarker(Context context, RailsMarker marker) {
 		System.out.println("building marker");
 		mMarker = marker;
 		mBitmap = null;
@@ -163,7 +169,7 @@ public class MapMarker implements Target {
 	public void onBitmapLoaded(Bitmap bitmap, LoadedFrom loadedFrom) {
 		System.out.println(String.format("loaded bit map from gravatar url = %s, for userid = %s",getGravatarUrl(), getUserId()));
 		System.out.println("bit map was loaded from");
-		System.out.println(loadedFrom.toString());
+//		System.out.println(loadedFrom.toString());
 		mBitmap = bitmap;
 		mBus.post(new MarkerReadyEvent(this));
 	    
@@ -198,12 +204,22 @@ public class MapMarker implements Target {
 		return infoWindowData;
 	}
 	
-	protected Marker getMarker() {
+	protected RailsMarker getMarker() {
 		return mMarker;
 	}
 
-	protected void setMarker(Marker mMarker) {
+	protected void setMarker(RailsMarker mMarker) {
 		this.mMarker = mMarker;
 	}
+	
+	public Bus getBus() {
+		return mBus;
+	}
+
+	public void setBus(Bus mBus) {
+		this.mBus = mBus;
+	}
+
+
 
 }

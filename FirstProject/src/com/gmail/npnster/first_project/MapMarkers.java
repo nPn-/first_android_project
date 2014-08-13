@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gmail.npnster.first_project.MapMarker;
-import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.Marker;
+import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.squareup.otto.Bus;
@@ -48,17 +48,17 @@ public class MapMarkers {
 		return userList;		
 	}
 	
-	public Boolean hasSameUserList(ArrayList<Marker> newMarkers) {
+	public Boolean hasSameUserList(ArrayList<RailsMarker> newMarkers) {
 	    ArrayList<String> newMarkersUserIds = new ArrayList<String>();
-	    for (Marker m : newMarkers ) {
+	    for (RailsMarker m : newMarkers ) {
 	    	newMarkersUserIds.add(m.getUserId());
 	    }
 		return this.getUserList().equals(newMarkersUserIds);
 	}
 
-	public void updateLocationInfo(List<Marker> markers, int centerOnMarkerIndex) {
+	public void updateLocationInfo(List<RailsMarker> markers, int centerOnMarkerIndex) {
 		int i = 0;
-		for (Marker m : markers) {
+		for (RailsMarker m : markers) {
 			MapMarker marker = get(i);
 			marker.setLatitude(m.getLatitude());
 			marker.setLongitude(m.getLongitude());

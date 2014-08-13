@@ -9,19 +9,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class GetMapMarkersResponse extends BaseResponse {
 	@Expose
-	private ArrayList<Marker> markers = new ArrayList<Marker>();
+	private ArrayList<RailsMarker> markers = new ArrayList<RailsMarker>();
 
-	public ArrayList<Marker> getMarkers() {
+	public ArrayList<RailsMarker> getMarkers() {
 	return markers;
 	}
 
-	public void setMarkers(ArrayList<Marker> markers) {
+	public void setMarkers(ArrayList<RailsMarker> markers) {
 	this.markers = markers;
 	}
 	
-	public static class Marker {
+	public static class RailsMarker {
 		
-		public Marker() {
+		public RailsMarker() {
 			
 		}
 
