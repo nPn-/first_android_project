@@ -2,28 +2,18 @@ package com.gmail.npnster.first_project;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import android.graphics.Bitmap;
 
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
-import com.gmail.npnster.first_project.api_params.RailsMarkerBuilder;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.squareup.otto.Bus;
-import com.squareup.picasso.Picasso.LoadedFrom;
-
-import dagger.Module;
-import dagger.ObjectGraph;
-import dagger.Provides;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
@@ -53,7 +43,7 @@ public class MapMarkerTest {
 	
 	@Test
 	public void testOnBitMapLoaded() {
-		Bitmap mockBitmap = mock(Bitmap.class);		
+		Bitmap mockBitmap = mock(Bitmap.class);
 		when(mockRailsMarker.getGravatarUrl()).thenReturn("a_rgavatar_url");
 		MapMarker androidMapMarker = new MapMarkerBuilder().withBus(mockBus)
 				.withMarker(mockRailsMarker)

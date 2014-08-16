@@ -180,7 +180,7 @@ public class MapMarker implements Target {
 	public void onBitmapLoaded(Bitmap bitmap, LoadedFrom loadedFrom) {
 		System.out.println(String.format("loaded bit map from gravatar url = %s, for userid = %s",getGravatarUrl(), getUserId()));
 		System.out.println("bit map was loaded from");
-//		System.out.println(loadedFrom.toString());
+		if (loadedFrom != null) System.out.println(loadedFrom.toString());
 		mBitmap = bitmap;
 		mBus.post(new MarkerReadyEvent(this));
 	    
