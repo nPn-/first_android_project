@@ -18,6 +18,10 @@ public class GoogleMapMarkerParameters {
 		
 	}
 	
+	public GoogleMapMarkerParameters() {
+		mIsCenterOn = false;
+	}
+ 	
 	public LatLng getLatLng() {
 		return mLatLng;
 	}
@@ -59,6 +63,11 @@ public class GoogleMapMarkerParameters {
 	
 	public GoogleMapMarkerParameters setIsCenterOn(Boolean isCenterOn) {
 		mIsCenterOn = isCenterOn;
+		return this;
+	}
+	
+	public GoogleMapMarkerParameters setUserId(String userId) {
+		mUserId = userId;
 		return this;
 	}
 	

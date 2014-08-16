@@ -104,8 +104,9 @@ public class MapPresenter {
 	@Subscribe
 	public void onMarkerReadyEvent(MarkerReadyEvent event) {
 		MapMarker mapMarker = event.getMapMarker();
-		GoogleMapMarkerParameters markerParameters = new GoogleMapMarkerParameters(
-				mapMarker.getUserId()).setBitmap(mapMarker.getBitmap())
+		GoogleMapMarkerParameters markerParameters = new GoogleMapMarkerParameters();
+		markerParameters.setUserId(mapMarker.getUserId())
+				.setBitmap(mapMarker.getBitmap())
 				.setLatLng(mapMarker.getLatLng()).setTitle(mapMarker.getName())
 				.setCircleRadius(mapMarker.getAccuracy());
 		if (mapMarker.getUserId().equals(

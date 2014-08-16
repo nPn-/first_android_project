@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,16 +21,22 @@ import com.google.android.gms.maps.model.Marker;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso.LoadedFrom;
 
+import dagger.Module;
+import dagger.ObjectGraph;
+import dagger.Provides;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class MapMarkerTest {
 	Bus mockBus = mock(Bus.class);
 	RailsMarker mockRailsMarker = mock(RailsMarker.class);
+	@Inject
+	GoogleMapMarkerParameters mockGoogleMapMarkerParameters;
+	
 	
 	@Before
 	public void setUp() throws Exception {
-		// TODO Auto-generated method stub
+		MyApp.getObjectGraph().inject(this);
 
 	}
 
@@ -47,7 +55,6 @@ public class MapMarkerTest {
 	public void testOnBitMapLoaded() {
 		Bitmap mockBitmap = mock(Bitmap.class);		
 		when(mockRailsMarker.getGravatarUrl()).thenReturn("a_rgavatar_url");
-		when(mockRailsMarker.getUserId()).thenReturn("a_user_id");
 		MapMarker androidMapMarker = new MapMarkerBuilder().withBus(mockBus)
 				.withMarker(mockRailsMarker)
 				.build();
@@ -59,7 +66,6 @@ public class MapMarkerTest {
 	@Test
 	public void testOnBitMapFailed() {
 		when(mockRailsMarker.getGravatarUrl()).thenReturn("a_rgavatar_url");
-		when(mockRailsMarker.getUserId()).thenReturn("a_user_id");
 		MapMarker androidMapMarker = new MapMarkerBuilder().withBus(mockBus)
 				                                           .withMarker(mockRailsMarker)
 				                                           .build();
@@ -67,7 +73,7 @@ public class MapMarkerTest {
 		verify(mockBus).post(isA(MarkerReadyEvent.class));
 		assertThat(androidMapMarker.getBitmap()).as("bitmap is null").isNull();
 	}
-	
+
 	@Test 
 	public void testGetGoogleMapMarkerParametersWithoutAccuracy() {
 		when(mockRailsMarker.hasAccuracy()).thenReturn(false);
@@ -75,7 +81,8 @@ public class MapMarkerTest {
 		MapMarker androidMapMarker = new MapMarkerBuilder().withBus(mockBus)
 				.withMarker(mockRailsMarker)
 				.build();
-		assertThat(androidMapMarker.getGoogleMapMarkerParameters().getCircleRadius()).as("radius is zero").isEqualTo(0.0f);
+		androidMapMarker.getGoogleMapMarkerParameters();
+		verify(mockGoogleMapMarkerParameters).setCircleRadius(0f);
 		
 	}
 	
@@ -86,9 +93,11 @@ public class MapMarkerTest {
 		MapMarker androidMapMarker = new MapMarkerBuilder().withBus(mockBus)
 				.withMarker(mockRailsMarker)
 				.build();
-		assertThat(androidMapMarker.getGoogleMapMarkerParameters().getCircleRadius()).as("has a valid radius").isEqualTo(44.0f);
+		androidMapMarker.getGoogleMapMarkerParameters();
+		verify(mockGoogleMapMarkerParameters).setCircleRadius(44.0f);
 		
 	}
+	
 	@Test 
 	public void testGetInfoWindowData() {
 		when(mockRailsMarker.hasAccuracy()).thenReturn(true);

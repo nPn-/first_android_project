@@ -1,22 +1,30 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 
+import com.gmail.npnster.first_project.AFirstDaggerModule;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import dagger.ObjectGraph;
 
 public class MapMarker implements Target {
 	
 	
 	private Bus mBus;
+	
+
 	private RailsMarker mMarker;
+	
+	@Inject
+	GoogleMapMarkerParameters googleMapMarkerParameters;
 
 
 	private com.google.android.gms.maps.model.Marker mGoogleMapMarker;
@@ -150,11 +158,14 @@ public class MapMarker implements Target {
 		mMarker = marker;
 		mBitmap = null;
 		mBus = BusProvider.getInstance();
+		ObjectGraph objectGraph = MyApp.getObjectGraph();
+		objectGraph.inject(this);
 		Picasso.with(context).load(marker.getGravatarUrl()).into(this);
 	}
 	
 	public MapMarker() {
-		
+		ObjectGraph objectGraph = MyApp.getObjectGraph();
+		objectGraph.inject(this);
 	}
 
 
@@ -182,13 +193,10 @@ public class MapMarker implements Target {
 	}
 
 	public GoogleMapMarkerParameters getGoogleMapMarkerParameters() {
-		GoogleMapMarkerParameters googleMapMarkerParameters = new GoogleMapMarkerParameters(getUserId());
+		googleMapMarkerParameters.setUserId(getUserId());
 		googleMapMarkerParameters.setLatLng(getLatLng());
-		if (hasAccuracy()) {
-			googleMapMarkerParameters.setCircleRadius(getAccuracy());
-		} else {
-			googleMapMarkerParameters.setCircleRadius(0.0f);
-		}
+		Float radius = hasAccuracy() ? getAccuracy() : 0.0f ;  
+		googleMapMarkerParameters.setCircleRadius(radius);
 		System.out.println(String.format("rad = %f",googleMapMarkerParameters.getCircleRadius() ));
 		return googleMapMarkerParameters;
 	}
