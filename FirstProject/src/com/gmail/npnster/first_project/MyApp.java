@@ -1,5 +1,8 @@
 package com.gmail.npnster.first_project;
 
+import java.util.Arrays;
+import java.util.List;
+
 import retrofit.RestAdapter;
 
 import com.gmail.npnster.first_project.ApiExActivity.ApiCall;
@@ -39,7 +42,7 @@ public class MyApp extends Application {
 	private static int centerOnMode;
 	private static PersistData persistData;
 	private static PersistData.Cached cachedPersistData;
-	protected RailsApi railsApi;
+	private static RailsApi railsApi;
 	private static Bus mBus = BusProvider.getInstance();
 	
 	private static ObjectGraph objectGraph;
@@ -53,7 +56,7 @@ public class MyApp extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		
-		objectGraph = ObjectGraph.create(new AFirstDaggerModule());
+		objectGraph = ObjectGraph.create(new ApplicationModule());
 		singleton = this;
 		persistData = new PersistData(this);
 		cachedPersistData = persistData.new Cached();
@@ -185,6 +188,16 @@ public class MyApp extends Application {
 		return objectGraph;
 	}
 
+	  protected List<Object> getModules() {
+		    return Arrays.asList(
+		        new AndroidModule(this),
+		        new ApplicationModule()
+		    );
+		  }
+
+		  public void inject(Object object) {
+		   getObjectGraph().inject(object);
+		  }
 	
 //	@Subscribe
 //	public void postLocationResponse(PostLocationResponse response) {

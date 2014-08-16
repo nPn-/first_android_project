@@ -4,7 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(injects = MapMarker.class)
-public class AFirstDaggerModule {
+public class ApplicationModule {
 
 	@Provides
 	GoogleMapMarkerParameters provideGoogleMapMarkerParameters() {

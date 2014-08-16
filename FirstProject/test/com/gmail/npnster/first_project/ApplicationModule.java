@@ -10,7 +10,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(injects = { MapMarker.class, MapMarkerTest.class })
-public class AFirstDaggerModule {
+public class ApplicationModule {
 
 	@Provides @Singleton
 	GoogleMapMarkerParameters provideGoogleMapMarkerParameters() {

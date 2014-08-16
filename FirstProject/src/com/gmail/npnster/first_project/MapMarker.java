@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 
-import com.gmail.npnster.first_project.AFirstDaggerModule;
+import com.gmail.npnster.first_project.ApplicationModule;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Bus;
