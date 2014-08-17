@@ -26,7 +26,7 @@ public class MapMarkerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		MyApp.getObjectGraph().inject(this);
+		MyApp.inject(this);
 
 	}
 

@@ -1,4 +1,6 @@
-package com.gmail.npnster.first_project.int_test;
+package com.gmail.npnster.first_project;
+
+import javax.inject.Inject;
 
 import android.test.ActivityInstrumentationTestCase2;
 
@@ -12,9 +14,12 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 	
 	private String storedEmailId = null;
 	private String storedToken = null ;
+	MyApp mApp;
 	
 	public SignupTest() {
 		super(SignUpActivity.class);
+		mApp = MyApp.getObjectGraph().get(MyApp.class);
+//		PersistData persistData = mApp.getPersistData();
 
 		
 
@@ -23,7 +28,6 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 
 	private Solo solo;   
 
-	PersistData persistData = MyApp.getPersistData();
 
 	protected void setUp() throws Exception {
 		super.setUp(); 
@@ -32,7 +36,7 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 //		if (storedEmailId == null) storedEmailId = persistData.readEmailId();
 //		if (storedToken == null) storedToken = persistData.readAccessToken();
 //		System.out.println(String.format("got the following from the device email = %s token = %s", storedEmailId, storedToken));
-		MyApp.setApiRootUrl("http://10.0.2.2:3000"); 
+		mApp.setApiRootUrl("http://10.0.2.2:3000"); 
 
 		solo = new Solo(getInstrumentation(), getActivity());
 

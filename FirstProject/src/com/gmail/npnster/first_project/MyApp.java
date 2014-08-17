@@ -3,6 +3,8 @@ package com.gmail.npnster.first_project;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit.RestAdapter;
 
 import com.gmail.npnster.first_project.ApiExActivity.ApiCall;
@@ -29,35 +31,40 @@ public class MyApp extends Application {
 //	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";  // heroku
 //	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
 //	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix
-	private static  String mApiRootUrl = "https://ourlatitude.mybluemix.net";  // bluemix
+	private String mApiRootUrl = "https://ourlatitude.mybluemix.net";  // bluemix
 
-	private static MyApp singleton;
-	private static String token;
-	private static ApiRequestRepository apiRequestRepository;
-	private static String user;
-	private static String email;    
-	private static String gcmRegId;
-	private static LatLngBounds mapBounds;
-	private static int centerOnPosition;
-	private static int centerOnMode;
-	private static PersistData persistData;
-	private static PersistData.Cached cachedPersistData;
-	private static RailsApi railsApi;
-	private static Bus mBus = BusProvider.getInstance();
+//	private MyApp singleton;  
+	private String token;
+	private ApiRequestRepository apiRequestRepository;
+	private String user;
+	private String email;    
+	private String gcmRegId;
+	private LatLngBounds mapBounds;
+	private int centerOnPosition;
+	private int centerOnMode;
+	private PersistData persistData;
+	private PersistData.Cached cachedPersistData;
+	private RailsApi railsApi;
+	@Inject Bus mBus;
 	
 	private static ObjectGraph objectGraph;
-
-	public static Bus getBus() {
-		return mBus;
+	
+	public MyApp() {
+		System.out.println("myapp construtor");  
+		objectGraph = ObjectGraph.create(new ApplicationModule(this));
+		objectGraph.inject(this);
 	}
+
+//	public static Bus getBus() {
+//		return mBus;
+//	}
 
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		
-		objectGraph = ObjectGraph.create(new ApplicationModule());
-		singleton = this;
+		System.out.println("app being created");
+//		singleton = this;
 		persistData = new PersistData(this);
 		cachedPersistData = persistData.new Cached();
 
@@ -71,7 +78,7 @@ public class MyApp extends Application {
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
 				mApiRootUrl).build();
 		railsApi = restAdapter.create(RailsApi.class);
-		apiRequestRepository = new ApiRequestRepository(getInstance(),
+		apiRequestRepository = new ApiRequestRepository(this,
 				railsApi, mBus);
 		mBus.register(apiRequestRepository);
 		mBus.register(this);
@@ -82,128 +89,123 @@ public class MyApp extends Application {
 //		DeviceLocationClient deviceLocationClient = new DeviceLocationClient(this);
 	}
 
-	public static ApiRequestRepository getApiRequester() {
+	public ApiRequestRepository getApiRequester() {
 		return apiRequestRepository;
 	}
 
-	public static MyApp getInstance() {
-		System.out.println("in get instance");
-		return singleton;
-	}
+//	public MyApp getInstance() {
+//		System.out.println("in get instance");
+//		return singleton;
+//	}
 
-	public static String getToken() {
+	public String getToken() {
 		return token;
 	}
 
-	public static String getEmail() {
+	public String getEmail() {
 		return email;
 	}
 	
-	public static String getGcmRegId() {
+	public String getGcmRegId() {
 		return gcmRegId;
 	}
 	
-	public static LatLngBounds getMapBounds() {
+	public LatLngBounds getMapBounds() {
 		return mapBounds;
 	}
 	
-	public static int getCenterOnPosition() {
+	public int getCenterOnPosition() {
 		return centerOnPosition;
 	}
 	
-	public static int getCenterOnMode() {
+	public int getCenterOnMode() {
 		return centerOnMode;
 	}
 	
-	public static String getUserId() {
+	public String getUserId() {
 		return getUserFromToken();
 	}
 
-	public static void saveToken(String tokenToSave) {
+	public void saveToken(String tokenToSave) {
 		cachedPersistData.saveAccessToken(tokenToSave);
 		user = tokenToSave.split(":")[0];
 		token = tokenToSave;
 	}
 	
-	public static void clearToken() {
+	public void clearToken() {
 		token = "";
 		cachedPersistData.clearAccessToken();
 	}
 
-	public static void saveEmailId(String emailToSave) {
+	public void saveEmailId(String emailToSave) {
 		cachedPersistData.saveEmailId(emailToSave);
 		email = emailToSave;
 	}
 	
-	public static void clearEmailId() {
+	public void clearEmailId() {
 		cachedPersistData.clearUserId();
 		email = "";
 	}
 
 	
-	public static void saveGcmRegId(String gcmRegIdToSave) {
+	public void saveGcmRegId(String gcmRegIdToSave) {
 		cachedPersistData.saveGcmRegId(gcmRegIdToSave);
 		gcmRegId = gcmRegIdToSave;
 	}
 	
-	public static void saveMapBounds(LatLngBounds bounds) {
+	public void saveMapBounds(LatLngBounds bounds) {
 		cachedPersistData.saveMapBounds(bounds);
 		mapBounds = bounds;
 	}
 	
-	public static void saveCenterOnPosition(int position) {
+	public void saveCenterOnPosition(int position) {
 		cachedPersistData.saveCenterOnPosition(position);
 		centerOnPosition = position;
 	}
 	
-	public static void saveCenterOnMode(int mode) {
+	public void saveCenterOnMode(int mode) {
 		cachedPersistData.saveCenterOnMode(mode);
 		centerOnMode = mode;
 	}
 	
-	public static void clearGcmRegId() {
+	public void clearGcmRegId() {
 		cachedPersistData.clearGcmRegId();
 		gcmRegId = "";
 	}
 
 
-	public static PersistData getPersistData() {
+	public PersistData getPersistData() {
 		return persistData;
 	}
               
-	protected static String getUserFromToken() {
+	protected String getUserFromToken() {
 		return token.split(":")[0];
 	}
 
 
-	public static String getApiRootUrl() {
+	public String getApiRootUrl() {
 		return mApiRootUrl;
 	}
 	
-	public static void setApiRootUrl(String apiRootUrl) {
+	public void setApiRootUrl(String apiRootUrl) {
 		mApiRootUrl = apiRootUrl;
 	}
 
 	public static ObjectGraph getObjectGraph() {
+		System.out.println(String.format("inside inject getObjectGraph() = %s", objectGraph) );
 		return objectGraph;
 	}
 
 	  protected List<Object> getModules() {
 		    return Arrays.asList(
 		        new AndroidModule(this),
-		        new ApplicationModule()
+		        new ApplicationModule(this)
 		    );
 		  }
 
-		  public void inject(Object object) {
+		  public static void inject(Object object) {
 		   getObjectGraph().inject(object);
 		  }
 	
-//	@Subscribe
-//	public void postLocationResponse(PostLocationResponse response) {
-//		System.out.println(response.getRawResponse().getStatus());
-//		System.out.println(response.getErrors());
-//		
-//	}
 
 }

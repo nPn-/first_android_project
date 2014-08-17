@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import com.gmail.npnster.first_project.api_params.UpdateLocationRequest;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.squareup.otto.Bus;
@@ -11,11 +13,11 @@ import android.os.Bundle;
 
 public class GcmBroadcastReceiver extends BroadcastReceiver {
 	
-	private Bus mBus;
+	@Inject Bus mBus;
 	UpdateLocationRequest updateLocationRequest = new UpdateLocationRequest();
 	
 	public GcmBroadcastReceiver() {
-		mBus = MyApp.getBus();
+		MyApp.inject(this);
 		
 	}
 	

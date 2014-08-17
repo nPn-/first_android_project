@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.junit.Before;
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 
 
 
+
 //import static org.hamcrest.CoreMatchers.equalTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThat;
@@ -25,7 +28,7 @@ import static org.fest.assertions.api.ANDROID.assertThat;
 @RunWith(RobolectricTestRunner.class)
 public class MyAppTest  {
 
-	private 
+	
 
 	MyApp app ;
 	PersistData persistData;
@@ -99,6 +102,7 @@ public class MyAppTest  {
 
 	@Test
 	public void testInitalGcmId() {
+		System.out.println("testInitalGcmId");
 		assertThat(app.getGcmRegId()).as("app initial gcm reg id is blank").isEqualTo("");
 		assertThat(persistData.readGcmRegId()).as("persisted initial gcm reg id is blank").isEqualTo("");
 		

@@ -2,6 +2,8 @@ package com.gmail.npnster.first_project;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +18,7 @@ import com.squareup.otto.Subscribe;
 //import com.turbomanage.httpclient.HttpResponse;
 //import com.turbomanage.httpclient.ParameterMap;
 //import com.turbomanage.httpclient.android.AndroidHttpClient;
+
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -83,24 +86,30 @@ public class SignUpActivity extends Activity {
 
 	private FormType formType;
 
-	private Bus mBus;
+	@Inject Bus mBus;
+	@Inject MyApp mApp;
 
 	private Button mSignInButton;
 
 	private Bus getBus() {
-		if (mBus == null) {
-			mBus = BusProvider.getInstance();
-		}
 		return mBus;
 	}
-
-	public void setBus(Bus bus) {
-		mBus = bus;
-	}
+	
+//	private Bus getBus() {
+//		if (mBus == null) {
+//			mBus = BusProvider.getInstance();
+//		}
+//		return mBus;
+//	}
+//
+//	public void setBus(Bus bus) {
+//		mBus = bus;
+//	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		MyApp.inject(this);
 
 		setContentView(R.layout.activity_sign_up);
 
@@ -288,7 +297,7 @@ public class SignUpActivity extends Activity {
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
-			PersistData persistData = MyApp.getPersistData();
+			PersistData persistData = mApp.getPersistData();
 
 			if (formType == FormType.SIGNUP) {
 				System.out.println("postin signup request to bus");
@@ -322,8 +331,8 @@ public class SignUpActivity extends Activity {
 
 		if (event.isSuccessful()) {
 			if (returnedToken != null) {
-				MyApp.saveToken(returnedToken);
-				MyApp.saveEmailId(mEmail);
+				mApp.saveToken(returnedToken);
+				mApp.saveEmailId(mEmail);
 			}
 		} else {
 			List<String> errors = event.getErrors();
@@ -353,8 +362,8 @@ public class SignUpActivity extends Activity {
 		System.out.println(event.getErrors());
 		if (event.isSuccessful()) {
 			if (returnedToken != null) {
-				MyApp.saveToken(returnedToken);
-				MyApp.saveEmailId(mEmail);
+				mApp.saveToken(returnedToken);
+				mApp.saveEmailId(mEmail);
 			}
 		} else if (event.getRawResponse() != null && event.getRawResponse().getStatus() == 401) {
 			Toast toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);

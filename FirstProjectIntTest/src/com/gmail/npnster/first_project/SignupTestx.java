@@ -1,3 +1,4 @@
+package com.gmail.npnster.first_project;
 //package com.gmail.npnster.first_project.int_test;
 //
 //import android.test.ActivityInstrumentationTestCase2;

@@ -1,7 +1,9 @@
-package com.gmail.npnster.first_project.int_test;
+package com.gmail.npnster.first_project;
 
 import java.security.SecureRandom;
 import java.sql.Timestamp;
+
+import javax.inject.Inject;
 
 import android.app.Activity;
 import android.location.Location;
@@ -57,6 +59,8 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 
 	public ApiExTest() {
 		super(ApiExActivity.class);
+		mApp = MyApp.getObjectGraph().get(MyApp.class);
+		PersistData persistData = mApp.getPersistData();
 
 	}
 
@@ -66,8 +70,8 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	private String storedEmailId;
 	private String storedToken;
 	private final Integer TIMEOUT = 4000;
+	MyApp mApp;
 
-	PersistData persistData = MyApp.getPersistData();
 
 	private void clickAndWait() {
 		solo.clickOnButton("Go!");
@@ -75,20 +79,20 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	}
 
 	private void setValidTokenAndId() {
-		MyApp.saveToken(valid_android_token);
-		MyApp.saveEmailId("valid_android_user@example.com");
+		mApp.saveToken(valid_android_token);
+		mApp.saveEmailId("valid_android_user@example.com");
 	}
 
 	private void setBadTokenAndId() {
-		MyApp.saveToken("0:blah");
-		MyApp.saveEmailId("invalid_android_user@example.com");
+		mApp.saveToken("0:blah");
+		mApp.saveEmailId("invalid_android_user@example.com");
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
-//		storedEmailId = MyApp.getEmail();
-//		storedToken = MyApp.getToken();
-		MyApp.setApiRootUrl("http://10.0.2.2:3000");
+//		storedEmailId = mApp.getEmail();
+//		storedToken = mApp.getToken();
+		mApp.setApiRootUrl("http://10.0.2.2:3000");
 		System.out.println(String.format("got the following from the device email = %s. token = %s", storedEmailId, storedToken));
 		solo = new Solo(getInstrumentation(), getActivity());
 		getActivity().setLeaveRequest(
@@ -102,16 +106,16 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 						"foobar", "foobar"));
 		clickAndWait();
 		valid_android_token = getActivity().getSignupResponse().getToken();
-		MyApp.saveToken(valid_android_token);
-		MyApp.saveEmailId("valid_android_user@example.com");
+		mApp.saveToken(valid_android_token);
+		mApp.saveEmailId("valid_android_user@example.com");
 
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 //		System.out.println(String.format("saving the following from the device email = %s. token = %s", storedEmailId, storedToken));
-//		MyApp.saveEmailId(storedEmailId);
-//		MyApp.saveToken(storedToken);
+//		mApp.saveEmailId(storedEmailId);
+//		mApp.saveToken(storedToken);
 
 	}
 
@@ -475,7 +479,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 				.getRawResponse().getStatus());
 		// check that user is not following user 1
 		getActivity().setGetFollowedUsersRequest(
-				new GetFollowedUsersRequest(MyApp.getUserId()));
+				new GetFollowedUsersRequest(mApp.getUserId()));
 		clickAndWait();
 		GetFollowedUsersResponse followedUsersResponse = getActivity()
 				.getGetFollowedUsersResponse();
@@ -490,7 +494,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 				.getRawResponse().getStatus());
 		// check that user is following user 1
 		getActivity().setGetFollowedUsersRequest(
-				new GetFollowedUsersRequest(MyApp.getUserId()));
+				new GetFollowedUsersRequest(mApp.getUserId()));
 		clickAndWait();
 		followedUsersResponse = getActivity().getGetFollowedUsersResponse();
 		assertTrue("user is following user 1", followedUsersResponse
@@ -501,7 +505,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		clickAndWait();
 		// check that user is not following user 1
 		getActivity().setGetFollowedUsersRequest(
-				new GetFollowedUsersRequest(MyApp.getUserId()));
+				new GetFollowedUsersRequest(mApp.getUserId()));
 		clickAndWait();
 		followedUsersResponse = getActivity().getGetFollowedUsersResponse();
 		assertFalse("user is following user 1", followedUsersResponse
@@ -518,7 +522,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		// follow current user
 		String token = getActivity().getSigninResponse().getToken();
 		String userId = token.split(":")[0];
-		FollowRequest followRequest = new FollowRequest(MyApp.getUserId());
+		FollowRequest followRequest = new FollowRequest(mApp.getUserId());
 		followRequest.setToken(token);
 		getActivity().setFollowRequest(followRequest);
 		clickAndWait();
@@ -526,13 +530,13 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		assertEquals("response is  created  (201)", 201, followResponse
 				.getRawResponse().getStatus());
 		// have current user grant sample user a permission and check that it exists
-		GrantFollowerPermissionRequest grantFollowerPermissionRequest = new GrantFollowerPermissionRequest(MyApp.getUserId(), userId, "allow_email_id");
+		GrantFollowerPermissionRequest grantFollowerPermissionRequest = new GrantFollowerPermissionRequest(mApp.getUserId(), userId, "allow_email_id");
 		getActivity().setGrantFollowerPermissionRequest(grantFollowerPermissionRequest);
 		clickAndWait();
 		GrantFollowerPermissionResponse grantFollowerPermissionResponse = getActivity().getGrantFollowerPermissionResponse();
 		assertTrue("follower has allow_email_id permission", grantFollowerPermissionResponse.getGrantedPermissions().contains("allow_email_id"));
 		// revoke the permission and check that it is gond
-		RevokeFollowerPermissionRequest revokeFollowerPermissionRequest = new RevokeFollowerPermissionRequest(MyApp.getUserId(), userId, "allow_email_id");
+		RevokeFollowerPermissionRequest revokeFollowerPermissionRequest = new RevokeFollowerPermissionRequest(mApp.getUserId(), userId, "allow_email_id");
 		getActivity().setRevokeFollowerPermissionRequest(revokeFollowerPermissionRequest);
 		clickAndWait();
 		RevokeFollowerPermissionResponse revokeFollowerPermissionResponse = getActivity().getRevokeFollowerPermissionResponse();
@@ -540,7 +544,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 				.getRawResponse().getStatus());
 		assertFalse("follower does not have allow_email_id permission", revokeFollowerPermissionResponse.getGrantedPermissions().contains("allow_email_id"));
 		// grant the same permission back, and check that it is there
-		grantFollowerPermissionRequest = new GrantFollowerPermissionRequest(MyApp.getUserId(), userId, "allow_email_id");
+		grantFollowerPermissionRequest = new GrantFollowerPermissionRequest(mApp.getUserId(), userId, "allow_email_id");
 		getActivity().setGrantFollowerPermissionRequest(grantFollowerPermissionRequest);
 		clickAndWait();
 		grantFollowerPermissionResponse = getActivity().getGrantFollowerPermissionResponse();

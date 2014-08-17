@@ -1,8 +1,11 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.squareup.otto.Bus;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.content.Context;
@@ -36,7 +39,8 @@ public class MapActivity extends Activity {
 	}
 
 	public static class WrapperFragment extends MapFragment {
-		private Bus mBus;
+		@Inject Bus mBus;
+		@Inject MyApp mApp;
 
 		private MapMarkers mapMarkerList;
 		private MapView mapView;
@@ -56,16 +60,21 @@ public class MapActivity extends Activity {
 			super();
 		}
 
+		
 		private Bus getBus() {
-			if (mBus == null) {
-				mBus = BusProvider.getInstance();
-			}
 			return mBus;
 		}
-
-		public void setBus(Bus bus) {
-			mBus = bus;
-		}
+		
+//		private Bus getBus() {
+//			if (mBus == null) {
+//				mBus = BusProvider.getInstance();
+//			}
+//			return mBus;
+//		}
+//
+//		public void setBus(Bus bus) {
+//			mBus = bus;
+//		}
 
 		@Override
 		public void onResume() {
@@ -85,15 +94,15 @@ public class MapActivity extends Activity {
 			}
             mapView.setActionBarView(actionBarView);
 			mapPresenter.reinitMapView();
-			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",MyApp.getCenterOnPosition() ,MyApp.getCenterOnMode() ));
-            mapPresenter.setCenterOnPosition(MyApp.getCenterOnPosition());
-            mapPresenter.setCenterOnMode(MyApp.getCenterOnMode());
+			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",mApp.getCenterOnPosition() ,mApp.getCenterOnMode() ));
+            mapPresenter.setCenterOnPosition(mApp.getCenterOnPosition());
+            mapPresenter.setCenterOnMode(mApp.getCenterOnMode());
 			getBus().register(mapPresenter);
 			mapView.getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
 				
 				@Override
 				public void onMapLoaded() {
-					mapView.setMapBounds(MyApp.getMapBounds());
+					mapView.setMapBounds(mApp.getMapBounds());
 					
 				}
 			});
@@ -106,15 +115,16 @@ public class MapActivity extends Activity {
 			System.out.println("pausing map fragment");
 			System.out.println(String.format("state = centerOnIndex = %d,  centerOnMode = %d",mapPresenter.getGenterOnPosition() ,mapPresenter.getGenterOnMode() ));
 			getBus().unregister(mapPresenter);
-			MyApp.saveMapBounds(mapView.getCurrentMapBounds());
-			MyApp.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
-			MyApp.saveCenterOnMode(mapPresenter.getGenterOnMode());
+			mApp.saveMapBounds(mapView.getCurrentMapBounds());
+			mApp.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
+			mApp.saveCenterOnMode(mapPresenter.getGenterOnMode());
     		context.startService(endTracking);
 		}
 
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+			MyApp.inject(this);
 			context = getActivity();
 			startTracking = new Intent(context, LocationMonitorService.class);
 			startTracking.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_RESUMED");

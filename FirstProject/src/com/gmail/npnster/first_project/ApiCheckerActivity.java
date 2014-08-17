@@ -3,6 +3,8 @@ package com.gmail.npnster.first_project;
 
 
 
+import javax.inject.Inject;
+
 import com.gmail.npnster.first_project.api_params.SignupRequest;
 import com.gmail.npnster.first_project.api_params.SignupResponse;
 import com.squareup.otto.Bus;
@@ -58,19 +60,20 @@ public class ApiCheckerActivity extends Activity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 		private TextView dummy;
-		private Bus mBus;
-		PersistData persistData = MyApp.getPersistData();
+		@Inject Bus mBus;
+		@Inject MyApp app;
+//		PersistData persistData = app.getPersistData();
 
-		private Bus getBus() {
-			if (mBus == null) {
-				mBus = BusProvider.getInstance();
-			}
-			return mBus;
-		}
-
-		public void setBus(Bus bus) {
-			mBus = bus;
-		}
+//		private Bus getBus() {
+//			if (mBus == null) {
+//				mBus = BusProvider.getInstance();
+//			}
+//			return mBus;
+//		}
+//
+//		public void setBus(Bus bus) {
+//			mBus = bus;
+//		}
 
 		
 		@Override
@@ -82,14 +85,21 @@ public class ApiCheckerActivity extends Activity {
 			if (dummy == null) System.out.println("dummy is null");
 			dummy.setVisibility(View.GONE);
 
-			getBus().register(this);
+			mBus.register(this);
 		}
 		
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onCreate(savedInstanceState);
+			MyApp.inject(this);
+		}
+
 		@Override
 		public void onPause() {
 			// TODO Auto-generated method stub
 			super.onPause();
-			getBus().unregister(this);
+			mBus.unregister(this);
 		}
 
 		public PlaceholderFragment() {

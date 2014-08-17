@@ -2,6 +2,8 @@ package com.gmail.npnster.first_project;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -55,13 +57,14 @@ import com.squareup.otto.Subscribe;
 public class ApiRequestRepository {
 
 	protected RailsApi mRailsApi;
-	protected MyApp mApp;
+	@Inject MyApp mApp;
 	protected Bus mBus;
 
 	public ApiRequestRepository(MyApp app, RailsApi railsApi, Bus bus) {
 		mApp = app;
 		mRailsApi = railsApi;
 		mBus = bus;
+		app.getObjectGraph().inject(this);
 	}
 
 
@@ -171,14 +174,14 @@ public class ApiRequestRepository {
 	@Subscribe
 	public void onUpdateUser(UpdateUserRequest event) {
 		System.out.println("inside api repo - making user update  request");
-		event.setApiAccessToken(MyApp.getToken());
-		mRailsApi.updateUser(MyApp.getUserId(), event, new RailsApiCallback<UpdateUserResponse>(mBus, new UpdateUserResponse()));
+		event.setApiAccessToken(mApp.getToken());
+		mRailsApi.updateUser(mApp.getUserId(), event, new RailsApiCallback<UpdateUserResponse>(mBus, new UpdateUserResponse()));
 	}
 	
 	@Subscribe
 	public void onCreateDevice(CreateDeviceRequest event) {
 		System.out.println("inside api repo - making create device  request");
-		event.setToken(MyApp.getToken());
+		event.setToken(mApp.getToken());
 		mRailsApi.createDevice(event, new RailsApiCallback<CreateDeviceResponse>(mBus, new CreateDeviceResponse()));
 	}
 
@@ -186,7 +189,7 @@ public class ApiRequestRepository {
 	public void onPostLocation(PostLocationRequest event) {
 		System.out.println("inside api repo - making post location  request");
 		System.out.println(event.getClass().toString());
-		event.setToken(MyApp.getToken());
+		event.setToken(mApp.getToken());
 		mRailsApi.postLocation(event.getGcmRegKey(), event, new RailsApiCallback<PostLocationResponse>(mBus, new PostLocationResponse()));
 	}
 	
@@ -194,7 +197,7 @@ public class ApiRequestRepository {
 	public void onPatchLocation(PatchLocationRequest event) {
 		System.out.println("inside api repo - making patch location  request");
 		System.out.println(event.getClass().toString());
-		event.setToken(MyApp.getToken());
+		event.setToken(mApp.getToken());
 		mRailsApi.patchLocation(event.getGcmRegKey(), event, new RailsApiCallback<PatchLocationResponse>(mBus, new PatchLocationResponse()));
 	}
 	
@@ -202,7 +205,7 @@ public class ApiRequestRepository {
 	public void onLocationsUpdateRequest(PushLocationsUpdateRequestRequest event) {
 		System.out.println("inside api repo - making locations update  request");
 		System.out.println(event.getClass().toString());
-		event.setToken(MyApp.getToken());
+		event.setToken(mApp.getToken());
 		mRailsApi.postPushLocationsUpdateRequest(event, new RailsApiCallback<PushLocationsUpdateRequestResponse>(mBus, new PushLocationsUpdateRequestResponse()));
 	}
 	
@@ -210,7 +213,7 @@ public class ApiRequestRepository {
 	public void onGetMapMarkersRequest(GetMapMarkersRequest event) {
 		System.out.println("inside api repo - making get map markers request");
 		System.out.println(event.getClass().toString());
-		mRailsApi.getMapMarkersRequest(MyApp.getToken(), new RailsApiCallback<GetMapMarkersResponse>(mBus, new GetMapMarkersResponse()));
+		mRailsApi.getMapMarkersRequest(mApp.getToken(), new RailsApiCallback<GetMapMarkersResponse>(mBus, new GetMapMarkersResponse()));
 	}
 
 

@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -14,12 +16,14 @@ import android.view.ViewGroup;
 public class MainActivity extends Activity {
 
 	protected PersistData persistData;
+	@Inject MyApp mApp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		persistData = MyApp.getPersistData();
+		MyApp.inject(this);
+		persistData = mApp.getPersistData();
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -35,7 +39,7 @@ public class MainActivity extends Activity {
 
 		System.out.println(String.format("email id = %s", persistData.readEmailId()));
 		System.out.println(String.format("access token = %s", persistData.readEmailId()));
-		System.out.println(String.format("reg id = %s", MyApp.getGcmRegId()));
+		System.out.println(String.format("reg id = %s", mApp.getGcmRegId()));
 
 		if (persistData.readEmailId() == "") {
 			intent = new Intent(this, SignUpActivity.class);
@@ -43,7 +47,7 @@ public class MainActivity extends Activity {
 		} else if (persistData.readAccessToken() == "") {
 			intent = new Intent(this, SignInActivity.class);
 			intent.putExtra("ACTION", "signin");
-		} else if  (MyApp.getGcmRegId() == "") {
+		} else if  (mApp.getGcmRegId() == "") {
 			intent = new Intent(this, RegisterGcmActivity.class);
 			System.out.println("starting reg gcm activity");
 		} else {

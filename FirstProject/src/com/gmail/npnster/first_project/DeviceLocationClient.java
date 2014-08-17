@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -23,19 +25,24 @@ public class DeviceLocationClient implements
 	private LocationClient locationClient;
 	private boolean isConnected;
 	private LocationRequest request;
-	private Bus mBus;
-
+	@Inject Bus mBus;
+	@Inject MyApp mApp;
+	
+	
+	
 	@Override
 	public void onLocationChanged(Location location) {
 		System.out.println("got a location update");
 		PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
-				MyApp.getGcmRegId(), location);
+				mApp.getGcmRegId(), location);
 		mBus.post(patchLocationRequest);
 	}
 
 	public DeviceLocationClient(Context context) {
+		
 		this.context = context;
-		mBus = MyApp.getBus();
+		MyApp.inject(this);
+//		mBus = MyApp.getBus();
 		System.out.println("connecting to google play services");
 		locationClient = new LocationClient(context, this, this);
 		isConnected = false;
@@ -97,7 +104,7 @@ public class DeviceLocationClient implements
 			Location lastLocation = locationClient.getLastLocation();
 			if (lastLocation != null) {
 				PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
-						MyApp.getGcmRegId(), lastLocation);
+						mApp.getGcmRegId(), lastLocation);
 				mBus.post(patchLocationRequest);
 			}
 			request = new LocationRequest();

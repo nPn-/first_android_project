@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -71,34 +73,37 @@ public class HomeActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		@Override
-		public void onPause() {
-			// TODO Auto-generated method stub
-			super.onPause();
-			getBus().unregister(this);
-		}
-
+		@Inject Bus mBus;
+		@Inject MyApp mApp;
+		
 		@InjectView(R.id.map_button) 
 		Button mapButton;
 		
 		@InjectView(R.id.sign_out_button)
 		Button signOutButton;
 		
+		@Override
+		public void onPause() {
+			// TODO Auto-generated method stub
+			super.onPause();
+			mBus.unregister(this);
+		}
 
 		
-		private Bus mBus;
-		
-		private Bus getBus() {
-		    if (mBus == null) {
-		      mBus = BusProvider.getInstance();
-		    }
-		    return mBus;
-		  }
 
-		  public void setBus(Bus bus) {
-		    mBus = bus;
-		  }
 		
+		
+//		private Bus getBus() {
+//		    if (mBus == null) {
+//		      mBus = BusProvider.getInstance();
+//		    }
+//		    return mBus;
+//		  }
+//
+//		  public void setBus(Bus bus) {
+//		    mBus = bus;
+//		  }
+//		
 		
 		  
 		  @OnClick(R.id.sign_out_button)
@@ -120,9 +125,9 @@ public class HomeActivity extends ActionBarActivity {
 		@Subscribe
 		public void onSignoutCompletedEvent(SignoutResponse event) {
 			System.out.println("inside home activity, onSignoutCompleted");
-			MyApp.clearToken();
-			MyApp.clearEmailId();
-			MyApp.clearGcmRegId();
+			mApp.clearToken();
+			mApp.clearEmailId();
+			mApp.clearGcmRegId();
 			this.getActivity().finish();
 		
 			
@@ -132,7 +137,7 @@ public class HomeActivity extends ActionBarActivity {
 		public void onResume() {
 			// TODO Auto-generated method stub
 			super.onResume();
-			 getBus().register(this);
+			 mBus.register(this);
 			 System.out.println("posting get user profile request to the bus");
 			 mBus.post(new GetUserProfileRequest());
 		//	 mBus.post(new GetUsersRequest());  
@@ -169,6 +174,7 @@ public class HomeActivity extends ActionBarActivity {
 		public void onCreate(Bundle savedInstanceState) {
 			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
+			MyApp.inject(this);
 
 		}
 
