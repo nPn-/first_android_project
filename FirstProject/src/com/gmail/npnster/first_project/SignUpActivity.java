@@ -109,7 +109,7 @@ public class SignUpActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		MyApp.inject(this);
+		Injector.getInstance().inject(this);
 
 		setContentView(R.layout.activity_sign_up);
 

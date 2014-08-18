@@ -18,7 +18,7 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 	
 	public SignupTest() {
 		super(SignUpActivity.class);
-		mApp = MyApp.getObjectGraph().get(MyApp.class);
+		mApp = Injector.getInstance().getObjectGraph().get(MyApp.class);
 //		PersistData persistData = mApp.getPersistData();
 
 		

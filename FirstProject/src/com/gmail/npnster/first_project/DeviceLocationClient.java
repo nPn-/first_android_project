@@ -41,7 +41,7 @@ public class DeviceLocationClient implements
 	public DeviceLocationClient(Context context) {
 		
 		this.context = context;
-		MyApp.inject(this);
+		Injector.getInstance().inject(this);
 //		mBus = MyApp.getBus();
 		System.out.println("connecting to google play services");
 		locationClient = new LocationClient(context, this, this);

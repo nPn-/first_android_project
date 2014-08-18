@@ -158,13 +158,13 @@ public class MapMarker implements Target {
 		mMarker = marker;
 		mBitmap = null;
 		mBus = BusProvider.getInstance();
-		ObjectGraph objectGraph = MyApp.getObjectGraph();
+		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
 		objectGraph.inject(this);
 		Picasso.with(context).load(marker.getGravatarUrl()).into(this);
 	}
 	
 	public MapMarker() {
-		ObjectGraph objectGraph = MyApp.getObjectGraph();
+		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
 		objectGraph.inject(this);
 	}
 

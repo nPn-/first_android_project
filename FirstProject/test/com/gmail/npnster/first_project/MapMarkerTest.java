@@ -7,15 +7,19 @@ import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import android.graphics.Bitmap;
 
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Bus;
+
 import static org.mockito.Mockito.*;
 
+//@Config(manifest = "/home/john/git/first_project/FirstProject/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
 public class MapMarkerTest {
 	Bus mockBus = mock(Bus.class);
@@ -26,14 +30,17 @@ public class MapMarkerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		MyApp.inject(this);
+		System.out.println("setting up the test");
+		MyApp app = (MyApp) Robolectric.application;
+		Injector.getInstance().initialize(app); 
+		Injector.getInstance().inject(this);
 
 	}
 
 	
 	@Test
 	public void testGetLatLng() {	
-		
+
 		when(mockRailsMarker.getLatitude()).thenReturn(41.5);
 		when(mockRailsMarker.getLongitude()).thenReturn(-75.5);
 		MapMarker androidMapMarker = new MapMarkerBuilder().withMarker(mockRailsMarker)

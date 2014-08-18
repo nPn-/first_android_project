@@ -32,6 +32,11 @@ public class ApplicationModule {
 		System.out.println("creating production version of ApplicationModule");
 		mApp = app;
 	}
+	
+	@Provides @Singleton
+	public MyApp provideMyApp() {
+		return mApp;
+	}
 
 	@Provides
 	public GoogleMapMarkerParameters provideGoogleMapMarkerParameters() {
@@ -39,18 +44,11 @@ public class ApplicationModule {
 		return new GoogleMapMarkerParameters();
 	}
 	
-	@Provides @Singleton
-	public MyApp provideMyApp() {
-		return getApp();
-	}
 	
 	@Provides @Singleton
 	public Bus provideBus () {
 		return BusProvider.getInstance();
 	}
 	
-	public MyApp getApp() {
-		return mApp;
-	}
 
 }

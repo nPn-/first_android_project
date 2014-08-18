@@ -11,7 +11,7 @@ public class AndroidModule {
   private final Context mApplicationContext;
 
   public AndroidModule(Context applicationContext) {
-	  System.out.println("inside production version of android module"); 
+	  System.out.println("inside test version of android module"); 
     mApplicationContext = applicationContext;
   }
 

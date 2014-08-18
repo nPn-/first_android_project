@@ -124,7 +124,7 @@ public class MapActivity extends Activity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			MyApp.inject(this);
+			Injector.getInstance().inject(this);
 			context = getActivity();
 			startTracking = new Intent(context, LocationMonitorService.class);
 			startTracking.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_RESUMED");

@@ -57,14 +57,14 @@ import com.squareup.otto.Subscribe;
 public class ApiRequestRepository {
 
 	protected RailsApi mRailsApi;
-	@Inject MyApp mApp;
+	MyApp mApp;
 	protected Bus mBus;
 
 	public ApiRequestRepository(MyApp app, RailsApi railsApi, Bus bus) {
 		mApp = app;
 		mRailsApi = railsApi;
 		mBus = bus;
-		app.getObjectGraph().inject(this);
+//		app.getObjectGraph().inject(this);
 	}
 
 

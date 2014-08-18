@@ -174,7 +174,7 @@ public class HomeActivity extends ActionBarActivity {
 		public void onCreate(Bundle savedInstanceState) {
 			// TODO Auto-generated method stub
 			super.onCreate(savedInstanceState);
-			MyApp.inject(this);
+			Injector.getInstance().inject(this);
 
 		}
 

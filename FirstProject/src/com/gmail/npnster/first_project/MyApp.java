@@ -47,12 +47,14 @@ public class MyApp extends Application {
 	private RailsApi railsApi;
 	@Inject Bus mBus;
 	
-	private static ObjectGraph objectGraph;
+//	private static ObjectGraph objectGraph;
 	
 	public MyApp() {
 		System.out.println("myapp construtor");  
-		objectGraph = ObjectGraph.create(new ApplicationModule(this));
-		objectGraph.inject(this);
+		Injector.getInstance().initialize(this);
+		Injector.getInstance().inject(this);
+//		objectGraph = ObjectGraph.create(new ApplicationModule(this));
+//		objectGraph.inject(this);
 	}
 
 //	public static Bus getBus() {
@@ -64,6 +66,7 @@ public class MyApp extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		System.out.println("app being created");
+//		Injector.getInstance().buildGraph();
 //		singleton = this;
 		persistData = new PersistData(this);
 		cachedPersistData = persistData.new Cached();
@@ -191,21 +194,21 @@ public class MyApp extends Application {
 		mApiRootUrl = apiRootUrl;
 	}
 
-	public static ObjectGraph getObjectGraph() {
-		System.out.println(String.format("inside inject getObjectGraph() = %s", objectGraph) );
-		return objectGraph;
-	}
-
-	  protected List<Object> getModules() {
-		    return Arrays.asList(
-		        new AndroidModule(this),
-		        new ApplicationModule(this)
-		    );
-		  }
-
-		  public static void inject(Object object) {
-		   getObjectGraph().inject(object);
-		  }
+//	public static ObjectGraph getObjectGraph() {
+//		System.out.println(String.format("inside inject getObjectGraph() = %s", objectGraph) );
+//		return objectGraph;
+//	}
+//
+//	  protected List<Object> getModules() {
+//		    return Arrays.asList(
+//		        new AndroidModule(this),
+//		        new ApplicationModule(this)
+//		    );
+//		  }
+//
+//		  public static void inject(Object object) {
+//		   getObjectGraph().inject(object);
+//		  }
 	
 
 }

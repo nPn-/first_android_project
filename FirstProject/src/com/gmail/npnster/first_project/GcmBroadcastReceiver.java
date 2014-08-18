@@ -17,7 +17,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
 	UpdateLocationRequest updateLocationRequest = new UpdateLocationRequest();
 	
 	public GcmBroadcastReceiver() {
-		MyApp.inject(this);
+		Injector.getInstance().inject(this);
 		
 	}
 	

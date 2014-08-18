@@ -66,7 +66,7 @@ public class RegisterGcmActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		MyApp.inject(this);
+		Injector.getInstance().inject(this);
 		setContentView(R.layout.activity_register_gcm);
 		mProgressBar = findViewById(R.id.gcm_reg_progress_bar);
 		context = getApplicationContext();

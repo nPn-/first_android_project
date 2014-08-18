@@ -47,12 +47,14 @@ public class ApplicationModule {
 	
 	@Provides @Singleton
 	public MyApp provideMyApp() {
-		return (MyApp) Robolectric.application;
+		System.out.println("inside provide MyApp for test");
+//		return (MyApp) Robolectric.application;
+		return mApp;
 	}
 
 	@Provides @Singleton
 	public Bus provideBus () {
-		return BusProvider.getInstance();
+		return mock(Bus.class);
 	}
 	
 	

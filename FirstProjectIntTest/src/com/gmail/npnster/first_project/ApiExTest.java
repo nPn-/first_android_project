@@ -59,7 +59,8 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 
 	public ApiExTest() {
 		super(ApiExActivity.class);
-		mApp = MyApp.getObjectGraph().get(MyApp.class);
+		mApp = Injector.getInstance().getObjectGraph().get(MyApp.class);
+//		System.out.println(String.format("activity = %s",  getActivity()));
 		PersistData persistData = mApp.getPersistData();
 
 	}
