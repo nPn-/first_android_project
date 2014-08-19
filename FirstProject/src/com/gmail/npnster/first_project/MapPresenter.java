@@ -1,6 +1,9 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import android.content.Context;
+
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,15 +18,15 @@ public class MapPresenter {
 	private Boolean isMapReady = false;
 	private MapMarkers mMapMarkers;
 	private Context mContext;
-	private Bus mBus;
 	private int centerOnModeIndex = 0;
 	private int centerOnPersonIndex = 0;
 	private GoogleMap.CancelableCallback mExpandMapCallback;
+	@Inject Bus mBus;
 
 	public MapPresenter(MapMarkers mapMarkers) {
 		System.out.println("Constructing MapPresenter");
+		Injector.getInstance().inject(this);
 		mMapMarkers = mapMarkers;
-		mBus = BusProvider.getInstance();
 		setExpandMapCallback();
 
 	}

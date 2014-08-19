@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
 import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestRequest;
 import com.squareup.otto.Bus;
@@ -19,15 +21,15 @@ public class LocationMonitorService extends Service {
 	private AlarmManager alarmManager;
 	private Intent gcmKeepAliveIntent;
     private PendingIntent gcmKeepAlivePendingIntent;
-	private Bus mBus;
 	private GetMarkerRequestTimer markerRequestTimer;
 	private PushRequestTimer pushRequestTimer;
+	@Inject Bus mBus;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		System.out.println("creating the LocationMonitorService");
-		mBus = BusProvider.getInstance();
+		Injector.getInstance().inject(this);
 		mBus.register(this);
 		markerRequestTimer = new GetMarkerRequestTimer(10*60000,10000);
 		pushRequestTimer = new PushRequestTimer(10*60000,60000);

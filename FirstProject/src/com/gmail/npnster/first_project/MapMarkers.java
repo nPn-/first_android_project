@@ -2,6 +2,8 @@ package com.gmail.npnster.first_project;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import com.gmail.npnster.first_project.MapMarker;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.google.android.gms.maps.model.LatLng;
@@ -12,7 +14,7 @@ import com.squareup.otto.Bus;
 public class MapMarkers {
 	
 	private ArrayList<MapMarker> markers;
-	private Bus mBus;
+	@Inject Bus mBus;
 	
 	public MapMarker get(int index) {
 		MapMarker marker = null;
@@ -28,7 +30,7 @@ public class MapMarkers {
 
 	public MapMarkers() {
 		markers = new ArrayList<MapMarker>();
-		mBus = BusProvider.getInstance();
+		Injector.getInstance().inject(this);
 	}
 
 

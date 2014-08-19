@@ -18,6 +18,12 @@ import dagger.Provides;
 				MainActivity.class,
 				RegisterGcmActivity.class,
 				SignUpActivity.class,
+				ApiExActivity.class,
+				LocationMonitorService.class,
+				MapMarker.class,
+				MapMarkers.class,
+				MapPresenter.class,
+				UsersListActivity.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				MyApp.class
 			  },
@@ -47,7 +53,7 @@ public class ApplicationModule {
 	
 	@Provides @Singleton
 	public Bus provideBus () {
-		return BusProvider.getInstance();
+		return new Bus();
 	}
 	
 

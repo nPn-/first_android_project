@@ -2,6 +2,8 @@ package com.gmail.npnster.first_project;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
@@ -60,32 +62,32 @@ public class UsersListActivity extends ActionBarActivity {
 	 */
 	public static class UserListFragment extends ListFragment {
 
-		private Bus mBus;
 		private ArrayList<UserListItem> values = new ArrayList<UserListItem>();
 		private ArrayAdapter<UserListItem> adapter;
+		@Inject Bus mBus;
 
-		private Bus getBus() {
-			if (mBus == null) {
-				mBus = BusProvider.getInstance();
-			}
-			return mBus;
-		}
-
-		public void setBus(Bus bus) {
-			mBus = bus;
-		}
+//		private Bus getBus() {
+//			if (mBus == null) {
+//				mBus = BusProvider.getInstance();
+//			}
+//			return mBus;
+//		}
+//
+//		public void setBus(Bus bus) {
+//			mBus = bus;
+//		}
 
 		@Override
 		public void onPause() {
 			// TODO Auto-generated method stub
 			super.onPause();
-			getBus().unregister(this);
+			mBus.unregister(this);
 		}
 		@Override
 		public void onResume() {
 			// TODO Auto-generated method stub
 			super.onResume();
-			 getBus().register(this);
+			 mBus.register(this);
 			 System.out.println("posting get userslist request to the bus");
 			 mBus.post(new GetUsersRequest());
 		}
@@ -103,6 +105,7 @@ public class UsersListActivity extends ActionBarActivity {
 		}
 		
 		public UserListFragment() {
+			Injector.getInstance().inject(this);
 		}
 
 		// @Override

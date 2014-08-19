@@ -18,13 +18,12 @@ import dagger.ObjectGraph;
 public class MapMarker implements Target {
 	
 	
-	private Bus mBus;
 	
 
 	private RailsMarker mMarker;
 	
-	@Inject
-	GoogleMapMarkerParameters googleMapMarkerParameters;
+	@Inject	GoogleMapMarkerParameters googleMapMarkerParameters;
+	@Inject Bus mBus;
 
 
 	private com.google.android.gms.maps.model.Marker mGoogleMapMarker;
@@ -157,15 +156,12 @@ public class MapMarker implements Target {
 		System.out.println("building marker");
 		mMarker = marker;
 		mBitmap = null;
-		mBus = BusProvider.getInstance();
-		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
-		objectGraph.inject(this);
+		Injector.getInstance().inject(this);
 		Picasso.with(context).load(marker.getGravatarUrl()).into(this);
 	}
 	
 	public MapMarker() {
-		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
-		objectGraph.inject(this);
+		Injector.getInstance().inject(this);
 	}
 
 

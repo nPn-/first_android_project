@@ -1,5 +1,7 @@
 package com.gmail.npnster.first_project;
 
+import javax.inject.Inject;
+
 import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.CreateDeviceResponse;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
@@ -62,6 +64,7 @@ public class ApiExActivity extends Activity {
 
 	private Button mButton;
 	private TextView mTextView;
+	@Inject Bus mBus;
 
 	public enum ApiCall {
 		LEAVE, SIGNUP, GET_USER_PROFILE, GET_USERS, UPDATE_USER,
@@ -521,26 +524,17 @@ public class ApiExActivity extends Activity {
 	// ***********************
 	
 	
-	private Bus mBus;
 
-	protected Bus getBus() {
-		if (mBus == null) {
-			mBus = BusProvider.getInstance();
-		}
-		return mBus;
-	}
 
-	public void setBus(Bus bus) {
-		mBus = bus;
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Injector.getInstance().inject(this);
 		setContentView(R.layout.activity_api_ex);
 		mButton = (Button) findViewById(R.id.button);
 		mTextView = (TextView) findViewById(R.id.textView);
-		getBus();
+//		getBus();
 
 		mButton.setOnClickListener(new View.OnClickListener() {
 
@@ -624,14 +618,14 @@ public class ApiExActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		getBus().register(this);
+		mBus.register(this);
 	}
 
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		getBus().unregister(this);
+		mBus.unregister(this);
 	}
 
 	public void setApiCall(ApiCall apiCall) {
