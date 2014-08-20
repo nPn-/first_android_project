@@ -15,15 +15,15 @@ import android.view.ViewGroup;
 
 public class MainActivity extends Activity {
 
-	protected PersistData persistData;
-	@Inject MyApp mApp;
+//	protected PersistData persistData;
+	@Inject PersistData mPersistData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Injector.getInstance().inject(this);
-		persistData = mApp.getPersistData();
+//		persistData = mApp.getPersistData();
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -37,22 +37,22 @@ public class MainActivity extends Activity {
 		Log.i("info", "here");
 		Intent intent = null;
 
-		System.out.println(String.format("email id = %s", persistData.readEmailId()));
-		System.out.println(String.format("access token = %s", persistData.readEmailId()));
-		System.out.println(String.format("reg id = %s", mApp.getGcmRegId()));
+		System.out.println(String.format("email id = %s", mPersistData.readEmailId()));
+		System.out.println(String.format("access token = %s", mPersistData.readEmailId()));
+		System.out.println(String.format("reg id = %s", mPersistData.getGcmRegId()));
 
-		if (persistData.readEmailId() == "") {
+		if (mPersistData.readEmailId() == "") {
 			intent = new Intent(this, SignUpActivity.class);
 			intent.putExtra("ACTION", "signup");
-		} else if (persistData.readAccessToken() == "") {
+		} else if (mPersistData.readAccessToken() == "") {
 			intent = new Intent(this, SignInActivity.class);
 			intent.putExtra("ACTION", "signin");
-		} else if  (mApp.getGcmRegId() == "") {
+		} else if  (mPersistData.getGcmRegId() == "") {
 			intent = new Intent(this, RegisterGcmActivity.class);
 			System.out.println("starting reg gcm activity");
 		} else {
 			System.out.println(String.format("user = %s , token = %s",
-					persistData.readEmailId(), persistData.readAccessToken()));
+					mPersistData.readEmailId(), mPersistData.readAccessToken()));
 			intent = new Intent(this, HomeActivity.class);
 			intent.putExtra("ACTION", "home");
 		}

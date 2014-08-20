@@ -11,39 +11,48 @@ public class PersistData {
 	
 	private static final String GENERAL_SETTINGS_FILE_NAME = "com.gmail.npnster.fist_project.GENERAL_SETTINGS_FILE";
 	
-	private Context context;
+	private MyApp mApp;
 	private SharedPreferences generalSettingsFile;
 	private SharedPreferences.Editor generalSettingsFileEditor;
+	private String token;
+	private String user;
+	private String email;    
+	private String gcmRegId;
+	private LatLngBounds mapBounds;
+	private int centerOnPosition;
+	private int centerOnMode;
+
+
 	
 	// this mainly just hides this method since it should only be called via the application class
 	// which also caches a copy of the token 
-	protected class Cached {
-		public void saveAccessToken(String accessToken) {
+//	private class Cached {
+		private void writeAccessToken(String accessToken) {
 			generalSettingsFileEditor.putString("ACCESS_TOKEN", accessToken);
 			generalSettingsFileEditor.commit();
 		}
-		public void saveEmailId(String emailId) {
+		private void writeEmailId(String emailId) {
 			generalSettingsFileEditor.putString("USER_ID", emailId);
 			generalSettingsFileEditor.commit();
 		}
-		public void saveGcmRegId(String gcmRegId) {
+		private void writeGcmRegId(String gcmRegId) {
 			generalSettingsFileEditor.putString("GCM_REG_ID", gcmRegId);
 			generalSettingsFileEditor.commit();
 		}
-		public void clearAccessToken() {
+		private void writeClearAccessToken() {
 			generalSettingsFileEditor.putString("ACCESS_TOKEN", "");
 			generalSettingsFileEditor.commit();
 		}
-		public void clearGcmRegId() {
+		private void writeClearGcmRegId() {
 			generalSettingsFileEditor.putString("GCM_REG_ID", "");
 			generalSettingsFileEditor.commit();
 		}
-		public void clearUserId() {
+		private void writeClearUserId() {
 			generalSettingsFileEditor.putString("USER_ID", "");
 			generalSettingsFileEditor.commit();
 		}
 		
-		public void saveMapBounds(LatLngBounds bounds) {
+		private void writeMapBounds(LatLngBounds bounds) {
 			generalSettingsFileEditor.putFloat("SOUTHWEST_LAT",(float) bounds.southwest.latitude);
 			generalSettingsFileEditor.putFloat("SOUTHWEST_LNG",(float) bounds.southwest.longitude);
 			generalSettingsFileEditor.putFloat("NORTHEAST_LAT",(float) bounds.northeast.latitude);
@@ -51,24 +60,34 @@ public class PersistData {
 			generalSettingsFileEditor.commit();
 		}
 		
-		public void saveCenterOnPosition(int position) {
+		private void writeCenterOnPosition(int position) {
 			generalSettingsFileEditor.putInt("CENTER_ON_POSITION", position);
 			generalSettingsFileEditor.commit();
 		}
 		
-		public void saveCenterOnMode(int mode) {
+		private void writeCenterOnMode(int mode) {
 			generalSettingsFileEditor.putInt("CENTER_ON_MODE", mode);
 			generalSettingsFileEditor.commit();
 		}
 
 
 		
-	}
+//	}
 	
-	public PersistData(Context context) {
-		this.context = context;
-		generalSettingsFile = context.getSharedPreferences(GENERAL_SETTINGS_FILE_NAME, Context.MODE_PRIVATE );
+	public PersistData(MyApp app) {
+		mApp = app;
+		System.out.println(String.format("in peristdata const context = %s", mApp));
+		System.out.println(String.format("in peristdata file = %s", GENERAL_SETTINGS_FILE_NAME));
+		generalSettingsFile = mApp.getSharedPreferences(GENERAL_SETTINGS_FILE_NAME, Context.MODE_PRIVATE );
 		generalSettingsFileEditor = generalSettingsFile.edit();
+		
+		token = readAccessToken();
+		email = readEmailId();
+		user = getUserFromToken();
+		gcmRegId = readGcmRegId();
+		mapBounds = readMapBounds();
+		centerOnPosition = readCenterOnPosition();
+		centerOnMode = readCenterOnMode();
 		
 	}
 	
@@ -110,6 +129,90 @@ public class PersistData {
 	public int readCenterOnMode() {
 		int mode = generalSettingsFile.getInt("CENTER_ON_MODE", 0);
 		return mode;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+	
+	public String getGcmRegId() {
+		return gcmRegId;
+	}
+	
+	public LatLngBounds getMapBounds() {
+		return mapBounds;
+	}
+	
+	public int getCenterOnPosition() {
+		return centerOnPosition;
+	}
+	
+	public int getCenterOnMode() {
+		return centerOnMode;
+	}
+	
+	public String getUserId() {
+		return getUserFromToken();
+	}
+
+	public void saveToken(String tokenToSave) {
+		writeAccessToken(tokenToSave);
+		user = tokenToSave.split(":")[0];
+		token = tokenToSave;
+	}
+	
+	public void clearToken() {
+		token = "";
+		writeClearAccessToken();
+	}
+
+	public void saveEmailId(String emailToSave) {
+		writeEmailId(emailToSave);
+		email = emailToSave;
+	}
+	
+	public void clearEmailId() {
+		writeClearUserId();
+		email = "";
+	}
+
+	
+	public void saveGcmRegId(String gcmRegIdToSave) {
+		writeGcmRegId(gcmRegIdToSave);
+		gcmRegId = gcmRegIdToSave;
+	}
+	
+	public void saveMapBounds(LatLngBounds bounds) {
+		writeMapBounds(bounds);
+		mapBounds = bounds;
+	}
+	
+	public void saveCenterOnPosition(int position) {
+		writeCenterOnPosition(position);
+		centerOnPosition = position;
+	}
+	
+	public void saveCenterOnMode(int mode) {
+		writeCenterOnMode(mode);
+		centerOnMode = mode;
+	}
+	
+	public void clearGcmRegId() {
+		writeClearGcmRegId();
+		gcmRegId = "";
+	}
+
+
+//	public PersistData getPersistData() {
+//		return persistData;
+//	}
+              
+	protected String getUserFromToken() {
+		return token.split(":")[0];
 	}
 
 	

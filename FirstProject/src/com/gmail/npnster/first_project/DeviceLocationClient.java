@@ -26,7 +26,7 @@ public class DeviceLocationClient implements
 	private boolean isConnected;
 	private LocationRequest request;
 	@Inject Bus mBus;
-	@Inject MyApp mApp;
+	@Inject PersistData mPersistData;
 	
 	
 	
@@ -34,7 +34,7 @@ public class DeviceLocationClient implements
 	public void onLocationChanged(Location location) {
 		System.out.println("got a location update");
 		PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
-				mApp.getGcmRegId(), location);
+				mPersistData.getGcmRegId(), location);
 		mBus.post(patchLocationRequest);
 	}
 
@@ -104,7 +104,7 @@ public class DeviceLocationClient implements
 			Location lastLocation = locationClient.getLastLocation();
 			if (lastLocation != null) {
 				PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
-						mApp.getGcmRegId(), lastLocation);
+						mPersistData.getGcmRegId(), lastLocation);
 				mBus.post(patchLocationRequest);
 			}
 			request = new LocationRequest();

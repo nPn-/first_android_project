@@ -14,12 +14,11 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 	
 	private String storedEmailId = null;
 	private String storedToken = null ;
-	MyApp mApp;
+	private PersistData mPersistData;
+//	MyApp mApp;
 	
 	public SignupTest() {
 		super(SignUpActivity.class);
-		mApp = Injector.getInstance().getObjectGraph().get(MyApp.class);
-//		PersistData persistData = mApp.getPersistData();
 
 		
 
@@ -32,11 +31,13 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 	protected void setUp() throws Exception {
 		super.setUp(); 
 		System.out.println("setting up test");
+//		mApp = Injector.getInstance().getObjectGraph().get(MyApp.class);
+		mPersistData = ((MyApp) getActivity().getApplication()).getPersistData();
 //		PersistData persistData =  new PersistData(getActivity());
 //		if (storedEmailId == null) storedEmailId = persistData.readEmailId();
 //		if (storedToken == null) storedToken = persistData.readAccessToken();
 //		System.out.println(String.format("got the following from the device email = %s token = %s", storedEmailId, storedToken));
-		mApp.setApiRootUrl("http://10.0.2.2:3000"); 
+//		mApp.setApiRootUrl("http://10.0.2.2:3000"); 
 
 		solo = new Solo(getInstrumentation(), getActivity());
 
@@ -79,7 +80,8 @@ public class SignupTest extends ActivityInstrumentationTestCase2<SignUpActivity>
 		solo.enterText(2, "foobar");
 		solo.enterText(3, "foobar");
 		solo.clickOnButton("Sign Up!");
-		solo.waitForText("Home");   
+		solo.waitForText("Sign out");   
+//		solo.waitForText("Home");   
 		solo.clickOnButton("Sign out");
 		solo.waitForText("Welcome");
 		solo.enterText(0, "jdd_012@example.com");

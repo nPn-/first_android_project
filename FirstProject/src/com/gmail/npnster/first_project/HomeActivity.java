@@ -74,7 +74,7 @@ public class HomeActivity extends ActionBarActivity {
 	public static class PlaceholderFragment extends Fragment {
 
 		@Inject Bus mBus;
-		@Inject MyApp mApp;
+		@Inject PersistData mPersistData;
 		
 		@InjectView(R.id.map_button) 
 		Button mapButton;
@@ -125,9 +125,9 @@ public class HomeActivity extends ActionBarActivity {
 		@Subscribe
 		public void onSignoutCompletedEvent(SignoutResponse event) {
 			System.out.println("inside home activity, onSignoutCompleted");
-			mApp.clearToken();
-			mApp.clearEmailId();
-			mApp.clearGcmRegId();
+			mPersistData.clearToken();
+			mPersistData.clearEmailId();
+			mPersistData.clearGcmRegId();
 			this.getActivity().finish();
 		
 			

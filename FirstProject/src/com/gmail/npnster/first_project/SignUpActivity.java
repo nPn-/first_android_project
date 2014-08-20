@@ -87,13 +87,13 @@ public class SignUpActivity extends Activity {
 	private FormType formType;
 
 	@Inject Bus mBus;
-	@Inject MyApp mApp;
+	@Inject PersistData mPersistData;
 
 	private Button mSignInButton;
 
-	private Bus getBus() {
-		return mBus;
-	}
+//	private Bus getBus() {
+//		return mBus;
+//	}
 	
 //	private Bus getBus() {
 //		if (mBus == null) {
@@ -195,14 +195,14 @@ public class SignUpActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		getBus().register(this);
+		mBus.register(this);
 	}
 
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		getBus().unregister(this);
+		mBus.unregister(this);
 	}
 
 	@Override
@@ -297,7 +297,7 @@ public class SignUpActivity extends Activity {
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
-			PersistData persistData = mApp.getPersistData();
+//			PersistData persistData = mApp.getPersistData();
 
 			if (formType == FormType.SIGNUP) {
 				System.out.println("postin signup request to bus");
@@ -331,8 +331,8 @@ public class SignUpActivity extends Activity {
 
 		if (event.isSuccessful()) {
 			if (returnedToken != null) {
-				mApp.saveToken(returnedToken);
-				mApp.saveEmailId(mEmail);
+				mPersistData.saveToken(returnedToken);
+				mPersistData.saveEmailId(mEmail);
 			}
 		} else {
 			List<String> errors = event.getErrors();
@@ -362,8 +362,8 @@ public class SignUpActivity extends Activity {
 		System.out.println(event.getErrors());
 		if (event.isSuccessful()) {
 			if (returnedToken != null) {
-				mApp.saveToken(returnedToken);
-				mApp.saveEmailId(mEmail);
+				mPersistData.saveToken(returnedToken);
+				mPersistData.saveEmailId(mEmail);
 			}
 		} else if (event.getRawResponse() != null && event.getRawResponse().getStatus() == 401) {
 			Toast toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);

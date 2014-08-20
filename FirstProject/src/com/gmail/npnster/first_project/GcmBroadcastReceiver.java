@@ -17,7 +17,6 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
 	UpdateLocationRequest updateLocationRequest = new UpdateLocationRequest();
 	
 	public GcmBroadcastReceiver() {
-		Injector.getInstance().inject(this);
 		
 	}
 	
@@ -25,6 +24,7 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
+		Injector.getInstance().inject(this);
 		Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         String messageType = gcm.getMessageType(intent);

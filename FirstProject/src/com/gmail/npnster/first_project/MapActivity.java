@@ -40,7 +40,7 @@ public class MapActivity extends Activity {
 
 	public static class WrapperFragment extends MapFragment {
 		@Inject Bus mBus;
-		@Inject MyApp mApp;
+		@Inject PersistData mPersistData;
 
 		private MapMarkers mapMarkerList;
 		private MapView mapView;
@@ -94,15 +94,15 @@ public class MapActivity extends Activity {
 			}
             mapView.setActionBarView(actionBarView);
 			mapPresenter.reinitMapView();
-			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",mApp.getCenterOnPosition() ,mApp.getCenterOnMode() ));
-            mapPresenter.setCenterOnPosition(mApp.getCenterOnPosition());
-            mapPresenter.setCenterOnMode(mApp.getCenterOnMode());
+			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",mPersistData.getCenterOnPosition() ,mPersistData.getCenterOnMode() ));
+            mapPresenter.setCenterOnPosition(mPersistData.getCenterOnPosition());
+            mapPresenter.setCenterOnMode(mPersistData.getCenterOnMode());
 			getBus().register(mapPresenter);
 			mapView.getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
 				
 				@Override
 				public void onMapLoaded() {
-					mapView.setMapBounds(mApp.getMapBounds());
+					mapView.setMapBounds(mPersistData.getMapBounds());
 					
 				}
 			});
@@ -115,9 +115,9 @@ public class MapActivity extends Activity {
 			System.out.println("pausing map fragment");
 			System.out.println(String.format("state = centerOnIndex = %d,  centerOnMode = %d",mapPresenter.getGenterOnPosition() ,mapPresenter.getGenterOnMode() ));
 			getBus().unregister(mapPresenter);
-			mApp.saveMapBounds(mapView.getCurrentMapBounds());
-			mApp.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
-			mApp.saveCenterOnMode(mapPresenter.getGenterOnMode());
+			mPersistData.saveMapBounds(mapView.getCurrentMapBounds());
+			mPersistData.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
+			mPersistData.saveCenterOnMode(mapPresenter.getGenterOnMode());
     		context.startService(endTracking);
 		}
 

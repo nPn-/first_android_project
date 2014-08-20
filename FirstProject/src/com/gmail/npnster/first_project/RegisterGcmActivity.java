@@ -25,7 +25,7 @@ public class RegisterGcmActivity extends Activity {
 	private Context context;
 	private PersistData persistData;
 	@Inject Bus mBus;
-	@Inject MyApp mApp;
+	@Inject PersistData mPersistData;
 
 	private Bus getBus() {
 		return mBus;
@@ -49,7 +49,7 @@ public class RegisterGcmActivity extends Activity {
 		mProgressBar.animate();
 		getBus().register(this);
 		GcmRegistrationTask registrationTask = new GcmRegistrationTask();
-		if (mApp.getGcmRegId() == "") {
+		if (mPersistData.getGcmRegId() == "") {
 			registrationTask.execute(null,null,null);
 		}
 		
@@ -70,7 +70,7 @@ public class RegisterGcmActivity extends Activity {
 		setContentView(R.layout.activity_register_gcm);
 		mProgressBar = findViewById(R.id.gcm_reg_progress_bar);
 		context = getApplicationContext();
-		persistData = mApp.getPersistData();
+//		persistData = mApp.getPersistData();
 		System.out.println("trying to register for gcm id");
 
 	
@@ -102,8 +102,8 @@ public class RegisterGcmActivity extends Activity {
 			protected void onPostExecute(Object result) {
 				// TODO Auto-generated method stub
 				super.onPostExecute(result);
-				if (persistData.readAccessToken() != "") {
-					mApp.saveGcmRegId(gcmRegId);
+				if (mPersistData.readAccessToken() != "") {
+					mPersistData.saveGcmRegId(gcmRegId);
 					CreateDeviceRequest createDeviceRequest = new CreateDeviceRequest(gcmRegId,"android_phone",true);
 					mBus.post(createDeviceRequest);
 				}

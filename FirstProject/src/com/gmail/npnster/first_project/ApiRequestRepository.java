@@ -57,11 +57,11 @@ import com.squareup.otto.Subscribe;
 public class ApiRequestRepository {
 
 	protected RailsApi mRailsApi;
-	MyApp mApp;
+	PersistData mPersistData;
 	protected Bus mBus;
 
-	public ApiRequestRepository(MyApp app, RailsApi railsApi, Bus bus) {
-		mApp = app;
+	public ApiRequestRepository(PersistData persistData, RailsApi railsApi, Bus bus) {
+		mPersistData = persistData;
 		mRailsApi = railsApi;
 		mBus = bus;
 //		app.getObjectGraph().inject(this);
@@ -73,16 +73,16 @@ public class ApiRequestRepository {
 		System.out
 				.println(String
 						.format("inside api repro making profile request with the following userParams,  user = %s, token = %s",
-								mApp.getUserId(), mApp.getToken()));
-		mRailsApi.userParams(mApp.getUserId(), mApp.getToken(),
+								mPersistData.getUserId(), mPersistData.getToken()));
+		mRailsApi.userParams(mPersistData.getUserId(), mPersistData.getToken(),
 				new RailsApiCallback<GetUserProfileResponse>(mBus, new GetUserProfileResponse()));
 	}
 
 	@Subscribe
 	public void onSignout(SignoutRequest event) {
 		System.out.println("inside api repo - making signout request");
-		String token = event.getToken() == null ? mApp.getToken() : event.getToken();
-		String email = event.getEmail() == null ? mApp.getEmail() : event.getEmail();
+		String token = event.getToken() == null ? mPersistData.getToken() : event.getToken();
+		String email = event.getEmail() == null ? mPersistData.getEmail() : event.getEmail();
 		String password = event.getPassword() == null ? "" : event.getPassword();
 		mRailsApi.signout(token, email, password,
 				new RailsApiCallback<SignoutResponse>(mBus, new SignoutResponse()));
@@ -110,78 +110,78 @@ public class ApiRequestRepository {
 	@Subscribe
 	public void onGetUsers(GetUsersRequest event) {
 		System.out.println("inside api repo - making get users list  request");
-		mRailsApi.getUsers(mApp.getToken(), new RailsApiCallback<GetUsersResponse>(mBus, new GetUsersResponse()));
+		mRailsApi.getUsers(mPersistData.getToken(), new RailsApiCallback<GetUsersResponse>(mBus, new GetUsersResponse()));
 	}
 	
 	@Subscribe
 	public void onGetFollowers(GetFollowersRequest event) {
 		System.out.println("inside api repo - making get followers list  request");
-		mRailsApi.getFollowers(mApp.getToken(), event.getId(), new RailsApiCallback<GetFollowersResponse>(mBus, new GetFollowersResponse()));
+		mRailsApi.getFollowers(mPersistData.getToken(), event.getId(), new RailsApiCallback<GetFollowersResponse>(mBus, new GetFollowersResponse()));
 	}
 
 	@Subscribe
 	public void onGetFollowedUsers(GetFollowedUsersRequest event) {
 		System.out.println("inside api repo - making get followed users list  request");
-		mRailsApi.getFollowedUsers(mApp.getToken(), event.getId(), new RailsApiCallback<GetFollowedUsersResponse>(mBus, new GetFollowedUsersResponse()));
+		mRailsApi.getFollowedUsers(mPersistData.getToken(), event.getId(), new RailsApiCallback<GetFollowedUsersResponse>(mBus, new GetFollowedUsersResponse()));
 	}
 
 	@Subscribe
 	public void onGetMicroposts(GetMicropostsRequest event) {
 		System.out.println("inside api repo - making get user microposts list  request");
-		mRailsApi.getMicroposts(mApp.getToken(), event.getId(), new RailsApiCallback<GetMicropostsResponse>(mBus, new GetMicropostsResponse()));
+		mRailsApi.getMicroposts(mPersistData.getToken(), event.getId(), new RailsApiCallback<GetMicropostsResponse>(mBus, new GetMicropostsResponse()));
 	}
 
 	@Subscribe
 	public void onCreateMicropost(CreateMicropostRequest event) {
 		System.out.println("inside api repo - making create micropost  request");
-		event.setApi_access_token(mApp.getToken());
+		event.setApi_access_token(mPersistData.getToken());
 		mRailsApi.createMicropost(event, new RailsApiCallback<CreateMicropostResponse>(mBus, new CreateMicropostResponse()));
 	}
 
 	@Subscribe
 	public void onDeleteMicropost(DeleteMicropostRequest event) {
 		System.out.println("inside api repo - making delete micropost  request");
-		mRailsApi.deleteMicropost(mApp.getToken(), event.getMicropostId(), new RailsApiCallback<DeleteMicropostResponse>(mBus, new DeleteMicropostResponse()));
+		mRailsApi.deleteMicropost(mPersistData.getToken(), event.getMicropostId(), new RailsApiCallback<DeleteMicropostResponse>(mBus, new DeleteMicropostResponse()));
 	}
 
 	@Subscribe
 	public void onFollow(FollowRequest event) {
 		System.out.println("inside api repo - making follow request");
-		if (event.getToken() == null) event.setToken(mApp.getToken());
+		if (event.getToken() == null) event.setToken(mPersistData.getToken());
 		mRailsApi.follow(event.getUserId(), event, new RailsApiCallback<FollowResponse>(mBus, new FollowResponse()));
 	}
 
 	@Subscribe
 	public void onUnfollow(UnfollowRequest event) {
 		System.out.println("inside api repo - making unfollow request");
-		mRailsApi.unfollow(mApp.getToken(), event.getUserId(), new RailsApiCallback<UnfollowResponse>(mBus, new UnfollowResponse()));
+		mRailsApi.unfollow(mPersistData.getToken(), event.getUserId(), new RailsApiCallback<UnfollowResponse>(mBus, new UnfollowResponse()));
 	}
 
 	@Subscribe
 	public void onGrantFollowerPermission(GrantFollowerPermissionRequest event) {
 		System.out.println("inside api repo - making grant follower permission request");
-		if (event.getToken() == null) event.setToken(mApp.getToken());
+		if (event.getToken() == null) event.setToken(mPersistData.getToken());
 		mRailsApi.grantFollowerPermission(event.getUserId(), event.getFollowerId(), event, new RailsApiCallback<GrantFollowerPermissionResponse>(mBus, new GrantFollowerPermissionResponse()));
 	}
 	@Subscribe
 	public void onRevokeFollowerPermission(RevokeFollowerPermissionRequest event) {
 		System.out.println("inside api repo - making revoke follower permission request");
 		String token;
-		token = event.getToken() == null ? mApp.getToken() : event.getToken();
+		token = event.getToken() == null ? mPersistData.getToken() : event.getToken();
 		mRailsApi.revokeFollowerPermission(token, event.getPermission(), event.getUserId(), event.getFollowerId(), new RailsApiCallback<RevokeFollowerPermissionResponse>(mBus, new RevokeFollowerPermissionResponse()));
 	}
 
 	@Subscribe
 	public void onUpdateUser(UpdateUserRequest event) {
 		System.out.println("inside api repo - making user update  request");
-		event.setApiAccessToken(mApp.getToken());
-		mRailsApi.updateUser(mApp.getUserId(), event, new RailsApiCallback<UpdateUserResponse>(mBus, new UpdateUserResponse()));
+		event.setApiAccessToken(mPersistData.getToken());
+		mRailsApi.updateUser(mPersistData.getUserId(), event, new RailsApiCallback<UpdateUserResponse>(mBus, new UpdateUserResponse()));
 	}
 	
 	@Subscribe
 	public void onCreateDevice(CreateDeviceRequest event) {
 		System.out.println("inside api repo - making create device  request");
-		event.setToken(mApp.getToken());
+		event.setToken(mPersistData.getToken());
 		mRailsApi.createDevice(event, new RailsApiCallback<CreateDeviceResponse>(mBus, new CreateDeviceResponse()));
 	}
 
@@ -189,7 +189,7 @@ public class ApiRequestRepository {
 	public void onPostLocation(PostLocationRequest event) {
 		System.out.println("inside api repo - making post location  request");
 		System.out.println(event.getClass().toString());
-		event.setToken(mApp.getToken());
+		event.setToken(mPersistData.getToken());
 		mRailsApi.postLocation(event.getGcmRegKey(), event, new RailsApiCallback<PostLocationResponse>(mBus, new PostLocationResponse()));
 	}
 	
@@ -197,7 +197,7 @@ public class ApiRequestRepository {
 	public void onPatchLocation(PatchLocationRequest event) {
 		System.out.println("inside api repo - making patch location  request");
 		System.out.println(event.getClass().toString());
-		event.setToken(mApp.getToken());
+		event.setToken(mPersistData.getToken());
 		mRailsApi.patchLocation(event.getGcmRegKey(), event, new RailsApiCallback<PatchLocationResponse>(mBus, new PatchLocationResponse()));
 	}
 	
@@ -205,7 +205,7 @@ public class ApiRequestRepository {
 	public void onLocationsUpdateRequest(PushLocationsUpdateRequestRequest event) {
 		System.out.println("inside api repo - making locations update  request");
 		System.out.println(event.getClass().toString());
-		event.setToken(mApp.getToken());
+		event.setToken(mPersistData.getToken());
 		mRailsApi.postPushLocationsUpdateRequest(event, new RailsApiCallback<PushLocationsUpdateRequestResponse>(mBus, new PushLocationsUpdateRequestResponse()));
 	}
 	
@@ -213,7 +213,7 @@ public class ApiRequestRepository {
 	public void onGetMapMarkersRequest(GetMapMarkersRequest event) {
 		System.out.println("inside api repo - making get map markers request");
 		System.out.println(event.getClass().toString());
-		mRailsApi.getMapMarkersRequest(mApp.getToken(), new RailsApiCallback<GetMapMarkersResponse>(mBus, new GetMapMarkersResponse()));
+		mRailsApi.getMapMarkersRequest(mPersistData.getToken(), new RailsApiCallback<GetMapMarkersResponse>(mBus, new GetMapMarkersResponse()));
 	}
 
 

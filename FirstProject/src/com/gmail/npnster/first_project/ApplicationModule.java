@@ -24,6 +24,7 @@ import dagger.Provides;
 				MapMarkers.class,
 				MapPresenter.class,
 				UsersListActivity.class,
+				PersistData.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				MyApp.class
 			  },
@@ -54,6 +55,12 @@ public class ApplicationModule {
 	@Provides @Singleton
 	public Bus provideBus () {
 		return new Bus();
+	}
+	
+	@Provides @Singleton
+	public PersistData providePersistData () {
+		System.out.println(String.format("mApp = %s", mApp));
+		return new PersistData(mApp);
 	}
 	
 

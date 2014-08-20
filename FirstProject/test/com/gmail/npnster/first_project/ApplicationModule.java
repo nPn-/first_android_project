@@ -30,6 +30,8 @@ import dagger.Provides;
 				LocationMonitorService.class,
 				MapMarker.class,
 				MapMarkers.class,
+				MyAppTest.class,
+				TestMyApp.class,
 				MapPresenter.class,
 				UsersListActivity.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
@@ -63,5 +65,9 @@ public class ApplicationModule {
 		return mock(Bus.class);
 	}
 	
-	
+	@Provides @Singleton
+	public PersistData providePersistData () {
+		System.out.println(String.format("mApp = %s", mApp));
+		return new PersistData(mApp);
+	}
 }
