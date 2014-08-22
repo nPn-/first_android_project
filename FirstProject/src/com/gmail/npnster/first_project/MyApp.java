@@ -63,7 +63,7 @@ public class MyApp extends Application {
 //	}
 
 	@Override
-	public void onCreate() {
+	public void onCreate() { 
 		// TODO Auto-generated method stub
 		super.onCreate();
 		System.out.println("app being created");

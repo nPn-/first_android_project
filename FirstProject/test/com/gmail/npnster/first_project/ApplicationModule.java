@@ -7,6 +7,8 @@ import javax.inject.Singleton;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 
+import com.gmail.npnster.first_project.LocationMonitorService.GetMarkerRequestTimer;
+import com.gmail.npnster.first_project.LocationMonitorService.PushRequestTimer;
 import com.squareup.otto.Bus;
 
 import dagger.Module;
@@ -16,6 +18,7 @@ import dagger.Provides;
 		injects = { 
 				
 				MapMarkerTest.class,
+				LocationMonitorServiceTest.class,
 				
 				MapMarker.class,
 				ApiRequestRepository.class,
@@ -27,13 +30,15 @@ import dagger.Provides;
 				RegisterGcmActivity.class,
 				SignUpActivity.class,
 				ApiExActivity.class,
-				LocationMonitorService.class,
 				MapMarker.class,
 				MapMarkers.class,
 				MyAppTest.class,
 				TestMyApp.class,
 				MapPresenter.class,
 				UsersListActivity.class,
+				LocationMonitorService.class,
+				LocationMonitorService.GetMarkerRequestTimer.class,
+				LocationMonitorService.PushRequestTimer.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				MyApp.class
 			  },
@@ -70,4 +75,15 @@ public class ApplicationModule {
 		System.out.println(String.format("mApp = %s", mApp));
 		return new PersistData(mApp);
 	}
+	
+	@Provides @Singleton
+	public GetMarkerRequestTimer provideGetMarkerRequestTimer () {
+		return mock(LocationMonitorService.GetMarkerRequestTimer.class);
+	}
+	
+	@Provides @Singleton
+	public PushRequestTimer providePushRequestTimer () {
+		return mock(LocationMonitorService.PushRequestTimer.class);
+	}
+	
 }

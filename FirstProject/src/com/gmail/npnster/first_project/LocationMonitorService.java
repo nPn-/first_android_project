@@ -21,18 +21,18 @@ public class LocationMonitorService extends Service {
 	private AlarmManager alarmManager;
 	private Intent gcmKeepAliveIntent;
     private PendingIntent gcmKeepAlivePendingIntent;
-	private GetMarkerRequestTimer markerRequestTimer;
-	private PushRequestTimer pushRequestTimer;
+	@Inject GetMarkerRequestTimer markerRequestTimer;
+	@Inject PushRequestTimer pushRequestTimer;
 	@Inject Bus mBus;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		System.out.println("creating the LocationMonitorService");
-		Injector.getInstance().inject(this);
+		injectMe();
 		mBus.register(this);
-		markerRequestTimer = new GetMarkerRequestTimer(10*60000,10000);
-		pushRequestTimer = new PushRequestTimer(10*60000,60000);
+//		markerRequestTimer = new GetMarkerRequestTimer(10*60000,10000);
+//		pushRequestTimer = new PushRequestTimer(10*60000,60000);
 		deviceLocationClient = new DeviceLocationClient(this);
 		gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
 		gcmKeepAlivePendingIntent = PendingIntent.getBroadcast(this, 0, gcmKeepAliveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -40,6 +40,10 @@ public class LocationMonitorService extends Service {
 		alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 4*60*1000, gcmKeepAlivePendingIntent);
 		
 		
+	}
+	
+	void injectMe() {
+		Injector.getInstance().inject(this);
 	}
 
 	@Override
@@ -60,19 +64,19 @@ public class LocationMonitorService extends Service {
 		return START_STICKY;
 	}
 
-	private void startRequestMarkerUpdates() {
+	 void startRequestMarkerUpdates() {
 		System.out.println("starting cycle of request for markers from server");
 		mBus.post(new GetMapMarkersRequest());
 		markerRequestTimer.cancel();
 		markerRequestTimer.start();		
 	}
 	
-	private void endRequestMarkerUpdates() {
+	 void endRequestMarkerUpdates() {
 		System.out.println("canceling request for new updates");	
 		markerRequestTimer.cancel();
 	}
 	
-	private void startLocationPushRequests() {
+	 void startLocationPushRequests() {
 		System.out.println("starting cycle of push requests for remote device locations");
 		mBus.post(new PushLocationsUpdateRequestRequest());
 		mBus.post(new GetMapMarkersRequest());
@@ -80,7 +84,7 @@ public class LocationMonitorService extends Service {
 		pushRequestTimer.start();		
 	}
 	
-	private void endLocationPushRequests() {
+	 void endLocationPushRequests() {
 		System.out.println("canceling renewal of push request for remote device locations");	
 		pushRequestTimer.cancel();
 	}
@@ -91,10 +95,14 @@ public class LocationMonitorService extends Service {
 	}
 	
 	
-	class GetMarkerRequestTimer extends CountDownTimer {
+	 static class GetMarkerRequestTimer extends CountDownTimer {
 		
+		@Inject Bus mBus; 
+
+		 
 		public GetMarkerRequestTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
+			Injector.getInstance().inject(this);
 			// TODO Auto-generated constructor stub
 		}
 		
@@ -115,10 +123,13 @@ public class LocationMonitorService extends Service {
 		
 	}
 	
-	class PushRequestTimer extends CountDownTimer {
+	 static class PushRequestTimer extends CountDownTimer {
 
+		@Inject Bus mBus;
+		 
 		public PushRequestTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
+			Injector.getInstance().inject(this);
 			// TODO Auto-generated constructor stub
 		}
 

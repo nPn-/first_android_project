@@ -1,7 +1,10 @@
 package com.gmail.npnster.first_project;
 
+
+
 import javax.inject.Singleton;
 
+import com.gmail.npnster.first_project.LocationMonitorService.GetMarkerRequestTimer;
 import com.squareup.otto.Bus;
 
 import dagger.Module;
@@ -25,6 +28,8 @@ import dagger.Provides;
 				MapPresenter.class,
 				UsersListActivity.class,
 				PersistData.class,
+				LocationMonitorService.GetMarkerRequestTimer.class,
+				LocationMonitorService.PushRequestTimer.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				MyApp.class
 			  },
@@ -63,5 +68,14 @@ public class ApplicationModule {
 		return new PersistData(mApp);
 	}
 	
+	@Provides 
+	public LocationMonitorService.GetMarkerRequestTimer provideGetMarkerRequestTimer () {
+		return new LocationMonitorService.GetMarkerRequestTimer(10*60000,10000);
+	}	
+	
+	@Provides 
+	public LocationMonitorService.PushRequestTimer providePushRequestTimer () {
+		return new LocationMonitorService.PushRequestTimer(10*60000,60000);
+	}	
 
 }

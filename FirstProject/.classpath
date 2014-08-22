@@ -10,7 +10,7 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/john/git/first_project/FirstProject/libs/dagger-1.2.2.jar"/>
-	<classpathentry kind="lib" path="/home/john/git/first_project/FirstProject/libs/javax.inject-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/john/git/first_project/FirstProject/libs/dagger-1.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/john/git/first_project/FirstProject/libs/javax.inject-1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

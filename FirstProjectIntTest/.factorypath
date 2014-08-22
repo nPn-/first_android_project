@@ -1,0 +1,6 @@
+<factorypath>
+    <factorypathentry kind="EXTJAR" id="/home/john/development/dagger_stuff/dagger-1.2.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/home/john/development/dagger_stuff/dagger-compiler-1.2.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/home/john/development/dagger_stuff/javawriter-2.5.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/home/john/development/dagger_stuff/javax.inject-1.jar" enabled="true" runInBatchMode="false"/>
+</factorypath>
