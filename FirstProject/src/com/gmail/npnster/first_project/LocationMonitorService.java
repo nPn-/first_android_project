@@ -1,11 +1,15 @@
 package com.gmail.npnster.first_project;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
 import com.gmail.npnster.first_project.api_params.PushLocationsUpdateRequestRequest;
 import com.squareup.otto.Bus;
 
+import dagger.ObjectGraph;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -17,34 +21,55 @@ import android.os.CountDownTimer;
 
 public class LocationMonitorService extends Service {
 	
-	private DeviceLocationClient deviceLocationClient;
-	private AlarmManager alarmManager;
-	private Intent gcmKeepAliveIntent;
-    private PendingIntent gcmKeepAlivePendingIntent;
+	@Inject DeviceLocationClient deviceLocationClient;
+//	@Inject @NamedProvider("gcmKeepAliveIntent") Intent gcmKeepAliveIntent;
+	Intent gcmKeepAliveIntent;
+	@Inject AlarmManager alarmManager;
+    @Inject PendingIntent gcmKeepAlivePendingIntent;
 	@Inject GetMarkerRequestTimer markerRequestTimer;
 	@Inject PushRequestTimer pushRequestTimer;
 	@Inject Bus mBus;
+//	ObjectGraph mExtendedGraph;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		System.out.println("creating the LocationMonitorService");
+		gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
 		injectMe();
 		mBus.register(this);
 //		markerRequestTimer = new GetMarkerRequestTimer(10*60000,10000);
 //		pushRequestTimer = new PushRequestTimer(10*60000,60000);
-		deviceLocationClient = new DeviceLocationClient(this);
-		gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
-		gcmKeepAlivePendingIntent = PendingIntent.getBroadcast(this, 0, gcmKeepAliveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-		alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+//		deviceLocationClient = new DeviceLocationClient(this);
+//		gcmKeepAlivePendingIntent = PendingIntent.getBroadcast(this, 0, gcmKeepAliveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//		alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 4*60*1000, gcmKeepAlivePendingIntent);
+		System.out.println(String.format("service am = %s", alarmManager));
+		System.out.println("leaving onCreate the LocationMonitorService");
 		
 		
 	}
 	
 	void injectMe() {
-		Injector.getInstance().inject(this);
+		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
+		System.out.println(String.format("currentGraph = %s", objectGraph));
+		ObjectGraph extendedGraph = objectGraph.plus(getModules().toArray());
+		System.out.println(String.format("extendedGraph = %s", extendedGraph));
+		extendedGraph.inject(this);
+//		Injector.getInstance().injectWith(this,  new LocationMonitorServiceModule(this,gcmKeepAliveIntent) );
 	}
+	
+	AlarmManager getAlarmManager() {
+		return alarmManager;
+	}
+	
+	PendingIntent getGcmKeepAlivePendingIntent() {
+		return gcmKeepAlivePendingIntent;
+	}
+	
+	  protected List<Object> getModules() {
+		    return Arrays.<Object>asList(new LocationMonitorServiceModule(this,gcmKeepAliveIntent));
+		  }
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {

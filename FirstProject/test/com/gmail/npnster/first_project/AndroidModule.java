@@ -2,17 +2,23 @@ package com.gmail.npnster.first_project;
 
 import javax.inject.Singleton;
 
+import org.robolectric.Robolectric;
+
 import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true)
+@Module(
+		injects = { DeviceLocationClient.class
+				},
+		library = true,
+		complete = false)
 public class AndroidModule {
-  private final Context mApplicationContext;
+//  private final Context mApplicationContext;
 
   public AndroidModule(Context applicationContext) {
 	  System.out.println("inside test version of android module"); 
-    mApplicationContext = applicationContext;
+//    mApplicationContext = applicationContext;
   }
 
   /**
@@ -20,8 +26,9 @@ public class AndroidModule {
    * {@link ForApplication @Annotation} to explicitly differentiate it from an activity context.
    */
   @Provides @Singleton @ForApplication Context provideApplicationContext() {
-    return mApplicationContext;
+	    return Robolectric.application;
+	  }
+ 
   }
 
 
-}

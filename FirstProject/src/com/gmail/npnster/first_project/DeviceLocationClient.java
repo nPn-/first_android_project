@@ -21,7 +21,7 @@ public class DeviceLocationClient implements
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
-	private Context context;
+	@Inject @ForApplication Context context;
 	private LocationClient locationClient;
 	private boolean isConnected;
 	private LocationRequest request;
@@ -38,9 +38,10 @@ public class DeviceLocationClient implements
 		mBus.post(patchLocationRequest);
 	}
 
-	public DeviceLocationClient(Context context) {
+	
+	public DeviceLocationClient() {
 		
-		this.context = context;
+//		this.context = context;
 		Injector.getInstance().inject(this);
 //		mBus = MyApp.getBus();
 		System.out.println("connecting to google play services");

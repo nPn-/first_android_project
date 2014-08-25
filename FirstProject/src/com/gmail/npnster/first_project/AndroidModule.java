@@ -3,10 +3,19 @@ package com.gmail.npnster.first_project;
 import javax.inject.Singleton;
 
 import android.content.Context;
+import android.content.Intent;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true)
+@Module(
+		injects = { 
+				DeviceLocationClient.class,
+//				LocationMonitorService.class,
+				
+		},
+		library = true,
+		complete = false
+		)
 public class AndroidModule {
   private final Context mApplicationContext;
 
@@ -20,8 +29,13 @@ public class AndroidModule {
    * {@link ForApplication @Annotation} to explicitly differentiate it from an activity context.
    */
   @Provides @Singleton @ForApplication Context provideApplicationContext() {
-    return mApplicationContext;
+	  return mApplicationContext;
+  }
+  
+//  @Provides @NamedProvider("gcmKeepAliveIntent") Intent provideGcmKeepAliveIntent() {
+//	    return new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
+//	  }
+
   }
 
 
-}

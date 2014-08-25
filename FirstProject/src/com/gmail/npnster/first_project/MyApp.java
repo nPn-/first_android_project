@@ -24,14 +24,14 @@ import android.location.Location;
 
 public class MyApp extends Application {    
 
-	private static String mApiRootUrl = "http://10.0.2.2:3000";   // for android test suite  
+//	private static String mApiRootUrl = "http://10.0.2.2:3000";   // for android test suite  
 	
 	
 //	private static final String API_ROOT_URL = "http://172.16.1.105:3000";    // for local server    
 //	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";  // heroku
 //	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
 //	private static final String API_ROOT_URL = "https://ourlatitude.mybluemix.net";  // bluemix
-//	private String mApiRootUrl = "https://ourlatitude.mybluemix.net";  // bluemix
+	private String mApiRootUrl = "https://ourlatitude.mybluemix.net";  // bluemix
 
 //	private MyApp singleton;  
 //	private String token;
@@ -47,6 +47,7 @@ public class MyApp extends Application {
 	private RailsApi railsApi;
 	@Inject Bus mBus;
 	@Inject PersistData mPersistData;
+	Injector mInjector;
 	
 //	private static ObjectGraph objectGraph;
 	
@@ -67,7 +68,7 @@ public class MyApp extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		System.out.println("app being created");
-		Injector.getInstance().initialize(this);
+		mInjector = Injector.getInstance().initialize(this);
 		Injector.getInstance().inject(this);
 //		Injector.getInstance().buildGraph();
 //		singleton = this;

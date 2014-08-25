@@ -7,6 +7,8 @@ import javax.inject.Singleton;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 
+import android.content.Context;
+
 import com.gmail.npnster.first_project.LocationMonitorService.GetMarkerRequestTimer;
 import com.gmail.npnster.first_project.LocationMonitorService.PushRequestTimer;
 import com.squareup.otto.Bus;
@@ -18,7 +20,7 @@ import dagger.Provides;
 		injects = { 
 				
 				MapMarkerTest.class,
-				LocationMonitorServiceTest.class,
+//				LocationMonitorServiceTest.class,
 				
 				MapMarker.class,
 				ApiRequestRepository.class,
@@ -36,13 +38,14 @@ import dagger.Provides;
 				TestMyApp.class,
 				MapPresenter.class,
 				UsersListActivity.class,
-				LocationMonitorService.class,
+//				LocationMonitorService.class,
 				LocationMonitorService.GetMarkerRequestTimer.class,
 				LocationMonitorService.PushRequestTimer.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				MyApp.class
 			  },
-	library = true
+	library = true,
+	complete = false
  )
 public class ApplicationModule {
 	private MyApp mApp;
@@ -85,5 +88,10 @@ public class ApplicationModule {
 	public PushRequestTimer providePushRequestTimer () {
 		return mock(LocationMonitorService.PushRequestTimer.class);
 	}
+	
+//	  @Provides @Singleton  Context provideApplicationContext() {
+////		  return mApplicationContext;
+//	    return Robolectric.application;
+//	  }
 	
 }

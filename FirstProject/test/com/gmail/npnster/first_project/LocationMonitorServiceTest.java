@@ -11,6 +11,8 @@ import org.robolectric.RobolectricTestRunner;
 
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 
 import com.gmail.npnster.first_project.LocationMonitorService.GetMarkerRequestTimer;
 import com.gmail.npnster.first_project.LocationMonitorService.PushRequestTimer;
@@ -23,6 +25,8 @@ public class LocationMonitorServiceTest {
 	@Inject GetMarkerRequestTimer mockMarkerRequestTimer;
 	@Inject PushRequestTimer mockPushRequestTimer;
 	@Inject Bus mockBus;
+	PendingIntent mockPendingIntent;
+	AlarmManager mockAlarmManager;
 	LocationMonitorService service;
 	
 	
@@ -31,7 +35,7 @@ public class LocationMonitorServiceTest {
 		System.out.println("setting up the test");
 		MyApp app = (MyApp) Robolectric.application;
 		Injector.getInstance().initialize(app); 
-		Injector.getInstance().inject(this);
+		Injector.getInstance().injectWith(this,new LocationMonitorServiceModule(null,null));
 		service = new LocationMonitorService();
 		service.injectMe();
 
@@ -55,6 +59,16 @@ public class LocationMonitorServiceTest {
 		inOrder.verify(mockBus).post(isA(GetMapMarkersRequest.class));
 		inOrder.verify(mockPushRequestTimer).cancel();
 		inOrder.verify(mockPushRequestTimer).start();
+		
+	}
+	
+	@Test
+	public void testOnCreate() {
+		service.onCreate();
+		mockAlarmManager = service.getAlarmManager();
+		mockPendingIntent = service.getGcmKeepAlivePendingIntent();
+		System.out.println(String.format("in test am = %s", mockAlarmManager));
+		verify(mockAlarmManager).setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 4*60*1000, mockPendingIntent);
 		
 	}
 }

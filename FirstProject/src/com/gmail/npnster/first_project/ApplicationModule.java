@@ -4,6 +4,8 @@ package com.gmail.npnster.first_project;
 
 import javax.inject.Singleton;
 
+import android.content.Context;
+
 import com.gmail.npnster.first_project.LocationMonitorService.GetMarkerRequestTimer;
 import com.squareup.otto.Bus;
 
@@ -22,7 +24,7 @@ import dagger.Provides;
 				RegisterGcmActivity.class,
 				SignUpActivity.class,
 				ApiExActivity.class,
-				LocationMonitorService.class,
+//				LocationMonitorService.class,
 				MapMarker.class,
 				MapMarkers.class,
 				MapPresenter.class,
@@ -33,7 +35,8 @@ import dagger.Provides;
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				MyApp.class
 			  },
-	library = true
+	library = true,
+	complete = false
 	)
 
 public class ApplicationModule {
@@ -76,6 +79,11 @@ public class ApplicationModule {
 	@Provides 
 	public LocationMonitorService.PushRequestTimer providePushRequestTimer () {
 		return new LocationMonitorService.PushRequestTimer(10*60000,60000);
-	}	
+	}
+	
+//	  @Provides @Singleton Context provideApplicationContext() {
+//		    return mApp;
+//	  }
+		    
 
 }

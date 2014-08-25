@@ -34,14 +34,24 @@ public class Injector {
 		getObjectGraph().inject(object);
 	}
 	
+	public void injectWith(Object object, Object... modules) {
+		System.out.println(String.format("orig object graph = %s",getObjectGraph()));
+		System.out.println(String.format("modules  = %s",modules));
+		ObjectGraph newGraph = getObjectGraph().plus(modules);
+		System.out.println("here");
+		System.out.println(String.format("***new  object graph = %s ***",newGraph));
+		getObjectGraph().plus(modules).inject(object);
+	}
+	
 	public ObjectGraph getObjectGraph() {
 		return mObjectGraph;
 	}
 	
-	public void initialize(MyApp app) {
+	public Injector initialize(MyApp app) {
 		mApp = app;
 		mObjectGraph = ObjectGraph.create(getModules().toArray());  
 		System.out.println(String.format("init object graph = %s",mObjectGraph.toString()));
+		return mInjector;
 				
 	}
 
