@@ -21,18 +21,19 @@ import dagger.Provides;
 public class LocationMonitorServiceModule {
 	
 	private Context mContext;
-	private Intent mIntent;
+//	private Intent mIntent;
 	
-	LocationMonitorServiceModule(Context context, Intent intent) {
+	LocationMonitorServiceModule(Context context) {
 		mContext = context;
-		mIntent = intent;
+//		mIntent = intent;
 		System.out.println("location monitor service module");
 		
 	}
 	
 	@Provides PendingIntent provideGcmKeepAlivePendingIntent() {
 		System.out.println("pending intent provider");
-		return PendingIntent.getBroadcast(mContext, 0, mIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+		Intent gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
+		return PendingIntent.getBroadcast(mContext, 0, gcmKeepAliveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 	
 	@Provides  AlarmManager provideGcmKeepAliveAlarmManager() {

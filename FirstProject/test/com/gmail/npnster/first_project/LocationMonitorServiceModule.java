@@ -24,11 +24,11 @@ import static org.mockito.Mockito.mock;
 public class LocationMonitorServiceModule {
 	
 	private Context mContext;
-	private Intent mIntent;
+//	private Intent mIntent;
 	
-	LocationMonitorServiceModule(Context context, Intent intent) {
+	LocationMonitorServiceModule(Context context) {
 		mContext = context;
-		mIntent = intent;
+//		mIntent = intent;
 		System.out.println("mock location monitor service module");
 		
 	}

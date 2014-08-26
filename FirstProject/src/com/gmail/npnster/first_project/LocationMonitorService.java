@@ -23,7 +23,7 @@ public class LocationMonitorService extends Service {
 	
 	@Inject DeviceLocationClient deviceLocationClient;
 //	@Inject @NamedProvider("gcmKeepAliveIntent") Intent gcmKeepAliveIntent;
-	Intent gcmKeepAliveIntent;
+//	Intent gcmKeepAliveIntent;
 	@Inject AlarmManager alarmManager;
     @Inject PendingIntent gcmKeepAlivePendingIntent;
 	@Inject GetMarkerRequestTimer markerRequestTimer;
@@ -35,7 +35,7 @@ public class LocationMonitorService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		System.out.println("creating the LocationMonitorService");
-		gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
+//		gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
 		injectMe();
 		mBus.register(this);
 //		markerRequestTimer = new GetMarkerRequestTimer(10*60000,10000);
@@ -43,20 +43,24 @@ public class LocationMonitorService extends Service {
 //		deviceLocationClient = new DeviceLocationClient(this);
 //		gcmKeepAlivePendingIntent = PendingIntent.getBroadcast(this, 0, gcmKeepAliveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 //		alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+		
+		// should move the alarmManger to the app class, no reason it should be down here in this service
+		// but leave it for now since this is the only reason/example i have of a scoped dagger module (at this point)
 		alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 4*60*1000, gcmKeepAlivePendingIntent);
-		System.out.println(String.format("service am = %s", alarmManager));
-		System.out.println("leaving onCreate the LocationMonitorService");
+		
+//		System.out.println(String.format("service am = %s", alarmManager));
+//		System.out.println("leaving onCreate the LocationMonitorService");
 		
 		
 	}
 	
 	void injectMe() {
-		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
-		System.out.println(String.format("currentGraph = %s", objectGraph));
-		ObjectGraph extendedGraph = objectGraph.plus(getModules().toArray());
-		System.out.println(String.format("extendedGraph = %s", extendedGraph));
-		extendedGraph.inject(this);
-//		Injector.getInstance().injectWith(this,  new LocationMonitorServiceModule(this,gcmKeepAliveIntent) );
+//		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
+//		System.out.println(String.format("currentGraph = %s", objectGraph));
+//		ObjectGraph extendedGraph = objectGraph.plus(getModules().toArray());
+//		System.out.println(String.format("extendedGraph = %s", extendedGraph));
+//		extendedGraph.inject(this);
+		Injector.getInstance().injectWith(this,  new LocationMonitorServiceModule(this) );
 	}
 	
 	AlarmManager getAlarmManager() {
@@ -67,9 +71,9 @@ public class LocationMonitorService extends Service {
 		return gcmKeepAlivePendingIntent;
 	}
 	
-	  protected List<Object> getModules() {
-		    return Arrays.<Object>asList(new LocationMonitorServiceModule(this,gcmKeepAliveIntent));
-		  }
+//	  protected List<Object> getModules() {
+//		    return Arrays.<Object>asList(new LocationMonitorServiceModule(this,gcmKeepAliveIntent));
+//		  }
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {

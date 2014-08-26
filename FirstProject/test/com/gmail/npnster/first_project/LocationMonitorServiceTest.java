@@ -35,7 +35,7 @@ public class LocationMonitorServiceTest {
 		System.out.println("setting up the test");
 		MyApp app = (MyApp) Robolectric.application;
 		Injector.getInstance().initialize(app); 
-		Injector.getInstance().injectWith(this,new LocationMonitorServiceModule(null,null));
+		Injector.getInstance().injectWith(this,new LocationMonitorServiceModule(null));
 		service = new LocationMonitorService();
 		service.injectMe();
 
