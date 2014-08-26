@@ -21,11 +21,9 @@ import dagger.Provides;
 public class LocationMonitorServiceModule {
 	
 	private Context mContext;
-//	private Intent mIntent;
 	
 	LocationMonitorServiceModule(Context context) {
 		mContext = context;
-//		mIntent = intent;
 		System.out.println("location monitor service module");
 		
 	}
@@ -40,9 +38,4 @@ public class LocationMonitorServiceModule {
 		return (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 	}
 	 
-//  @Provides @NamedProvider("gcmKeepAliveIntent") Intent provideGcmKeepAliveIntent() {
-//    return new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
-//  }
-
-
 }

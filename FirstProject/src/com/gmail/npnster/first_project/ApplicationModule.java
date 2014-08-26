@@ -24,7 +24,6 @@ import dagger.Provides;
 				RegisterGcmActivity.class,
 				SignUpActivity.class,
 				ApiExActivity.class,
-//				LocationMonitorService.class,
 				MapMarker.class,
 				MapMarkers.class,
 				MapPresenter.class,
@@ -81,9 +80,5 @@ public class ApplicationModule {
 		return new LocationMonitorService.PushRequestTimer(10*60000,60000);
 	}
 	
-//	  @Provides @Singleton Context provideApplicationContext() {
-//		    return mApp;
-//	  }
-		    
-
+		  
 }

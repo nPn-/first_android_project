@@ -22,44 +22,26 @@ import android.os.CountDownTimer;
 public class LocationMonitorService extends Service {
 	
 	@Inject DeviceLocationClient deviceLocationClient;
-//	@Inject @NamedProvider("gcmKeepAliveIntent") Intent gcmKeepAliveIntent;
-//	Intent gcmKeepAliveIntent;
 	@Inject AlarmManager alarmManager;
     @Inject PendingIntent gcmKeepAlivePendingIntent;
 	@Inject GetMarkerRequestTimer markerRequestTimer;
 	@Inject PushRequestTimer pushRequestTimer;
 	@Inject Bus mBus;
-//	ObjectGraph mExtendedGraph;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		System.out.println("creating the LocationMonitorService");
-//		gcmKeepAliveIntent = new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
 		injectMe();
 		mBus.register(this);
-//		markerRequestTimer = new GetMarkerRequestTimer(10*60000,10000);
-//		pushRequestTimer = new PushRequestTimer(10*60000,60000);
-//		deviceLocationClient = new DeviceLocationClient(this);
-//		gcmKeepAlivePendingIntent = PendingIntent.getBroadcast(this, 0, gcmKeepAliveIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-//		alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-		
 		// should move the alarmManger to the app class, no reason it should be down here in this service
 		// but leave it for now since this is the only reason/example i have of a scoped dagger module (at this point)
 		alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 4*60*1000, gcmKeepAlivePendingIntent);
-		
-//		System.out.println(String.format("service am = %s", alarmManager));
-//		System.out.println("leaving onCreate the LocationMonitorService");
 		
 		
 	}
 	
 	void injectMe() {
-//		ObjectGraph objectGraph = Injector.getInstance().getObjectGraph();
-//		System.out.println(String.format("currentGraph = %s", objectGraph));
-//		ObjectGraph extendedGraph = objectGraph.plus(getModules().toArray());
-//		System.out.println(String.format("extendedGraph = %s", extendedGraph));
-//		extendedGraph.inject(this);
 		Injector.getInstance().injectWith(this,  new LocationMonitorServiceModule(this) );
 	}
 	
@@ -71,10 +53,6 @@ public class LocationMonitorService extends Service {
 		return gcmKeepAlivePendingIntent;
 	}
 	
-//	  protected List<Object> getModules() {
-//		    return Arrays.<Object>asList(new LocationMonitorServiceModule(this,gcmKeepAliveIntent));
-//		  }
-
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		System.out.println("inside service making request for location updates");
@@ -132,7 +110,6 @@ public class LocationMonitorService extends Service {
 		public GetMarkerRequestTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
 			Injector.getInstance().inject(this);
-			// TODO Auto-generated constructor stub
 		}
 		
 		@Override
@@ -145,8 +122,6 @@ public class LocationMonitorService extends Service {
 		@Override
 		public void onFinish() {
 			System.out.println("time out reached ending request for markers from the server");	
-//			System.out.println("renewing request for markers from the server");	
-//			start();
 			
 		}
 		
@@ -159,7 +134,6 @@ public class LocationMonitorService extends Service {
 		public PushRequestTimer(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
 			Injector.getInstance().inject(this);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
@@ -172,8 +146,6 @@ public class LocationMonitorService extends Service {
 		@Override
 		public void onFinish() {
 			System.out.println("time out reached ending push notifcation renewal ending - for now");	
-//			System.out.println("renewing request for markers from the server");	
-//			start();
 			
 		}
 		

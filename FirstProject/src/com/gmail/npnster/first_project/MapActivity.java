@@ -65,17 +65,6 @@ public class MapActivity extends Activity {
 			return mBus;
 		}
 		
-//		private Bus getBus() {
-//			if (mBus == null) {
-//				mBus = BusProvider.getInstance();
-//			}
-//			return mBus;
-//		}
-//
-//		public void setBus(Bus bus) {
-//			mBus = bus;
-//		}
-
 		@Override
 		public void onResume() {
 			super.onResume();

@@ -21,59 +21,55 @@ public class PersistData {
 	private LatLngBounds mapBounds;
 	private int centerOnPosition;
 	private int centerOnMode;
-
-
 	
-	// this mainly just hides this method since it should only be called via the application class
-	// which also caches a copy of the token 
-//	private class Cached {
-		private void writeAccessToken(String accessToken) {
-			generalSettingsFileEditor.putString("ACCESS_TOKEN", accessToken);
-			generalSettingsFileEditor.commit();
-		}
-		private void writeEmailId(String emailId) {
-			generalSettingsFileEditor.putString("USER_ID", emailId);
-			generalSettingsFileEditor.commit();
-		}
-		private void writeGcmRegId(String gcmRegId) {
-			generalSettingsFileEditor.putString("GCM_REG_ID", gcmRegId);
-			generalSettingsFileEditor.commit();
-		}
-		private void writeClearAccessToken() {
-			generalSettingsFileEditor.putString("ACCESS_TOKEN", "");
-			generalSettingsFileEditor.commit();
-		}
-		private void writeClearGcmRegId() {
-			generalSettingsFileEditor.putString("GCM_REG_ID", "");
-			generalSettingsFileEditor.commit();
-		}
-		private void writeClearUserId() {
-			generalSettingsFileEditor.putString("USER_ID", "");
-			generalSettingsFileEditor.commit();
-		}
-		
-		private void writeMapBounds(LatLngBounds bounds) {
-			generalSettingsFileEditor.putFloat("SOUTHWEST_LAT",(float) bounds.southwest.latitude);
-			generalSettingsFileEditor.putFloat("SOUTHWEST_LNG",(float) bounds.southwest.longitude);
-			generalSettingsFileEditor.putFloat("NORTHEAST_LAT",(float) bounds.northeast.latitude);
-			generalSettingsFileEditor.putFloat("NORTHEAST_LNG",(float) bounds.northeast.longitude);
-			generalSettingsFileEditor.commit();
-		}
-		
-		private void writeCenterOnPosition(int position) {
-			generalSettingsFileEditor.putInt("CENTER_ON_POSITION", position);
-			generalSettingsFileEditor.commit();
-		}
-		
-		private void writeCenterOnMode(int mode) {
-			generalSettingsFileEditor.putInt("CENTER_ON_MODE", mode);
-			generalSettingsFileEditor.commit();
-		}
+	private void writeAccessToken(String accessToken) {
+		generalSettingsFileEditor.putString("ACCESS_TOKEN", accessToken);
+		generalSettingsFileEditor.commit();
+	}
 
+	private void writeEmailId(String emailId) {
+		generalSettingsFileEditor.putString("USER_ID", emailId);
+		generalSettingsFileEditor.commit();
+	}
 
-		
-//	}
-	
+	private void writeGcmRegId(String gcmRegId) {
+		generalSettingsFileEditor.putString("GCM_REG_ID", gcmRegId);
+		generalSettingsFileEditor.commit();
+	}
+
+	private void writeClearAccessToken() {
+		generalSettingsFileEditor.putString("ACCESS_TOKEN", "");
+		generalSettingsFileEditor.commit();
+	}
+
+	private void writeClearGcmRegId() {
+		generalSettingsFileEditor.putString("GCM_REG_ID", "");
+		generalSettingsFileEditor.commit();
+	}
+
+	private void writeClearUserId() {
+		generalSettingsFileEditor.putString("USER_ID", "");
+		generalSettingsFileEditor.commit();
+	}
+
+	private void writeMapBounds(LatLngBounds bounds) {
+		generalSettingsFileEditor.putFloat("SOUTHWEST_LAT", (float) bounds.southwest.latitude);
+		generalSettingsFileEditor.putFloat("SOUTHWEST_LNG",	(float) bounds.southwest.longitude);
+		generalSettingsFileEditor.putFloat("NORTHEAST_LAT",	(float) bounds.northeast.latitude);
+		generalSettingsFileEditor.putFloat("NORTHEAST_LNG",	(float) bounds.northeast.longitude);
+		generalSettingsFileEditor.commit();
+	}
+
+	private void writeCenterOnPosition(int position) {
+		generalSettingsFileEditor.putInt("CENTER_ON_POSITION", position);
+		generalSettingsFileEditor.commit();
+	}
+
+	private void writeCenterOnMode(int mode) {
+		generalSettingsFileEditor.putInt("CENTER_ON_MODE", mode);
+		generalSettingsFileEditor.commit();
+	}
+
 	public PersistData(MyApp app) {
 		mApp = app;
 		System.out.println(String.format("in peristdata const context = %s", mApp));
@@ -206,16 +202,8 @@ public class PersistData {
 		gcmRegId = "";
 	}
 
-
-//	public PersistData getPersistData() {
-//		return persistData;
-//	}
-              
 	protected String getUserFromToken() {
 		return token.split(":")[0];
 	}
-
 	
-	
-
 }

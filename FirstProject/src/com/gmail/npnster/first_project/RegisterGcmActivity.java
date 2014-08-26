@@ -44,7 +44,6 @@ public class RegisterGcmActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		mProgressBar.animate();
 		getBus().register(this);
@@ -58,7 +57,6 @@ public class RegisterGcmActivity extends Activity {
 	     
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		getBus().unregister(this);
 	}
@@ -70,50 +68,42 @@ public class RegisterGcmActivity extends Activity {
 		setContentView(R.layout.activity_register_gcm);
 		mProgressBar = findViewById(R.id.gcm_reg_progress_bar);
 		context = getApplicationContext();
-//		persistData = mApp.getPersistData();
 		System.out.println("trying to register for gcm id");
-
-	
 
 	}
 
-
 	private class GcmRegistrationTask extends AsyncTask {
 
-			@Override
-			protected Void doInBackground(Object...params) {
-				if (gcm == null) {
-					gcm = GoogleCloudMessaging.getInstance(context);
-					try {
-						System.out.println("making call to gcm unreg/reg");
-						gcm.unregister();
-						gcmRegId = gcm.register("255040819715");
-						
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+		@Override
+		protected Void doInBackground(Object... params) {
+			if (gcm == null) {
+				gcm = GoogleCloudMessaging.getInstance(context);
+				try {
+					System.out.println("making call to gcm unreg/reg");
+					gcm.unregister();
+					gcmRegId = gcm.register("255040819715");
 
-				return null;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
-			@Override
-			protected void onPostExecute(Object result) {
-				// TODO Auto-generated method stub
-				super.onPostExecute(result);
-				if (mPersistData.readAccessToken() != "") {
-					mPersistData.saveGcmRegId(gcmRegId);
-					CreateDeviceRequest createDeviceRequest = new CreateDeviceRequest(gcmRegId,"android_phone",true);
-					mBus.post(createDeviceRequest);
-				}
-				finish();
-//				Intent intent = new Intent(context, RegisterGcmActivity.class);
-//				
-//				startActivity(intent);
-				
-					
-			}
+			return null;
 		}
-	
+
+		@Override
+		protected void onPostExecute(Object result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			if (mPersistData.readAccessToken() != "") {
+				mPersistData.saveGcmRegId(gcmRegId);
+				CreateDeviceRequest createDeviceRequest = new CreateDeviceRequest(
+						gcmRegId, "android_phone", true);
+				mBus.post(createDeviceRequest);
+			}
+			finish();
+		}
+	}
+
 }

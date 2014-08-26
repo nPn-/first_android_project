@@ -8,34 +8,28 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-		injects = { 
-				DeviceLocationClient.class,
-//				LocationMonitorService.class,
-				
-		},
-		library = true,
-		complete = false
+		injects = { DeviceLocationClient.class,
+			},
+		library = true, complete = false
 		)
 public class AndroidModule {
-  private final Context mApplicationContext;
+	private final Context mApplicationContext;
 
-  public AndroidModule(Context applicationContext) {
-	  System.out.println("inside production version of android module"); 
-    mApplicationContext = applicationContext;
-  }
+	public AndroidModule(Context applicationContext) {
+		System.out.println("inside production version of android module");
+		mApplicationContext = applicationContext;
+	}
 
-  /**
-   * Allow the application context to be injected but require that it be annotated with
-   * {@link ForApplication @Annotation} to explicitly differentiate it from an activity context.
-   */
-  @Provides @Singleton @ForApplication Context provideApplicationContext() {
-	  return mApplicationContext;
-  }
-  
-//  @Provides @NamedProvider("gcmKeepAliveIntent") Intent provideGcmKeepAliveIntent() {
-//	    return new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
-//	  }
+	/**
+	 * Allow the application context to be injected but require that it be
+	 * annotated with {@link ForApplication @Annotation} to explicitly
+	 * differentiate it from an activity context.
+	 */
+	@Provides
+	@Singleton
+	@ForApplication
+	Context provideApplicationContext() {
+		return mApplicationContext;
+	}
 
-  }
-
-
+}
