@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 public class MainActivity extends Activity {
 
-//	protected PersistData persistData;
 	@Inject PersistData mPersistData;
 
 	@Override
@@ -23,7 +22,6 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Injector.getInstance().inject(this);
-//		persistData = mApp.getPersistData();
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -32,7 +30,6 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		Log.i("info", "here");
 		Intent intent = null;

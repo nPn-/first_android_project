@@ -64,7 +64,6 @@ public class ApiRequestRepository {
 		mPersistData = persistData;
 		mRailsApi = railsApi;
 		mBus = bus;
-//		app.getObjectGraph().inject(this);
 	}
 
 

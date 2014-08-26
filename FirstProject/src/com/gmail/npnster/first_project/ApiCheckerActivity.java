@@ -62,19 +62,6 @@ public class ApiCheckerActivity extends Activity {
 		private TextView dummy;
 		@Inject Bus mBus;
 		@Inject MyApp app;
-//		PersistData persistData = app.getPersistData();
-
-//		private Bus getBus() {
-//			if (mBus == null) {
-//				mBus = BusProvider.getInstance();
-//			}
-//			return mBus;
-//		}
-//
-//		public void setBus(Bus bus) {
-//			mBus = bus;
-//		}
-
 		
 		@Override
 		public void onResume() {

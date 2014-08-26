@@ -43,7 +43,6 @@ public class HomeActivity extends ActionBarActivity {
 		if (savedInstanceState == null) {
 			android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 					transaction.add(R.id.container, new PlaceholderFragment());
-//					transaction.addToBackStack(null);
 					transaction.commit();
 		}
 	}
@@ -89,23 +88,6 @@ public class HomeActivity extends ActionBarActivity {
 			mBus.unregister(this);
 		}
 
-		
-
-		
-		
-//		private Bus getBus() {
-//		    if (mBus == null) {
-//		      mBus = BusProvider.getInstance();
-//		    }
-//		    return mBus;
-//		  }
-//
-//		  public void setBus(Bus bus) {
-//		    mBus = bus;
-//		  }
-//		
-		
-		  
 		  @OnClick(R.id.sign_out_button)
 		  void signOut() {
 			  System.out.println("posting signout request to the bus");
@@ -135,7 +117,6 @@ public class HomeActivity extends ActionBarActivity {
 
 		@Override
 		public void onResume() {
-			// TODO Auto-generated method stub
 			super.onResume();
 			 mBus.register(this);
 			 System.out.println("posting get user profile request to the bus");

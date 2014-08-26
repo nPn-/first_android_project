@@ -41,9 +41,7 @@ public class DeviceLocationClient implements
 	
 	public DeviceLocationClient() {
 		
-//		this.context = context;
 		Injector.getInstance().inject(this);
-//		mBus = MyApp.getBus();
 		System.out.println("connecting to google play services");
 		locationClient = new LocationClient(context, this, this);
 		isConnected = false;
@@ -53,7 +51,6 @@ public class DeviceLocationClient implements
 
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
-		// TODO Auto-generated method stub
 		System.out.println("connection to google play services FAILED!");
 
 	}
