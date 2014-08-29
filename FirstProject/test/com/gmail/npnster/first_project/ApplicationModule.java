@@ -89,6 +89,11 @@ public class ApplicationModule {
 		return mock(LocationMonitorService.PushRequestTimer.class);
 	}
 	
+	@Provides @Singleton
+	DeviceLocationClient provideDeviceLocationClient() {
+		return mock(DeviceLocationClient.class);
+	}
+	
 //	  @Provides @Singleton  Context provideApplicationContext() {
 ////		  return mApplicationContext;
 //	    return Robolectric.application;

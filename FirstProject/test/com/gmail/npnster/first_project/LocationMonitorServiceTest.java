@@ -13,6 +13,7 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Intent;
 
 import com.gmail.npnster.first_project.LocationMonitorService.GetMarkerRequestTimer;
 import com.gmail.npnster.first_project.LocationMonitorService.PushRequestTimer;
@@ -25,6 +26,7 @@ public class LocationMonitorServiceTest {
 	@Inject GetMarkerRequestTimer mockMarkerRequestTimer;
 	@Inject PushRequestTimer mockPushRequestTimer;
 	@Inject Bus mockBus;
+	@Inject DeviceLocationClient mockDeviceLocationClient;
 	PendingIntent mockPendingIntent;
 	AlarmManager mockAlarmManager;
 	LocationMonitorService service;
@@ -43,8 +45,13 @@ public class LocationMonitorServiceTest {
 	
 	@Test
 	public void testStartRequestMarkerUpdates() {
-		InOrder inOrder = inOrder(mockMarkerRequestTimer,mockBus);
 		service.startRequestMarkerUpdates();
+		verifyStareRequestMarkerUpdates();
+		
+	}
+	
+	void verifyStareRequestMarkerUpdates() {
+		InOrder inOrder = inOrder(mockMarkerRequestTimer,mockBus);
 		inOrder.verify(mockBus).post(isA(GetMapMarkersRequest.class));
 		inOrder.verify(mockMarkerRequestTimer).cancel();
 		inOrder.verify(mockMarkerRequestTimer).start();
@@ -52,13 +59,32 @@ public class LocationMonitorServiceTest {
 	}
 	
 	@Test
+	public void testEndRequestMarkerUpdates() {
+		service.endRequestMarkerUpdates();
+		verify(mockMarkerRequestTimer).cancel();
+		
+	}
+	
+	@Test
 	public void testStartLocationPushRequests() {
-		InOrder inOrder = inOrder(mockPushRequestTimer,mockBus);
 		service.startLocationPushRequests();
+		verifyStartLocationPushRequests();
+		
+	}
+	
+	void verifyStartLocationPushRequests() {
+		InOrder inOrder = inOrder(mockPushRequestTimer,mockBus);
 		inOrder.verify(mockBus).post(isA(PushLocationsUpdateRequestRequest.class));
 		inOrder.verify(mockBus).post(isA(GetMapMarkersRequest.class));
 		inOrder.verify(mockPushRequestTimer).cancel();
 		inOrder.verify(mockPushRequestTimer).start();
+		
+	}
+	
+	@Test
+	public void testEndLocationPushRequests() {
+		service.endLocationPushRequests();
+		verify(mockPushRequestTimer).cancel();
 		
 	}
 	
@@ -71,4 +97,35 @@ public class LocationMonitorServiceTest {
 		verify(mockAlarmManager).setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 4*60*1000, mockPendingIntent);
 		
 	}
+	
+	@Test
+	public void testPauseFragment() {
+		Intent intent = new Intent();
+		intent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_PAUSED");
+		service.onStartCommand(intent, 0, 0);
+		verify(mockMarkerRequestTimer).cancel();
+		verify(mockPushRequestTimer).cancel();
+		
+	}
+	
+	@Test
+	public void testResumeFragment() {
+		Intent intent = new Intent();
+		intent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_RESUMED");
+		service.onStartCommand(intent, 0, 0);
+		verifyStartLocationPushRequests();
+		verifyStareRequestMarkerUpdates();
+		
+	}
+	
+	@Test
+	public void testRequestForUpdateLocationUpdatesReceived() {
+		Intent intent = new Intent();
+		intent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.LOCATION_UPDATE_REQUEST_RECEIVED");
+		service.onStartCommand(intent, 0, 0);
+		verify(mockDeviceLocationClient).requestLLocationUpdates();;
+		
+	}
+	
+	
 }

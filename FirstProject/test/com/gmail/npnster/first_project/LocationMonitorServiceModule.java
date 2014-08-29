@@ -43,6 +43,8 @@ public class LocationMonitorServiceModule {
 //		return (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 		return mock(AlarmManager.class);
 	}
+	
+
 	 
 //  @Provides @NamedProvider("gcmKeepAliveIntent") Intent provideGcmKeepAliveIntent() {
 //    return new Intent("com.gmail.npnster.first_project.gcmKeepAlive");
