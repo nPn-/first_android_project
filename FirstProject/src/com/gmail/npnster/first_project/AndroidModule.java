@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.TelephonyManager;
 import dagger.Module;
 import dagger.Provides;
 
@@ -30,6 +31,13 @@ public class AndroidModule {
 	@ForApplication
 	Context provideApplicationContext() {
 		return mApplicationContext;
+	}
+	
+	@Provides
+	@Singleton
+	@ForApplication
+	TelephonyManager provideTelephonyManager() {
+		return (TelephonyManager) mApplicationContext.getSystemService(Context.TELEPHONY_SERVICE);
 	}
 
 }

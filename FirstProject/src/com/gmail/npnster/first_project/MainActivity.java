@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 public class MainActivity extends Activity {
 
 	@Inject PersistData mPersistData;
+	@Inject @ForApplication TelephonyManager mTelephonyManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class MainActivity extends Activity {
 		System.out.println(String.format("email id = %s", mPersistData.readEmailId()));
 		System.out.println(String.format("access token = %s", mPersistData.readEmailId()));
 		System.out.println(String.format("reg id = %s", mPersistData.getGcmRegId()));
+		System.out.println(String.format("phone number = %s", mTelephonyManager.getLine1Number()));
 
 		if (mPersistData.readEmailId() == "") {
 			intent = new Intent(this, SignUpActivity.class);
