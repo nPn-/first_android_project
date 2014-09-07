@@ -8,6 +8,7 @@ public class CreateDeviceResponse extends BaseResponse {
 
 	private String name;
 	private String gcm_reg_id;
+	private String phone_number;
 	private boolean primary;
 
 	
@@ -16,6 +17,9 @@ public class CreateDeviceResponse extends BaseResponse {
 	}
 	public String getGcmRegId() {
 		return gcm_reg_id;
+	}
+	public String getPhoneNumber() {
+		return phone_number;
 	}
 	public boolean isPrimary() {
 		return primary;

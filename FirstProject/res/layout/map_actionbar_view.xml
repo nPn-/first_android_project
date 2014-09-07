@@ -4,6 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+  <!--   
+    <Spinner
+        android:id="@+id/perform_action_spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="0.15" />
+ --> 
+  
+    <!--
     <ImageButton
         android:id="@+id/refresh"
         style="?android:attr/borderlessButtonStyle"
@@ -12,6 +22,7 @@
         android:layout_weight=".10"
         android:src="@drawable/ic_action_refresh" />
 
+-->
         <ImageButton
         android:id="@+id/previous"
         style="?android:attr/borderlessButtonStyle"
@@ -44,7 +55,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
                android:layout_gravity="bottom"
-        android:layout_weight="0.40" />
+        android:layout_weight="0.50" />
         
 <!-- 
     <ImageButton

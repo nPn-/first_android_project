@@ -51,6 +51,7 @@ public class UserListResponse extends BaseResponse {
 		private Integer id;
 		private String name;
 		private String email;
+		private String phone_number;
 		private String gravatar_id;
 		private List<String> permissions_granted_by_user_to_current_user;
 		private List<String> permissions_granted_by_current_user_to_user;
@@ -91,6 +92,10 @@ public class UserListResponse extends BaseResponse {
 		
 		public String getEmail() {
 			return email;
+		}
+		
+		public String getPhoneNumber() {
+			return phone_number;
 		}
 		
 		public List<String> getPermissionsGrantedByUserToCurrentUser() {

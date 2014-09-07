@@ -95,6 +95,18 @@ public class MapMarkers {
 		return found;
 	}
 	
+	public int getIndexOfUserId(String userId) {
+		int userIndex = -1;
+		for (int i = 0 ; i < toArrayList().size(); i++ ) {
+			if (get(i).getUserId().equals(userId)) {
+				userIndex = i;
+			}
+		}
+		return userIndex;
+	}
+	
+
+	
 	
 	public LatLng getCenterOfMarkers() {
 		LatLngBounds.Builder builder = LatLngBounds.builder();

@@ -1,17 +1,24 @@
 package com.gmail.npnster.first_project;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.view.ActionMode.Callback;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -23,7 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
-public class MapView implements OnMarkerClickListener {
+public class MapView implements OnMarkerClickListener, OnMapLongClickListener, android.view.ActionMode.Callback {
 
 	private GoogleMap mMap;
 	private View mActionBarView;
@@ -45,6 +52,8 @@ public class MapView implements OnMarkerClickListener {
 		realInfoWindowAdapter = new RealInfoWindowAdapter(context);
 		setupCustomActionBar();
 		mMap.setOnMarkerClickListener(this);
+		mMap.setOnMapLongClickListener(this);
+		
 	}
 
 	public void setmMapPresenter(MapPresenter mapPresenter) {
@@ -138,17 +147,17 @@ public class MapView implements OnMarkerClickListener {
 					}
 				});
 
-		ImageButton refresh = (ImageButton) mActionBarView
-				.findViewById(R.id.refresh);
-		refresh.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				System.out.println("refresh button clicked");
-				mMapPresenter.refreshMap();
-
-			}
-		});
+//		ImageButton refresh = (ImageButton) mActionBarView
+//				.findViewById(R.id.refresh);
+//		refresh.setOnClickListener(new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				System.out.println("refresh button clicked");
+//				mMapPresenter.refreshMap();
+//
+//			}
+//		});
 
 		ImageButton centerOn = (ImageButton) mActionBarView
 				.findViewById(R.id.center_on);
@@ -159,6 +168,16 @@ public class MapView implements OnMarkerClickListener {
 				System.out.println("recenter button clicked");
 				mMapPresenter.centerOnImageclicked();
 
+			}
+		});
+		centerOn.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				System.out.println("recenter button long clicked");
+				mMapPresenter.centerOnImageLongClicked();
+				return true;
+				
 			}
 		});
 
@@ -217,6 +236,18 @@ public class MapView implements OnMarkerClickListener {
 
 			}
 		});
+		
+		// the following is currently not supported for spinners
+//		spinner.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> parent, View view,
+//					int position, long id) {
+//				System.out.println("mapView item long clicked");
+//				mMapPresenter.centerOnPersonLongClicked(position, id);
+//				return false;
+//			}
+//		});
 	}
 
 	
@@ -350,6 +381,53 @@ public class MapView implements OnMarkerClickListener {
 
 	public void setActionBarView(View actionBarView) {
 		mActionBarView = actionBarView;
+		
+	}
+
+	@Override
+	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		MenuInflater inflater = mode.getMenuInflater();
+		inflater.inflate(R.menu.map_context_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.call_person : 
+				mMapPresenter.callPerson();
+				mode.finish();
+				return true;
+		case R.id.message_person :
+				mMapPresenter.messagePerson();
+				mode.finish();
+				return true;
+		default :
+				return false;
+		}
+	}
+
+	@Override
+	public void onDestroyActionMode(ActionMode mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void startActionMode() {     
+		((Activity) mContext).startActionMode(this);
+		
+	}
+
+	@Override
+	public void onMapLongClick(LatLng point) {
+		System.out.println("map long clicked");
+		mMapPresenter.mapLongClicked();
 		
 	}
 

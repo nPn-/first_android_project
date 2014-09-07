@@ -72,6 +72,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	private String storedToken;
 	private final Integer TIMEOUT = 4000;
 	private PersistData mPersistData = null;
+	
 //	@Inject PersistData mPersistData;
 
 
@@ -233,6 +234,30 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		assertNotNull("email is not null", getUserProfileResponse.getEmail());
 		assertNotNull("gravatar is not null",
 				getUserProfileResponse.getGravatar_id());
+		assertNotNull("phone_number is not null",
+				getUserProfileResponse.getPhoneNumber());
+		assertTrue("followed count is >= 0 ",
+				getUserProfileResponse.getFollowed_users_count() >= 0);
+		assertTrue("followers count is >= 0",
+				getUserProfileResponse.getFollowers_count() >= 0);
+		assertTrue("permissions is not null",
+				getUserProfileResponse.getPermissionsGrantedByCurrentUserToUser().size() >= 0);
+		assertTrue("granted permissions is not null",
+				getUserProfileResponse.getPermissionsGrantedByUserToCurrentUser().size() >= 0);
+		
+	}
+	
+	public void testGetOtherUserProfile() throws Exception {
+		getActivity().setGetUserProfileRequest(new GetUserProfileRequest("1"));
+		clickAndWait();
+		GetUserProfileResponse getUserProfileResponse = getActivity()
+				.getGetUserProfileResponse();
+		assertEquals("name is john", "john", getUserProfileResponse.getName());
+		assertNotNull("email is not null", getUserProfileResponse.getEmail());
+		assertNotNull("gravatar is not null",
+				getUserProfileResponse.getGravatar_id());
+		assertNotNull("phone_number is not null",
+				getUserProfileResponse.getPhoneNumber());
 		assertTrue("followed count is >= 0 ",
 				getUserProfileResponse.getFollowed_users_count() >= 0);
 		assertTrue("followers count is >= 0",
@@ -564,7 +589,8 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testCreateDevice() throws Exception {
 		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
 		String name = "android_device" + dummyGcmRegId;
-		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		String phoneNumber = "phone_number" + dummyGcmRegId;
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true, phoneNumber)); 
 		clickAndWait();
 		CreateDeviceResponse createDeviceResponse = getActivity()
 				.getCreateDeviceResponse();
@@ -572,11 +598,13 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 				name, createDeviceResponse.getName());
 		assertEquals("returned device id is correct",
 				dummyGcmRegId, createDeviceResponse.getGcmRegId());
+		assertEquals("returned device phone number is correct",
+				phoneNumber, createDeviceResponse.getPhoneNumber());
 		assertTrue("returned device isPrimary is true",
 				 createDeviceResponse.isPrimary());
 		assertEquals("response is created (201)", 201, createDeviceResponse
 				.getRawResponse().getStatus());
-		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true, phoneNumber)); 
         clickAndWait();
         createDeviceResponse = getActivity().getCreateDeviceResponse();
 		assertEquals("response is created (406)", 406, createDeviceResponse
@@ -595,7 +623,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testPostLocation() throws Exception {
 		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
 		String name = "android_device" + dummyGcmRegId;
-		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true, "dummy_phone_number")); 
 		clickAndWait();
 		CreateDeviceResponse createDeviceResponse = getActivity()
 				.getCreateDeviceResponse();
@@ -640,7 +668,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testPatchLocation() throws Exception {
 		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
 		String name = "android_device" + dummyGcmRegId;
-		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true, "dummy_phone_number")); 
 		clickAndWait();
 		CreateDeviceResponse createDeviceResponse = getActivity()
 				.getCreateDeviceResponse();
@@ -685,7 +713,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testPostLocationsUpdateRequest() throws Exception {
 		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
 		String name = "android_device" + dummyGcmRegId;
-		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true, "dummy_phone_number")); 
 		clickAndWait();
 		CreateDeviceResponse createDeviceResponse = getActivity()
 				.getCreateDeviceResponse();
@@ -708,7 +736,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testGetMapMarkers() throws Exception {
 		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
 		String name = "android_device" + dummyGcmRegId;
-		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true)); 
+		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true, "dummy_phone_number")); 
 		clickAndWait();
 		CreateDeviceResponse createDeviceResponse = getActivity()
 				.getCreateDeviceResponse();

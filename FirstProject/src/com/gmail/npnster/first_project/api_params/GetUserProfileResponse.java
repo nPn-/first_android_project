@@ -11,6 +11,7 @@ public class GetUserProfileResponse extends BaseResponse {
 	private String name;
 	private String gravatar_id;
 	private String email;
+	private String phone_number;
 	private Integer microposts_count;
 	private Integer followed_users_count;
 	private Integer followers_count;
@@ -21,6 +22,10 @@ public class GetUserProfileResponse extends BaseResponse {
 	
 	public String getEmail() {
 		return email;
+	}
+	
+	public String getPhoneNumber() {
+		return phone_number;
 	}
 	
 	public Integer getId() {

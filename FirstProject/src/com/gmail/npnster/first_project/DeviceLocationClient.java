@@ -21,26 +21,29 @@ public class DeviceLocationClient implements
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
-	@Inject @ForApplication Context context;
+	@Inject
+	@ForApplication
+	Context context;
 	private LocationClient locationClient;
 	private boolean isConnected;
 	private LocationRequest request;
-	@Inject Bus mBus;
-	@Inject PersistData mPersistData;
-	
-	
-	
+	@Inject
+	Bus mBus;
+	@Inject
+	PersistData mPersistData;
+
 	@Override
 	public void onLocationChanged(Location location) {
 		System.out.println("got a location update");
-		PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
-				mPersistData.getGcmRegId(), location);
-		mBus.post(patchLocationRequest);
+		if (location != null ) {
+			PatchLocationRequest patchLocationRequest = new PatchLocationRequest(
+					mPersistData.getGcmRegId(), location);
+			mBus.post(patchLocationRequest);
+		}
 	}
 
-	
 	public DeviceLocationClient() {
-		
+
 		Injector.getInstance().inject(this);
 		System.out.println("connecting to google play services");
 		locationClient = new LocationClient(context, this, this);

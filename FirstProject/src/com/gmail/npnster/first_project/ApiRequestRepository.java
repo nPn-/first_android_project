@@ -69,11 +69,12 @@ public class ApiRequestRepository {
 
 	@Subscribe
 	public void onUserProfileRequestEvent(GetUserProfileRequest event) {
+		String userToFetch = event.getUserId() == null ? mPersistData.getUserId() : event.getUserId();
 		System.out
 				.println(String
 						.format("inside api repro making profile request with the following userParams,  user = %s, token = %s",
-								mPersistData.getUserId(), mPersistData.getToken()));
-		mRailsApi.userParams(mPersistData.getUserId(), mPersistData.getToken(),
+								userToFetch, mPersistData.getToken()));
+		mRailsApi.userParams(userToFetch, mPersistData.getToken(),
 				new RailsApiCallback<GetUserProfileResponse>(mBus, new GetUserProfileResponse()));
 	}
 

@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ public class RegisterGcmActivity extends Activity {
 	private PersistData persistData;
 	@Inject Bus mBus;
 	@Inject PersistData mPersistData;
+	@Inject @ForApplication TelephonyManager mTelephonyManager;
 
 	private Bus getBus() {
 		return mBus;
@@ -98,8 +100,11 @@ public class RegisterGcmActivity extends Activity {
 			super.onPostExecute(result);
 			if (mPersistData.readAccessToken() != "") {
 				mPersistData.saveGcmRegId(gcmRegId);
+				String phoneNumber = mTelephonyManager.getLine1Number();
+				System.out.println(String.format("iso country code = %s,  phone code = %s", mTelephonyManager.getSimCountryIso(), ISOCountryCodeMap.getPhoneCode(mTelephonyManager.getSimCountryIso())));
+				phoneNumber = ISOCountryCodeMap.getPhoneCode(mTelephonyManager.getSimCountryIso()) + phoneNumber;
 				CreateDeviceRequest createDeviceRequest = new CreateDeviceRequest(
-						gcmRegId, "android_phone", true);
+						gcmRegId, "android_phone", true, phoneNumber);
 				mBus.post(createDeviceRequest);
 			}
 			finish();

@@ -3,9 +3,15 @@ package com.gmail.npnster.first_project;
 import javax.inject.Inject;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.view.ActionMode;
+import android.view.MenuItem;
 
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
+import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
+import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,10 +29,11 @@ public class MapPresenter {
 	private GoogleMap.CancelableCallback mExpandMapCallback;
 	@Inject Bus mBus;
 
-	public MapPresenter(MapMarkers mapMarkers) {
+	public MapPresenter(Context context,MapMarkers mapMarkers) {
 		System.out.println("Constructing MapPresenter");
 		Injector.getInstance().inject(this);
 		mMapMarkers = mapMarkers;
+		mContext = context;
 		setExpandMapCallback();
 
 	}
@@ -57,12 +64,24 @@ public class MapPresenter {
 
 			} else {
 				System.out.println("replacing markers");
+				String currentCenterOnUser = null; 
+				if (mMapMarkers.get(centerOnPersonIndex) != null ) {
+				    currentCenterOnUser = mMapMarkers.get(centerOnPersonIndex).getUserId();
+				}
 				mMapMarkers.clear();
 				mMapView.clearMap();
 
 				for (RailsMarker m : event.getMarkers()) {
 					mMapMarkers.add(new MapMarker(mContext, m));
+					System.out.println(String.format("requesting profile for user name = %s,  id = %s", m.getName(), m.getUserId()));
+					mBus.post(new GetUserProfileRequest(m.getUserId()));
 
+				}
+				int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(currentCenterOnUser);
+				if (newIndexOfCurrentCenterOnUser >= 0) {
+					setCenterOnPosition(newIndexOfCurrentCenterOnUser);
+				} else {
+					 setCenterOnPosition(0);
 				}
 				mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
 				mMapView.setIntialCenterOnImage(mMapMarkers
@@ -166,7 +185,7 @@ public class MapPresenter {
 		System.out.println(String.format("marker id %s was clicked",
 				marker.getId()));
 		String userId = mMapView.getUserIdForMarker(marker);
-		System.out.println(String.format("marker is for user id = %s", userId));
+		System.out.println(String.format("marker is for user id = %s,", userId));
 		;
 		MapMarker mapMarker = mMapMarkers.findByUserId(userId);
 		String infoWindowData = mapMarker.getInfoWindowData();
@@ -174,6 +193,7 @@ public class MapPresenter {
 			mMapView.centerMapAt(mapMarker.getLatLng());
 			mMapView.bringMarkerForUserIdToFront(userId);
 			mMapView.setUserInfoWindow(userId, infoWindowData);
+			System.out.println(String.format("user phone number = %s", mapMarker.getPhoneNumber()));
 		}
 
 	}
@@ -225,7 +245,7 @@ public class MapPresenter {
 
 	}
 
-	public int getGenterOnPosition() {
+	public int getGenterOnPosition() {  
 		return centerOnPersonIndex;
 	}
 
@@ -241,6 +261,53 @@ public class MapPresenter {
 	public void setCenterOnMode(int mode) {
 		centerOnModeIndex = mode;
 		mMapView.setCenterOnMode(mode);
+	}
+	
+	@Subscribe public void onGetUserProfileRequestCompleted(GetUserProfileResponse event) {
+		System.out.println(String.format("got an updated users profile, name = %s, id = %s, phone number = %s", event.getName(), event.getId(), event.getPhoneNumber()));
+		MapMarker marker = mMapMarkers.findByUserId(event.getId().toString());
+		if (marker != null) marker.setPhoneNumber(event.getPhoneNumber());
+		
+	}
+
+	public void centerOnImageLongClicked() {
+		System.out.println("inside presenter center on image long clikcked");
+		mMapView.startActionMode();
+		
+	}
+
+
+	public void callPerson() {
+		String phoneNumber = mMapMarkers.get(centerOnPersonIndex).getPhoneNumber();
+		String uriString = String.format("tel:%s",phoneNumber);
+		System.out.println(String.format("call person with phone number = %s", phoneNumber));
+		Intent phoneCallIntent = new Intent(Intent.ACTION_CALL);
+		phoneCallIntent.setData(Uri.parse(uriString));
+		mContext.startActivity(phoneCallIntent);
+		
+		
+	}
+
+	public void messagePerson() {
+		String phoneNumber = mMapMarkers.get(centerOnPersonIndex).getPhoneNumber();
+		String uriString = String.format("sms:%s",phoneNumber);
+		System.out.println(String.format("message person with phone number = %s", mMapMarkers.get(centerOnPersonIndex).getPhoneNumber()));
+		Intent txtMessageIntent = new Intent(Intent.ACTION_VIEW);
+		txtMessageIntent.setData(Uri.parse(uriString));
+		mContext.startActivity(txtMessageIntent);
+		
+	}
+
+	public void mapLongClicked() {
+		mMapView.startActionMode();
+		
+	}
+
+	public void centerOnPersonLongClicked(int position, long id) {
+		System.out.println("map view spinner item long clicked");
+		setCenterOnPosition(position);
+		mMapView.startActionMode();
+		
 	}
 
 }

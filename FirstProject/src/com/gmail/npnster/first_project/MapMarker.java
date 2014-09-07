@@ -28,6 +28,7 @@ public class MapMarker implements Target {
 
 	private com.google.android.gms.maps.model.Marker mGoogleMapMarker;
 	private Bitmap mBitmap;
+	private String mPhoneNumber;
 	
 	public com.google.android.gms.maps.model.Marker getGoogleMapMarker() {
 		return mGoogleMapMarker;
@@ -38,6 +39,14 @@ public class MapMarker implements Target {
 		mGoogleMapMarker = googleMapMarker;
 	}
 
+	public void setPhoneNumber(String phoneNumber) {
+		mPhoneNumber = phoneNumber;
+	}
+	
+	public String getPhoneNumber() {
+		return mPhoneNumber;
+	}
+	
 	public void setAccuracy(Float accuracy) {
 		mMarker.setAccuracy(accuracy);
 	}
@@ -156,6 +165,7 @@ public class MapMarker implements Target {
 		System.out.println("building marker");
 		mMarker = marker;
 		mBitmap = null;
+		mPhoneNumber = null;
 		Injector.getInstance().inject(this);
 		Picasso.with(context).load(marker.getGravatarUrl()).into(this);
 	}
