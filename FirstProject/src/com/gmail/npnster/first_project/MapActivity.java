@@ -86,6 +86,7 @@ public class MapActivity extends Activity {
 			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",mPersistData.getCenterOnPosition() ,mPersistData.getCenterOnMode() ));
             mapPresenter.setCenterOnPosition(mPersistData.getCenterOnPosition());
             mapPresenter.setCenterOnMode(mPersistData.getCenterOnMode());
+            mapPresenter.setCenterOnUserId(mPersistData.getCenterOnUserId());
 			getBus().register(mapPresenter);
 			mapView.getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
 				
@@ -107,6 +108,7 @@ public class MapActivity extends Activity {
 			mPersistData.saveMapBounds(mapView.getCurrentMapBounds());
 			mPersistData.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
 			mPersistData.saveCenterOnMode(mapPresenter.getGenterOnMode());
+			mPersistData.saveCenterOnUserId(mapPresenter.getCenterOnUserId());
     		context.startService(endTracking);
 		}
 

@@ -18,6 +18,7 @@ public class PersistData {
 	private String user;
 	private String email;    
 	private String gcmRegId;
+	private String centerOnUserId;
 	private LatLngBounds mapBounds;
 	private int centerOnPosition;
 	private int centerOnMode;
@@ -64,6 +65,11 @@ public class PersistData {
 		generalSettingsFileEditor.putInt("CENTER_ON_POSITION", position);
 		generalSettingsFileEditor.commit();
 	}
+	
+	private void writeCenterOnUserId(String userId) {
+		generalSettingsFileEditor.putString("CENTER_ON_USER_ID", userId);
+		generalSettingsFileEditor.commit();
+	}
 
 	private void writeCenterOnMode(int mode) {
 		generalSettingsFileEditor.putInt("CENTER_ON_MODE", mode);
@@ -83,6 +89,7 @@ public class PersistData {
 		gcmRegId = readGcmRegId();
 		mapBounds = readMapBounds();
 		centerOnPosition = readCenterOnPosition();
+		centerOnUserId = readCenterOnUserId();
 		centerOnMode = readCenterOnMode();
 		
 	}
@@ -122,6 +129,11 @@ public class PersistData {
 		return position;
 	}
 	
+	public String readCenterOnUserId() {
+		String userId = generalSettingsFile.getString("CENTER_ON_USER_ID", "");
+		return userId;
+	}
+	
 	public int readCenterOnMode() {
 		int mode = generalSettingsFile.getInt("CENTER_ON_MODE", 0);
 		return mode;
@@ -145,6 +157,10 @@ public class PersistData {
 	
 	public int getCenterOnPosition() {
 		return centerOnPosition;
+	}
+	
+	public String getCenterOnUserId() {
+		return centerOnUserId;
 	}
 	
 	public int getCenterOnMode() {
@@ -190,6 +206,11 @@ public class PersistData {
 	public void saveCenterOnPosition(int position) {
 		writeCenterOnPosition(position);
 		centerOnPosition = position;
+	}
+	
+	public void saveCenterOnUserId(String userId) {
+		writeCenterOnUserId(userId);
+		centerOnUserId = userId;
 	}
 	
 	public void saveCenterOnMode(int mode) {

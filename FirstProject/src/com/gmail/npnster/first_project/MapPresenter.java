@@ -26,6 +26,7 @@ public class MapPresenter {
 	private Context mContext;
 	private int centerOnModeIndex = 0;
 	private int centerOnPersonIndex = 0;
+	private String centerOnUserId = "";
 	private GoogleMap.CancelableCallback mExpandMapCallback;
 	@Inject Bus mBus;
 
@@ -64,10 +65,10 @@ public class MapPresenter {
 
 			} else {
 				System.out.println("replacing markers");
-				String currentCenterOnUser = null; 
-				if (mMapMarkers.get(centerOnPersonIndex) != null ) {
-				    currentCenterOnUser = mMapMarkers.get(centerOnPersonIndex).getUserId();
-				}
+//				String currentCenterOnUser = null; 
+//				if (mMapMarkers.get(centerOnPersonIndex) != null ) {
+//				    currentCenterOnUser = mMapMarkers.get(centerOnPersonIndex).getUserId();
+//				}
 				mMapMarkers.clear();
 				mMapView.clearMap();
 
@@ -77,7 +78,7 @@ public class MapPresenter {
 					mBus.post(new GetUserProfileRequest(m.getUserId()));
 
 				}
-				int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(currentCenterOnUser);
+				int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(centerOnUserId);
 				if (newIndexOfCurrentCenterOnUser >= 0) {
 					setCenterOnPosition(newIndexOfCurrentCenterOnUser);
 				} else {
@@ -140,7 +141,8 @@ public class MapPresenter {
 	}
 
 	public void centerOnPersonSelected(int position) {
-		centerOnPersonIndex = position;
+		setCenterOnPosition(position);
+//		centerOnPersonIndex = position;
 		recenterMap();
 		MapMarker mapMarker = mMapMarkers.get(position);
 		if (mapMarker != null) {
@@ -255,6 +257,9 @@ public class MapPresenter {
 
 	public void setCenterOnPosition(int position) {
 		centerOnPersonIndex = position;
+		if (mMapMarkers.get(position) != null) {
+		    setCenterOnUserId(mMapMarkers.get(position).getUserId());
+		}
 		mMapView.setCenterOnSpinnerSelection(position);
 	}
 
@@ -309,5 +314,15 @@ public class MapPresenter {
 		mMapView.startActionMode();
 		
 	}
+	
+	public String getCenterOnUserId() {
+		return centerOnUserId;
+	}
+
+	public void setCenterOnUserId(String centerOnUserId) {
+		this.centerOnUserId = centerOnUserId;
+	}
+
+
 
 }

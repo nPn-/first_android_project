@@ -117,6 +117,22 @@ public class MyAppTest  {
 		assertThat(mPersistData.readGcmRegId()).as("persisted gcm id matches stored value").isEqualTo(testGcmId);
 		
 	}
+	
+	@Test
+	public void testInitalCenterOnUserId() {
+		assertThat(mPersistData.getCenterOnUserId()).as("app initial center on id is blank").isEqualTo("");
+		assertThat(mPersistData.readCenterOnUserId()).as("persisted initial center on id is blank").isEqualTo("");
+		
+	}
+	
+	@Test
+	public void testReadCenterOnUserId() {
+		String testCenterOnUserId = "example_center_on_user_id";
+		mPersistData.saveCenterOnUserId(testCenterOnUserId);
+		assertThat(mPersistData.getCenterOnUserId()).as("app center on user id matches stored value").isEqualTo(testCenterOnUserId);
+		assertThat(mPersistData.readCenterOnUserId()).as("persisted center on user  id matches stored value").isEqualTo(testCenterOnUserId);
+		
+	}
 
 	@Test
 	public void testClearGcmId() {

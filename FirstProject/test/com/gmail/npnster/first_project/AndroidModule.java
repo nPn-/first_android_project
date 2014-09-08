@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import org.robolectric.Robolectric;
 
 import android.content.Context;
+import android.telephony.TelephonyManager;
 import dagger.Module;
 import dagger.Provides;
 
@@ -28,6 +29,13 @@ public class AndroidModule {
   @Provides @Singleton @ForApplication Context provideApplicationContext() {
 	    return Robolectric.application;
 	  }
+  
+	@Provides
+	@Singleton
+	@ForApplication
+	TelephonyManager provideTelephonyManager() {
+		return (TelephonyManager)  Robolectric.application.getSystemService(Context.TELEPHONY_SERVICE);
+	}
  
   }
 
