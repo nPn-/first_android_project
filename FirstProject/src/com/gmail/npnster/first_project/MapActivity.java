@@ -77,10 +77,11 @@ public class MapActivity extends Activity {
 					| ActionBar.DISPLAY_SHOW_HOME);
 			System.out.println(String.format("actionBarView = %s", actionBarView));
 			if (!isViewReady) {
-				mapView = new MapView(context, map, actionBarView);
+				mapView = new MapView(getActivity(), map, actionBarView);
 				mapPresenter.setMapView(mapView);
 				isViewReady = true;
 			}
+			mapView.setActivity(getActivity());
             mapView.setActionBarView(actionBarView);
 			mapPresenter.reinitMapView();
 			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",mPersistData.getCenterOnPosition() ,mPersistData.getCenterOnMode() ));
@@ -93,6 +94,8 @@ public class MapActivity extends Activity {
 				@Override
 				public void onMapLoaded() {
 					mapView.setMapBounds(mPersistData.getMapBounds());
+//					mapView.attachMapListeners();
+					
 					
 				}
 			});

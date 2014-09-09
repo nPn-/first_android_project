@@ -35,7 +35,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 	private GoogleMap mMap;
 	private View mActionBarView;
 	private MapPresenter mMapPresenter;
-	private Context mContext;
+	private Activity mActivity;
 	private CenterOnSpinnerAdapter centerOnSpinnerAdapter;
 	private Spinner spinner;
 	private GoogleMapMarkerList mMarkers;
@@ -43,17 +43,28 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 	private RealInfoWindowAdapter realInfoWindowAdapter;
 	private GoogleMap.OnMarkerClickListener dummyMarkerOnClickListener ;
 
-	public MapView(Context context, GoogleMap map, View actionBarView) {
+	public MapView(Activity activity, GoogleMap map, View actionBarView) {
 		mMap = map;
 		mActionBarView = actionBarView;
-		mContext = context;
+		mActivity = activity;
 		mMarkers = new GoogleMapMarkerList();
-		dummyInfoWindowAdapter = new DummyInfoWindowAdapter(context);
-		realInfoWindowAdapter = new RealInfoWindowAdapter(context);
+		dummyInfoWindowAdapter = new DummyInfoWindowAdapter(mActivity);
+		realInfoWindowAdapter = new RealInfoWindowAdapter(mActivity);
 		setupCustomActionBar();
-		mMap.setOnMarkerClickListener(this);
-		mMap.setOnMapLongClickListener(this);
+		attachMapListeners();
 		
+	}
+	
+	public void setActivity (Activity activity) {
+		mActivity = activity;
+		  
+	}
+	
+	public void attachMapListeners() {
+		System.out.println("attaching map listeners");
+		mMap.setOnMarkerClickListener(this);
+		mMap.setOnMapLongClickListener(null);
+		mMap.setOnMapLongClickListener(this);
 	}
 
 	public void setmMapPresenter(MapPresenter mapPresenter) {
@@ -126,7 +137,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 
 		Integer[] imageArray = new Integer[] { R.drawable.ic_action_person,
 				R.drawable.ic_action_group, R.drawable.ic_action_place };
-		ImageArrayAdapter imageArrayAdapter = new ImageArrayAdapter(mContext,
+		ImageArrayAdapter imageArrayAdapter = new ImageArrayAdapter(mActivity,
 				imageArray);
 		Spinner centerOnMode = (Spinner) mActionBarView
 				.findViewById(R.id.center_on_mode_spinner);
@@ -211,7 +222,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 
 	public void setupCenterOnSpinner(MapMarkers mapMarkers,int initialPosition) {
 		spinner = (Spinner) mActionBarView.findViewById(R.id.spinner);
-		centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(mContext,
+		centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(mActivity,
 				mapMarkers.toArrayList());
 		spinner.setAdapter(centerOnSpinnerAdapter);
 		System.out.println(String.format(
@@ -282,7 +293,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 		if (mapMarker != null) {
 			String gavatarUrl = mapMarker.getGravatarUrl();
 			if (gavatarUrl != null) {
-				Picasso.with(mContext).load(gavatarUrl).into((ImageButton) mActionBarView.findViewById(R.id.center_on));
+				Picasso.with(mActivity).load(gavatarUrl).into((ImageButton) mActionBarView.findViewById(R.id.center_on));
 			}
 		}
 		
@@ -386,6 +397,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 
 	@Override
 	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		System.out.println("in onCreateActionMode");
 		MenuInflater inflater = mode.getMenuInflater();
 		inflater.inflate(R.menu.map_context_menu, menu);
 		return true;
@@ -393,7 +405,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 
 	@Override
 	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-		// TODO Auto-generated method stub
+		System.out.println("in onPrepareActionMode");
 		return false;
 	}
 
@@ -420,7 +432,8 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 	}
 
 	public void startActionMode() {     
-		((Activity) mContext).startActionMode(this);
+		System.out.println("mapView starting action mode");
+		mActivity.startActionMode(this);
 		
 	}
 

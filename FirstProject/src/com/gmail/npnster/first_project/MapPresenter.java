@@ -304,6 +304,7 @@ public class MapPresenter {
 	}
 
 	public void mapLongClicked() {
+		System.out.println("staring action mode");
 		mMapView.startActionMode();
 		
 	}
