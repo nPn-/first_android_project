@@ -1,6 +1,7 @@
 package com.gmail.npnster.first_project;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -35,7 +36,8 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 	private GoogleMap mMap;
 	private View mActionBarView;
 	private MapPresenter mMapPresenter;
-	private Activity mActivity;
+//	private Activity mActivity;
+	private Fragment mFragment;
 	private CenterOnSpinnerAdapter centerOnSpinnerAdapter;
 	private Spinner spinner;
 	private GoogleMapMarkerList mMarkers;
@@ -43,22 +45,23 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 	private RealInfoWindowAdapter realInfoWindowAdapter;
 	private GoogleMap.OnMarkerClickListener dummyMarkerOnClickListener ;
 
-	public MapView(Activity activity, GoogleMap map, View actionBarView) {
+	public MapView(Fragment fragment, GoogleMap map, View actionBarView) {
+		mFragment = fragment;
 		mMap = map;
 		mActionBarView = actionBarView;
-		mActivity = activity;
+//		mActivity = activity;
 		mMarkers = new GoogleMapMarkerList();
-		dummyInfoWindowAdapter = new DummyInfoWindowAdapter(mActivity);
-		realInfoWindowAdapter = new RealInfoWindowAdapter(mActivity);
+		dummyInfoWindowAdapter = new DummyInfoWindowAdapter(mFragment.getActivity());
+		realInfoWindowAdapter = new RealInfoWindowAdapter(mFragment.getActivity());
 		setupCustomActionBar();
 		attachMapListeners();
 		
 	}
 	
-	public void setActivity (Activity activity) {
-		mActivity = activity;
-		  
-	}
+//	public void setActivity (Activity activity) {
+//		mActivity = activity;
+//		  
+//	}
 	
 	public void attachMapListeners() {
 		System.out.println("attaching map listeners");
@@ -137,7 +140,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 
 		Integer[] imageArray = new Integer[] { R.drawable.ic_action_person,
 				R.drawable.ic_action_group, R.drawable.ic_action_place };
-		ImageArrayAdapter imageArrayAdapter = new ImageArrayAdapter(mActivity,
+		ImageArrayAdapter imageArrayAdapter = new ImageArrayAdapter(mFragment.getActivity(),
 				imageArray);
 		Spinner centerOnMode = (Spinner) mActionBarView
 				.findViewById(R.id.center_on_mode_spinner);
@@ -222,7 +225,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 
 	public void setupCenterOnSpinner(MapMarkers mapMarkers,int initialPosition) {
 		spinner = (Spinner) mActionBarView.findViewById(R.id.spinner);
-		centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(mActivity,
+		centerOnSpinnerAdapter = new CenterOnSpinnerAdapter(mFragment.getActivity(),
 				mapMarkers.toArrayList());
 		spinner.setAdapter(centerOnSpinnerAdapter);
 		System.out.println(String.format(
@@ -293,7 +296,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 		if (mapMarker != null) {
 			String gavatarUrl = mapMarker.getGravatarUrl();
 			if (gavatarUrl != null) {
-				Picasso.with(mActivity).load(gavatarUrl).into((ImageButton) mActionBarView.findViewById(R.id.center_on));
+				Picasso.with(mFragment.getActivity()).load(gavatarUrl).into((ImageButton) mActionBarView.findViewById(R.id.center_on));
 			}
 		}
 		
@@ -433,7 +436,7 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 
 	public void startActionMode() {     
 		System.out.println("mapView starting action mode");
-		mActivity.startActionMode(this);
+		mFragment.getActivity().startActionMode(this);
 		
 	}
 

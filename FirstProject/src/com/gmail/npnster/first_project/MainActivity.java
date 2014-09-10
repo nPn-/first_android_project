@@ -44,22 +44,28 @@ public class MainActivity extends Activity {
 		if (mPersistData.readEmailId() == "") {
 			intent = new Intent(this, SignUpActivity.class);
 			intent.putExtra("ACTION", "signup");
+			startActivity(intent);
 		} else if (mPersistData.readAccessToken() == "") {
 			intent = new Intent(this, SignInActivity.class);
 			intent.putExtra("ACTION", "signin");
+			startActivity(intent);
 		} else if  (mPersistData.getGcmRegId() == "") {
 			intent = new Intent(this, RegisterGcmActivity.class);
 			System.out.println("starting reg gcm activity");
+			startActivity(intent);
 		} else {
 			System.out.println(String.format("user = %s , token = %s",
 					mPersistData.readEmailId(), mPersistData.readAccessToken()));
 			intent = new Intent(this, HomeActivity.class);
 			intent.putExtra("ACTION", "home");
+			startActivity(intent);
+			finish();
 		}
 		
-		if (intent != null) {
-			startActivity(intent);
-		}
+//		if (intent != null) {
+//			startActivity(intent);
+//			finish();
+//		}
 
 		// force launch userlist for now
 		// intent = new Intent(this, UsersListActivity.class);
