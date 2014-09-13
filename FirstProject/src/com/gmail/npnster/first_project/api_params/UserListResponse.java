@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.gmail.npnster.first_project.api_params.GetMicropostsResponse.Micropost;
+
 
 public class UserListResponse extends BaseResponse {
 	private Integer page;
@@ -53,11 +55,22 @@ public class UserListResponse extends BaseResponse {
 		private String email;
 		private String phone_number;
 		private String gravatar_id;
+		private boolean has_micropost;
+		private Micropost last_micropost;
+
 		private List<String> permissions_granted_by_user_to_current_user;
 		private List<String> permissions_granted_by_current_user_to_user;
 		
 		private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+		public boolean hasMicropost() {
+			return has_micropost;
+		}
+		
+		public Micropost lastMicropost() {
+			return last_micropost;
+		}
+		
 		public Integer getId() {
 			return id;
 		}

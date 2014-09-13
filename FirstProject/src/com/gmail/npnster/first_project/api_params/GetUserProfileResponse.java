@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.gmail.npnster.first_project.api_params.GetMicropostsResponse.Micropost;
+
 public class GetUserProfileResponse extends BaseResponse {
 
 	private Integer id;
@@ -15,10 +17,15 @@ public class GetUserProfileResponse extends BaseResponse {
 	private Integer microposts_count;
 	private Integer followed_users_count;
 	private Integer followers_count;
+	private List<Micropost> microposts;
 	private List<String> permissions_granted_by_user_to_current_user;
 	private List<String> permissions_granted_by_current_user_to_user;
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+	
+	public List<Micropost> getMicroposts() {
+		return microposts;
+	}
 	
 	public String getEmail() {
 		return email;

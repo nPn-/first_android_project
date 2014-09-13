@@ -122,13 +122,15 @@ public class ApiRequestRepository {
 	@Subscribe
 	public void onGetFollowedUsers(GetFollowedUsersRequest event) {
 		System.out.println("inside api repo - making get followed users list  request");
-		mRailsApi.getFollowedUsers(mPersistData.getToken(), event.getId(), new RailsApiCallback<GetFollowedUsersResponse>(mBus, new GetFollowedUsersResponse()));
+		String token = event.getToken() != null ? event.getToken() : mPersistData.getToken();
+		mRailsApi.getFollowedUsers(token, event.getId(), new RailsApiCallback<GetFollowedUsersResponse>(mBus, new GetFollowedUsersResponse()));
 	}
 
 	@Subscribe
 	public void onGetMicroposts(GetMicropostsRequest event) {
 		System.out.println("inside api repo - making get user microposts list  request");
-		mRailsApi.getMicroposts(mPersistData.getToken(), event.getId(), new RailsApiCallback<GetMicropostsResponse>(mBus, new GetMicropostsResponse()));
+		String token = event.getToken() != null ? event.getToken() : mPersistData.getToken();
+		mRailsApi.getMicroposts(token, event.getId(), new RailsApiCallback<GetMicropostsResponse>(mBus, new GetMicropostsResponse()));
 	}
 
 	@Subscribe
