@@ -192,7 +192,9 @@ public class ApiRequestRepository {
 		System.out.println("inside api repo - making post location  request");
 		System.out.println(event.getClass().toString());
 		event.setToken(mPersistData.getToken());
-		mRailsApi.postLocation(event.getGcmRegKey(), event, new RailsApiCallback<PostLocationResponse>(mBus, new PostLocationResponse()));
+		if (!event.getGcmRegKey().equals("")) { 
+			mRailsApi.postLocation(event.getGcmRegKey(), event, new RailsApiCallback<PostLocationResponse>(mBus, new PostLocationResponse()));
+		}
 	}
 	
 	@Subscribe
@@ -200,7 +202,9 @@ public class ApiRequestRepository {
 		System.out.println("inside api repo - making patch location  request");
 		System.out.println(event.getClass().toString());
 		event.setToken(mPersistData.getToken());
-		mRailsApi.patchLocation(event.getGcmRegKey(), event, new RailsApiCallback<PatchLocationResponse>(mBus, new PatchLocationResponse()));
+		if (!event.getGcmRegKey().equals("")) { 
+			mRailsApi.patchLocation(event.getGcmRegKey(), event, new RailsApiCallback<PatchLocationResponse>(mBus, new PatchLocationResponse()));
+		}
 	}
 	
 	@Subscribe
