@@ -9,4 +9,17 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
+    <item 
+        android:id="@+id/sign_out"
+        android:title="sign out"
+        android:icon="@drawable/ic_action_cancel"
+        app:showAsAction="ifRoom"
+        />
+    <item 
+        android:id="@+id/map"
+        android:title="map"
+        android:icon="@drawable/ic_action_map"
+        app:showAsAction="ifRoom"
+        />
+
 </menu>

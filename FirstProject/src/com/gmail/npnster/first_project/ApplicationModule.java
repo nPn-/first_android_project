@@ -32,6 +32,7 @@ import dagger.Provides;
 				LocationMonitorService.GetMarkerRequestTimer.class,
 				LocationMonitorService.PushRequestTimer.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
+				HomePresenter.class, 
 				MyApp.class
 			  },
 	library = true,
