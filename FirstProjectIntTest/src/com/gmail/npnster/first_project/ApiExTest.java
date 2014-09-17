@@ -385,7 +385,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 			if (followed_user.getName().equals("Jane M.")) {
 				System.out.println(String.format("micro post = %s", followed_user.getName().toString()));
 				assertTrue("this user has a micropost i can see", followed_user.hasMicropost());
-				assertEquals("last micro post content is correct", "a newer post", followed_user.lastMicropost().getContent());
+				assertEquals("last micro post content is correct", "a newer post", followed_user.getLastMicropost().getContent());
 			} else {
 				assertFalse("this user does not have a micropost I can see", followed_user.hasMicropost());
 			}

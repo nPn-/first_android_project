@@ -129,6 +129,7 @@ public class HomeActivity extends ActionBarActivity {
 			
 //			 mBus.register(this);
 			 mBus.register(mHomePresenter);
+			 mHomePresenter.refreshView();
 //			 System.out.println("posting get user profile request to the bus");
 //			 mBus.post(new GetUserProfileRequest());
 			 //	 mBus.post(new GetUsersRequest());  
@@ -195,6 +196,7 @@ public class HomeActivity extends ActionBarActivity {
 			setHasOptionsMenu(true);
 			View rootView = inflater.inflate(R.layout.fragment_home, container,
 					false);
+			mHomeView.initializeView(rootView);
 //			ButterKnife.inject(this, rootView);
 
 			return rootView;

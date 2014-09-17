@@ -67,7 +67,7 @@ public class UserListResponse extends BaseResponse {
 			return has_micropost;
 		}
 		
-		public Micropost lastMicropost() {
+		public Micropost getLastMicropost() {
 			return last_micropost;
 		}
 		

@@ -24,30 +24,36 @@ public class FollowedUsersListAdapter extends ArrayAdapter<UserListItem> {
 	}
 
 	static class ViewHolder {
-		public TextView textView;
+		public TextView userNameView;
+		public TextView lastPostView;
+		public TextView postedTimeAgoView;
 		public ImageView imageView;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View rowView = convertView;
-		if (rowView == null) {
+		View followedUserView = convertView;
+		if (followedUserView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			rowView = inflater.inflate(R.layout.row_layout, parent, false);
+			followedUserView = inflater.inflate(R.layout.followed_user_item_layout, parent, false);
 			ViewHolder viewHolder = new ViewHolder();
-			viewHolder.textView = (TextView) rowView.findViewById(R.id.label);
-			viewHolder.imageView = (ImageView) rowView.findViewById(R.id.icon);
-			rowView.setTag(viewHolder);
+			viewHolder.userNameView = (TextView) followedUserView.findViewById(R.id.user_name);
+			viewHolder.lastPostView = (TextView) followedUserView.findViewById(R.id.last_post);
+			viewHolder.postedTimeAgoView = (TextView) followedUserView.findViewById(R.id.posted_time_ago);
+			viewHolder.imageView = (ImageView) followedUserView.findViewById(R.id.user_icon);
+			followedUserView.setTag(viewHolder);
 		}
-		ViewHolder holder = (ViewHolder) rowView.getTag();
-		holder.textView.setText(values.get(position).getName());
+		ViewHolder holder = (ViewHolder) followedUserView.getTag();
+		holder.userNameView.setText(values.get(position).getName());
+		holder.lastPostView.setText(values.get(position).getLastMicropost());
+		holder.postedTimeAgoView.setText(values.get(position).getPostedTimeAgo());
 		ImageView imageView = holder.imageView;
 		String gravatarURL = "http://www.gravatar.com/avatar/"
 				+ values.get(position).getGravatarId();
 		Picasso.with(context).load(gravatarURL).into(imageView);
 
-		return rowView;
+		return followedUserView;
 	}
 
 }

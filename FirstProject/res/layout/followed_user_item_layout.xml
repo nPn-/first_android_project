@@ -12,29 +12,45 @@
     
     	<ImageView
         	android:id="@+id/user_icon"
-        	android:layout_width="100px"    
-        	android:layout_height="100px"
+        	android:layout_width="120px"    
+        	android:layout_height="120px"
         	android:layout_marginLeft="4px"
         	android:layout_marginRight="10px"
         	android:layout_marginTop="4px"
         	android:src="@drawable/ic_launcher" >
     	</ImageView>
-
-    	<TextView
-        	android:id="@+id/user_name"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:text="@+id/user_name"
-        	android:textSize="40px" >
-    	</TextView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            >
+            <TextView
+        	    android:id="@+id/user_name"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@+id/user_name"
+        		android:textColor="@color/CornflowerBlue"
+        		android:textSize="40px" >
+    		</TextView>
+    		<TextView
+        		android:id="@+id/last_post"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@+id/last_post"
+        		android:textSize="30px" >
+    		</TextView>
+    		    <TextView
+        		android:id="@+id/posted_time_ago"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@+id/posted_time_ago"
+        		        		android:textColor="@color/Gray"
+        		android:textSize="20px" >
+    		</TextView>
+            
+        </LinearLayout>
     	
     </LinearLayout> 
-        	<TextView
-        	android:id="@+id/last_post"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:text="@+id/last_post"
-        	android:textSize="40px" >
-    	</TextView>
+ 
     	
 </LinearLayout> 
