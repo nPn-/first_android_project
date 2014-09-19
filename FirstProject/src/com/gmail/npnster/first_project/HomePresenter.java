@@ -100,6 +100,7 @@ public class HomePresenter {
 	@Subscribe
 	public void onGetFollowedUsersResponse(GetFollowedUsersResponse event) {
 
+		followedUsers.clear();
 		for (GetUsersResponse.User user : event.getUsers()) {
 			System.out.println(user.getName());
 			String lastPost = "";

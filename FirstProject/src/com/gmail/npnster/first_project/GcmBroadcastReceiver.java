@@ -33,11 +33,23 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
         	if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
         		System.out.println(extras.toString());
-        		Intent serviceIntent = new Intent(context, LocationMonitorService.class);
-        		serviceIntent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.LOCATION_UPDATE_REQUEST_RECEIVED");
-        		context.startService(serviceIntent);
-        		//mBus.post(updateLocationRequest);
-        		      		
+        		if (extras.getString("message") != null && extras.getString("message").equals("update_locations")) {
+        			System.out.println("got location update request from gcm");
+        			Intent serviceIntent = new Intent(context, LocationMonitorService.class);
+        			serviceIntent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.LOCATION_UPDATE_REQUEST_RECEIVED");
+        			context.startService(serviceIntent);
+        			//mBus.post(updateLocationRequest);
+				}
+        		if (extras.getString("message") != null && extras.getString("message").equals("micropost_created")) {
+        			System.out.println("got micropost update from gcm");
+        			Intent serviceIntent = new Intent(context, LocationMonitorService.class);
+        			serviceIntent.putExtra("gravatar_url",intent.getStringExtra("gravatar_url"));
+        			serviceIntent.putExtra("user_name",intent.getStringExtra("user_name"));
+        			serviceIntent.putExtra("content",intent.getStringExtra("content"));
+        			serviceIntent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MICROPOST_UPDATE_RECEIVED");
+        			context.startService(serviceIntent);
+
+        		}
         	}
         	
         }
