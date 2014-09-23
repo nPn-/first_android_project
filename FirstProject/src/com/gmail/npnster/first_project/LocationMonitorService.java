@@ -31,7 +31,7 @@ import android.os.CountDownTimer;
 import android.support.v4.app.NotificationCompat;
 
 
-public class LocationMonitorService extends Service implements Target {
+public class LocationMonitorService extends Service  {
 	
 	@Inject DeviceLocationClient deviceLocationClient;
 	@Inject AlarmManager alarmManager;
@@ -77,54 +77,14 @@ public class LocationMonitorService extends Service implements Target {
 			} else if (intent.hasCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MAP_FRAGMENT_PAUSED")) {
 				endRequestMarkerUpdates();
 				endLocationPushRequests();
-			} else if (intent.hasCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MICROPOST_UPDATE_RECEIVED")) {
-				getUserIconAndThenNotifyUser();
+//			} else if (intent.hasCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MICROPOST_UPDATE_RECEIVED")) {
+//				getUserIconAndThenNotifyUser();
 			} else if (intent.hasCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.LOCATION_UPDATE_REQUEST_RECEIVED")) {
 				deviceLocationClient.requestLLocationUpdates();
 			}
 		}
 
 		return START_STICKY;
-	}
-
-	
-	 private void getUserIconAndThenNotifyUser() {
-		    String gravatarUrl = mIntent.getStringExtra("gravatar_url");
-		    System.out.println(String.format("loading bitmap from %s and then notify", gravatarUrl));
-		    Picasso.with(this).load(gravatarUrl).into(this);
-		    
-	 }
-	
-	 private void notifyUserOfMicropostUpdate( Bitmap userIcon) {
-		    System.out.println("building notification");
-		    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		    long[] vibrate = { 500, 500, 500, 500 };
-		    String content = mIntent.getStringExtra("content");
-		    String name = mIntent.getStringExtra("user_name");
-
-		    Intent resultIntent = new Intent(this, HomeActivity.class);
-		    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		    stackBuilder.addNextIntent(resultIntent);
-		    PendingIntent resultPendingIntent =
-		            stackBuilder.getPendingIntent(
-		                0,
-		                PendingIntent.FLAG_UPDATE_CURRENT
-		            );
-	        NotificationCompat.Builder mBuilder =
-	                new NotificationCompat.Builder(this)
-	        		.setContentIntent(resultPendingIntent)
-	                .setSmallIcon(R.drawable.ic_launcher)
-	                .setLargeIcon(userIcon)
-	                .setContentTitle(name)
-	                .setTicker(content)
-	                .setPriority(2)
-	                .setSound(alarmSound)
-	                .setVibrate(vibrate)
-	                .setContentText(content);
-
-	            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-	            mNotificationManager.notify(1, mBuilder.build());
-		
 	}
 
 	void startRequestMarkerUpdates() {
@@ -206,27 +166,69 @@ public class LocationMonitorService extends Service implements Target {
 		}
 		
 	}
-
-	@Override
-	public void onBitmapFailed(Drawable arg0) {
-		System.out.println("failed to load bit map for notification");
-		Bitmap failIcon = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.ic_launcher);
-		notifyUserOfMicropostUpdate(failIcon);
-	}
-
-	@Override
-	public void onBitmapLoaded(Bitmap userIcon, LoadedFrom arg1) {
-		System.out.println("bit map for notification loaded");
-		notifyUserOfMicropostUpdate(userIcon);
+	 
 		
-	}
-
-	@Override
-	public void onPrepareLoad(Drawable arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+//	 private void getUserIconAndThenNotifyUser() {
+//		    String gravatarUrl = mIntent.getStringExtra("gravatar_url");
+//		    System.out.println(String.format("loading bitmap from %s and then notify", gravatarUrl));
+//		    Picasso.with(this).load(gravatarUrl).into(this);
+//		    
+//	 }
+//	
+//	 private void notifyUserOfMicropostUpdate( Bitmap userIcon) {
+//		    System.out.println("building notification");
+//		    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//		    long[] vibrate = { 500, 500, 500, 500 };
+//		    String content = mIntent.getStringExtra("content");
+//		    String name = mIntent.getStringExtra("user_name");
+//
+//		    Intent resultIntent = new Intent(this, HomeActivity.class);
+//		    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+//		    stackBuilder.addNextIntent(resultIntent);
+//		    PendingIntent resultPendingIntent =
+//		            stackBuilder.getPendingIntent(
+//		                0,
+//		                PendingIntent.FLAG_UPDATE_CURRENT
+//		            );
+//	        NotificationCompat.Builder mBuilder =
+//	                new NotificationCompat.Builder(this)
+//	        		.setContentIntent(resultPendingIntent)
+//	                .setSmallIcon(R.drawable.ic_launcher)
+//	                .setLargeIcon(userIcon)
+//	                .setContentTitle(name)
+//	                .setTicker(content)
+//	                .setPriority(2)
+//	                .setSound(alarmSound)
+//	                .setVibrate(vibrate)
+//	                .setContentText(content);
+//
+//	            NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+//	            mNotificationManager.notify(1, mBuilder.build());
+//		
+//	}
+//
+//
+//
+//	@Override
+//	public void onBitmapFailed(Drawable arg0) {
+//		System.out.println("failed to load bit map for notification");
+//		Bitmap failIcon = BitmapFactory.decodeResource(this.getResources(),
+//                R.drawable.ic_launcher);
+//		notifyUserOfMicropostUpdate(failIcon);
+//	}
+//
+//	@Override
+//	public void onBitmapLoaded(Bitmap userIcon, LoadedFrom arg1) {
+//		System.out.println("bit map for notification loaded");
+//		notifyUserOfMicropostUpdate(userIcon);
+//		
+//	}
+//
+//	@Override
+//	public void onPrepareLoad(Drawable arg0) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	
 }

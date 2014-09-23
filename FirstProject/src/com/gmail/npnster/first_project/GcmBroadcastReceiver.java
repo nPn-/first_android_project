@@ -42,12 +42,14 @@ public class GcmBroadcastReceiver extends BroadcastReceiver {
 				}
         		if (extras.getString("message") != null && extras.getString("message").equals("micropost_created")) {
         			System.out.println("got micropost update from gcm");
-        			Intent serviceIntent = new Intent(context, LocationMonitorService.class);
-        			serviceIntent.putExtra("gravatar_url",intent.getStringExtra("gravatar_url"));
-        			serviceIntent.putExtra("user_name",intent.getStringExtra("user_name"));
-        			serviceIntent.putExtra("content",intent.getStringExtra("content"));
-        			serviceIntent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MICROPOST_UPDATE_RECEIVED");
-        			context.startService(serviceIntent);
+        			mBus.post(new NewMicropostEvent(intent));
+//        			Intent serviceIntent = new Intent(context, LocationMonitorService.class);
+//        			serviceIntent.putExtras(intent);
+//        			serviceIntent.putExtra("gravatar_url",intent.getStringExtra("gravatar_url"));
+//        			serviceIntent.putExtra("user_name",intent.getStringExtra("user_name"));
+//        			serviceIntent.putExtra("content",intent.getStringExtra("content"));
+//        			serviceIntent.addCategory("COM.GMAIL.NPNSTER.FIRST_PROJECT.MICROPOST_UPDATE_RECEIVED");
+//        			context.startService(serviceIntent);
 
         		}
         	}

@@ -28,7 +28,7 @@
         android:ems="10"
         android:maxLength="140"
         android:imeOptions="actionDone"
-        android:inputType="textAutoCorrect" >
+        android:inputType="textAutoCorrect|textCapSentences" >
 
     
     </EditText>

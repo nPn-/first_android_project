@@ -29,6 +29,7 @@ import dagger.Provides;
 				MapPresenter.class,
 				UsersListActivity.class,
 				PersistData.class,
+				NotificationRepository.class,
 				LocationMonitorService.GetMarkerRequestTimer.class,
 				LocationMonitorService.PushRequestTimer.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely

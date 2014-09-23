@@ -130,5 +130,12 @@ public class HomePresenter {
 	public void onCreateMicropostResponse(CreateMicropostResponse event) {
 		refreshView();
 	}
+	
+	@Subscribe
+	public void onNewMicropostEvent(NewMicropostEvent event) {
+		refreshView();
+	}
+	
+
 
 }

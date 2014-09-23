@@ -34,6 +34,7 @@ public class MyApp extends Application {
 	private String mApiRootUrl = "https://ourlatitude.mybluemix.net";  // bluemix
 
 	private ApiRequestRepository apiRequestRepository;
+	private NotificationRepository mNotificationRepository;
 	private RailsApi railsApi;
 	@Inject Bus mBus;
 	@Inject PersistData mPersistData;
@@ -51,6 +52,7 @@ public class MyApp extends Application {
 		railsApi = restAdapter.create(RailsApi.class);
 		apiRequestRepository = new ApiRequestRepository(mPersistData,
 				railsApi, mBus);
+		mNotificationRepository = new NotificationRepository();
 		mBus.register(apiRequestRepository);
 		mBus.register(this);
 		startService(new Intent(getApplicationContext(), LocationMonitorService.class));
