@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.gmail.npnster.first_project.UserDetailActivity$PlaceholderFragment" >
+
+    <LinearLayout 
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" >
+    
+           <ImageView
+             android:id="@+id/user_detail_icon"
+             android:layout_width="wrap_content"
+             android:paddingRight="20dp"
+             android:layout_height="match_parent" />
+   
+    <LinearLayout 
+          android:orientation="vertical"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" > 
+          
+           <TextView
+             android:id="@+id/user_detail_name"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="name"
+             android:textAppearance="?android:attr/textAppearanceMedium" />
+           
+               <TextView
+        android:id="@+id/user_detail_email_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        />
+       
+       <TextView
+        android:id="@+id/user_detail_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        />
+       
+    </LinearLayout>   
+     </LinearLayout>
+     
+     <Switch
+        android:id="@+id/follow_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textOff="No "
+        android:textOn="Yes"
+        android:paddingBottom="20dp"
+        android:text="Follow this user?" />
+   
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Allow this user to:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/user_detail_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editText1"
+        android:layout_marginTop="32dp" >
+
+    </ListView>
+
+
+</LinearLayout>

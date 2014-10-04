@@ -20,8 +20,18 @@ public class GetUserProfileResponse extends BaseResponse {
 	private List<Micropost> microposts;
 	private List<String> permissions_granted_by_user_to_current_user;
 	private List<String> permissions_granted_by_current_user_to_user;
+	private boolean are_following;
+	private boolean is_followed_by;
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+	
+	public boolean areFollowing() {
+		return are_following;
+	}
+	
+	public boolean isFollowedBy() {
+		return is_followed_by;
+	}
 	
 	public List<Micropost> getMicroposts() {
 		return microposts;

@@ -97,7 +97,7 @@ public class UsersListActivity extends ActionBarActivity {
 			values.clear();
 			for (GetUsersResponse.User user : event.getUsers()) {
 				System.out.println(user.getName());
-				UserListItem userListIterm = new UserListItem(user.getName(), user.getGravatar_id(), "", "");
+				UserListItem userListIterm = new UserListItem(user.getId(), user.getName(), user.getGravatar_id(), "", "");
 				values.add(userListIterm);
 			}
 			adapter.notifyDataSetChanged();

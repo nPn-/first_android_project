@@ -21,24 +21,28 @@ public class RailsApiCallback<T extends BaseResponse> implements Callback<T> {
 
 	@Override 
 	public void failure(RetrofitError retrofitError) {
-		System.out.println(retrofitError.toString());
-//		T response = retrofitError != null && retrofitError.getBody() != null ? (T) retrofitError.getBody() : mResponse  ;
-		T response;
-		try { 
-			response = (T) retrofitError.getBody();
+		System.out.println(retrofitError.toString() );
+		if (!retrofitError.isNetworkError()  && retrofitError.getResponse().getStatus() < 500) { 
+		T response = retrofitError != null && retrofitError.getBody() != null ? (T) retrofitError.getBody() : mResponse  ;
+//		T response;
+//		try { 
+//			response = (T) retrofitError.getBody();
 			response.setRawResponse(retrofitError.getResponse());
 			response.setSuccessful(false);
 			System.out.println("posting response to bus");
 			mBus.post(response);
-		} catch (Exception e) {
+//		} catch (Exception e) {
+//			System.out.println(String.format("not posting response due to - %s", retrofitError.toString()));
+//		}
+
+		} else {
 			System.out.println(String.format("not posting response due to - %s", retrofitError.toString()));
 		}
-		
 	}
 
 	@Override
 	public void success(T convertedResponse, Response rawResponse) {
-		System.out.println(rawResponse.getBody());
+		System.out.println(String.format("response body = %s",rawResponse.getBody()));
 		T response = convertedResponse != null ? convertedResponse : mResponse ;
 		response.setSuccessful(true);
 		response.setRawResponse(rawResponse);

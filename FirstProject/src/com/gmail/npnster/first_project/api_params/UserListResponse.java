@@ -52,7 +52,9 @@ public class UserListResponse extends BaseResponse {
 
 		private Integer id;
 		private String name;
+		private boolean has_email;
 		private String email;
+		private boolean has_phone_number;
 		private String phone_number;
 		private String gravatar_id;
 		private boolean has_micropost;
@@ -65,6 +67,14 @@ public class UserListResponse extends BaseResponse {
 
 		public boolean hasMicropost() {
 			return has_micropost;
+		}
+		
+		public boolean hasPhoneNumber() {
+			return has_phone_number;
+		}
+		
+		public boolean hasEmail() {
+			return has_email;
 		}
 		
 		public Micropost getLastMicropost() {
@@ -90,9 +100,17 @@ public class UserListResponse extends BaseResponse {
 		public String getGravatar_id() {
 			return gravatar_id;
 		}
+		
+		public String getGravatarId() {
+			return getGravatar_id();
+		}
 
 		public void setGravatar_id(String gravatar_id) {
 			this.gravatar_id = gravatar_id;
+		}
+		
+		public void setGravatarId(String gravatar_id) {
+			setGravatar_id(gravatar_id);
 		}
 
 		public Map<String, Object> getAdditionalProperties() {

@@ -37,12 +37,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class HomeActivity extends ActionBarActivity {
+public class UserListActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
+		setContentView(R.layout.activity_user_list);
 
 		if (savedInstanceState == null) {
 			android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -51,23 +51,24 @@ public class HomeActivity extends ActionBarActivity {
 		}
 	}
 
+
 	public static class PlaceholderFragment extends Fragment {
 
 		@Inject Bus mBus;
-		private HomeView mHomeView;
-		private HomePresenter mHomePresenter;
+		private UserListView mUserListView;
+		private UserListPresenter mUserListPresenter;
 		
 		@Override
 		public void onPause() {
 			super.onPause();
-			mBus.unregister(mHomePresenter);
+			mBus.unregister(mUserListPresenter);
 		}
 
 		@Override
 		public void onResume() {
 			super.onResume();
-			 mBus.register(mHomePresenter);
-			 mHomePresenter.refreshView();
+			 mBus.register(mUserListPresenter);
+			 mUserListPresenter.refreshView();
 		}
 		
 		public PlaceholderFragment() {
@@ -76,12 +77,12 @@ public class HomeActivity extends ActionBarActivity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			System.out.println("creating home fragment");    
+			System.out.println("creating UserList fragment");    
 			Injector.getInstance().inject(this);
-			mHomePresenter = new HomePresenter();
-			mHomeView = new HomeView(this);
-			mHomePresenter.setView(mHomeView);
-			mHomeView.setPresenter(mHomePresenter);
+			mUserListPresenter = new UserListPresenter();
+			mUserListView = new UserListView(this);
+			mUserListPresenter.setView(mUserListView);
+			mUserListView.setPresenter(mUserListPresenter);
 			
 		}
 
@@ -89,9 +90,9 @@ public class HomeActivity extends ActionBarActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			setHasOptionsMenu(true);
-			View rootView = inflater.inflate(R.layout.fragment_home, container,
+			View rootView = inflater.inflate(R.layout.fragment_user_list, container,
 					false);
-			mHomeView.initializeView(rootView);
+			mUserListView.initializeView(rootView);
 
 			return rootView;
 		}
@@ -99,12 +100,12 @@ public class HomeActivity extends ActionBarActivity {
 		@Override
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 			System.out.println("inflating options menu");
-			inflater.inflate(R.menu.home, menu);
+			inflater.inflate(R.menu.user_list, menu);
 		}
 	
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
-			return mHomeView.onOptionItemSelected(item) || super.onOptionsItemSelected(item);
+			return mUserListView.onOptionItemSelected(item) || super.onOptionsItemSelected(item);
 		}
 
 	}

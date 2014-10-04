@@ -67,6 +67,13 @@ public class HomePresenter {
 		Intent intent = new Intent(getContext(), MapActivity.class);
 		getContext().startActivity(intent);
 	}
+	
+	public void onUserListOptionSelected() {
+		System.out.println("item user selected");
+		System.out.println("launching user list activity");
+		Intent intent = new Intent(getContext(), UserListActivity.class);
+		getContext().startActivity(intent);
+	}
 
 	public void onSignOutOptionSelected() {
 		System.out.println("item sign out selected");
@@ -110,7 +117,7 @@ public class HomePresenter {
 				postedTimeAgo = MyDateUtils.timeAgo(user.getLastMicropost()
 						.getCreated_at());
 			}
-			UserListItem userListIterm = new UserListItem(user.getName(),
+			UserListItem userListIterm = new UserListItem(user.getId(),user.getName(),
 					user.getGravatar_id(), lastPost, postedTimeAgo);
 			followedUsers.add(userListIterm);
 		}
@@ -135,7 +142,24 @@ public class HomePresenter {
 	public void onNewMicropostEvent(NewMicropostEvent event) {
 		refreshView();
 	}
+
+	public void onFollowerClicked(int position) {
+		
+		Integer selectedUser = followedUsers.get(position).getUserId();
+		String selectedUserAsString = String.valueOf(selectedUser);
+		System.out.println(String.format("user selected = %s", selectedUserAsString));
+		if (!selectedUserAsString.equals(mPersistData.getUserId())) {
+			System.out.println("launching user_detail activity");
+			Intent intent = new Intent(getContext(), UserDetailActivity.class);
+			intent.putExtra("user_id", selectedUser);
+			getContext().startActivity(intent);
+		}
+		
+//		Integer userId = followedUsers.get(position).getUserId();
+//		System.out.println(String.format("followed user id selected = %s", userId));
+				
+	}
+
+
 	
-
-
 }

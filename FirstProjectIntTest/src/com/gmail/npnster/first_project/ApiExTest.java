@@ -71,16 +71,25 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	private String valid_android_token;
 	private String storedEmailId;
 	private String storedToken;
-	private final Integer TIMEOUT = 4000;
+	private final Integer DEFAULT_TIMEOUT = 500;
+	private Integer timeout = DEFAULT_TIMEOUT;
 	private PersistData mPersistData = null;
 	private String VALID_ACCESS_TOKEN_FOR_USER_1 = "1:Ccqe68MdGftnkJKVfpfs8g"; 
 	
 //	@Inject PersistData mPersistData;
 
-
-	private void clickAndWait() {
+    private void setTimeout(Integer timeout) {
+    	this.timeout = timeout;
+    }
+	
+    private void clickAndWait() {
+    	solo.clickOnButton("Go!");
+    	solo.waitForText("Done!", 1, timeout);
+    }
+    
+	private void clickAndWait(Integer localTimeout) {
 		solo.clickOnButton("Go!");
-		solo.waitForText("Done!", 1, TIMEOUT);
+		solo.waitForText("Done!", 1, localTimeout);
 	}
 
 	private void setValidTokenAndId() {
@@ -296,8 +305,9 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 
 	public void testGetUsers() throws Exception {
 		getActivity().setGetUsersRequest(new GetUsersRequest());
-		clickAndWait();
+		clickAndWait(10000);
 		GetUsersResponse getUsersResponse = getActivity().getGetUsersResponse();
+		System.out.println(String.format("response = %s",getUsersResponse ));
 		assertNotNull("user list is not null", getUsersResponse.getUsers());
 		assertTrue("user list has size > 0 ", getUsersResponse.getUsers()
 				.size() > 0);
@@ -374,7 +384,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		GetFollowedUsersRequest request = new GetFollowedUsersRequest("1");
 		request.setToken(VALID_ACCESS_TOKEN_FOR_USER_1);
 		getActivity().setGetFollowedUsersRequest(request);
-		clickAndWait();
+		clickAndWait(2000);
 		GetFollowedUsersResponse getFollowedUsersResponse = getActivity()
 				.getGetFollowedUsersResponse();
 		assertTrue("followedUsers list > 0 ", getFollowedUsersResponse
@@ -386,7 +396,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 				System.out.println(String.format("micro post = %s", followed_user.getName().toString()));
 				assertTrue("this user has a micropost i can see", followed_user.hasMicropost());
 				assertEquals("last micro post content is correct", "a newer post", followed_user.getLastMicropost().getContent());
-			} else {
+			} else if (followed_user.getId() != 1 ){
 				assertFalse("this user does not have a micropost I can see", followed_user.hasMicropost());
 			}
 		}

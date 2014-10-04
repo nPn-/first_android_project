@@ -28,12 +28,17 @@ import dagger.Provides;
 				MapMarkers.class,
 				MapPresenter.class,
 				UsersListActivity.class,
+				UserListActivity.PlaceholderFragment.class,
+				UserDetailActivity.class,
+				UserDetailActivity.PlaceholderFragment.class,
 				PersistData.class,
 				NotificationRepository.class,
 				LocationMonitorService.GetMarkerRequestTimer.class,
 				LocationMonitorService.PushRequestTimer.class,
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				HomePresenter.class, 
+				UserListPresenter.class, 
+				UserDetailPresenter.class, 
 				MyApp.class
 			  },
 	library = true,

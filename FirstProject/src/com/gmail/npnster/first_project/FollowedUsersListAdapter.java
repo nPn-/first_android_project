@@ -8,6 +8,7 @@ import com.squareup.picasso.Picasso;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -31,7 +32,7 @@ public class FollowedUsersListAdapter extends ArrayAdapter<UserListItem> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		View followedUserView = convertView;
 		if (followedUserView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
@@ -44,6 +45,7 @@ public class FollowedUsersListAdapter extends ArrayAdapter<UserListItem> {
 			viewHolder.imageView = (ImageView) followedUserView.findViewById(R.id.user_icon);
 			followedUserView.setTag(viewHolder);
 		}
+		
 		ViewHolder holder = (ViewHolder) followedUserView.getTag();
 		holder.userNameView.setText(values.get(position).getName());
 		holder.lastPostView.setText(values.get(position).getLastMicropost());
@@ -52,7 +54,8 @@ public class FollowedUsersListAdapter extends ArrayAdapter<UserListItem> {
 		String gravatarURL = "http://www.gravatar.com/avatar/"
 				+ values.get(position).getGravatarId();
 		Picasso.with(context).load(gravatarURL).into(imageView);
-
+			
+		
 		return followedUserView;
 	}
 

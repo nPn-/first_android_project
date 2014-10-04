@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -39,6 +40,9 @@ public class HomeView {
 		switch (item.getItemId()) {
 		case R.id.map:
 			mPresenter.onMapOptionSelected();
+			return true;
+		case R.id.user_list:
+			mPresenter.onUserListOptionSelected();
 			return true;
 		case R.id.sign_out:
 			mPresenter.onSignOutOptionSelected();
@@ -75,6 +79,14 @@ public class HomeView {
 			}
 
 		});
+		followedUsersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				mPresenter.onFollowerClicked(position);				
+			}
+		});
 
 	}
 
@@ -89,13 +101,18 @@ public class HomeView {
 		InputMethodManager inputManager = (InputMethodManager)
 				getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputManager.toggleSoftInput(0, 0);
-		
-		
+				
 		
 	}
 
 	private Activity getActivity() {
 		return getFragment().getActivity();
 	}
+
+//	public void onFollowedUserClicked(int position) {
+//		mPresenter.onFollowerClicked(position);
+//		
+//		
+//	}
 
 }

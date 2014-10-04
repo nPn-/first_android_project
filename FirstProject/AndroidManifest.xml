@@ -74,6 +74,14 @@
             android:label="@string/title_activity_users_list" >
         </activity>
         <activity
+            android:name="com.gmail.npnster.first_project.UserListActivity"
+            android:label="@string/title_activity_user_list" >
+        </activity>
+        <activity
+            android:name="com.gmail.npnster.first_project.UserDetailActivity"
+            android:label="@string/title_activity_user_detail" >
+        </activity>
+        <activity
             android:name="com.gmail.npnster.first_project.ApiCheckerActivity"
             android:label="@string/title_activity_api_checker" >
         </activity>
