@@ -1,5 +1,6 @@
 package com.gmail.npnster.first_project;
 
+import com.gmail.npnster.first_project.api_params.GetMicropostsResponse.Micropost;
 import com.gmail.npnster.first_project.api_params.UserListResponse.User;
 import com.squareup.picasso.Picasso;
 
@@ -34,6 +35,8 @@ public class UserDetailView {
 	@InjectView(R.id.user_detail_name) TextView userDetailNameTextView;
 	@InjectView(R.id.user_detail_icon) ImageView userDetailIconImageView;
 	@InjectView(R.id.user_detail_options) ListView userDetailOptionsView;
+	@InjectView(R.id.user_detail_microposts) ListView userDetailMicropostsView;
+	@InjectView(R.id.following_notice) TextView userDetailFollowingNoticeView;
 	@InjectView(R.id.follow_switch) Switch userDetailFollowSwitchView;
 
 	public UserDetailView(Fragment fragment) {
@@ -109,6 +112,14 @@ public class UserDetailView {
 		userDetailEmailIdTextView.setText(email);
 		
 	}
+	
+	public void setFollowingNotice(boolean following) {
+		if (following) {
+			userDetailFollowingNoticeView.setText("This user is following you!");
+		} else {
+			userDetailFollowingNoticeView.setText("This user is not following you");
+		}
+	}
 
 	public void setUserPhoneNumber(String phoneNumber) {
 		userDetailPhoneNumberTextView.setText(phoneNumber);
@@ -117,6 +128,13 @@ public class UserDetailView {
 
 	public void setFollowUser(boolean areFollowing) {
 		userDetailFollowSwitchView.setChecked(areFollowing);
+		
+	}
+
+	public void setUserDetailMicropostsAdapter(
+			ArrayAdapter<Micropost> micropostsAdapter) {
+		userDetailMicropostsView.setAdapter(micropostsAdapter);
+		
 		
 	}
 

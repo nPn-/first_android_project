@@ -57,6 +57,7 @@ public class UserDetailActivity extends ActionBarActivity {
 		@Inject Bus mBus;
 		private UserDetailView mUserDetailView;
 		private UserDetailPresenter mUserDetailPresenter;
+		private String mUserId;
 		
 		
 		@Override
@@ -71,13 +72,10 @@ public class UserDetailActivity extends ActionBarActivity {
 			 mBus.register(mUserDetailPresenter);
 			 int id = getActivity().getIntent().getIntExtra("user_id", 0);
 			 System.out.println(String.format("id recived = %d", id));
-			 String userId ;
 			if (id > 0) {
-				userId = String.valueOf(id);
-			} else {
-				userId = null;
+				mUserId = String.valueOf(id);
 			}
-			 mUserDetailPresenter.setUserId(userId);
+			 mUserDetailPresenter.setUserId(mUserId);
 			 mUserDetailPresenter.refreshView();
 		}
 		
@@ -93,6 +91,7 @@ public class UserDetailActivity extends ActionBarActivity {
 			mUserDetailView = new UserDetailView(this);
 			mUserDetailPresenter.setView(mUserDetailView);
 			mUserDetailView.setPresenter(mUserDetailPresenter);
+			setRetainInstance(true);
 			
 		}
 

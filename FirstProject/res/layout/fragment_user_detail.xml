@@ -12,6 +12,7 @@
     <LinearLayout 
           android:orientation="horizontal"
           android:layout_width="match_parent"
+              android:paddingBottom="10dp"
           android:layout_height="wrap_content" >
     
            <ImageView
@@ -49,21 +50,43 @@
     </LinearLayout>   
      </LinearLayout>
      
+ <View
+    android:layout_width="fill_parent"
+    android:layout_height="1dp"
+    android:background="@android:color/darker_gray"/>
+
+     
+        <TextView
+        android:id="@+id/following_notice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+             
+                android:paddingBottom="4dp"
+                 android:paddingTop="10dp"
+         />
+           
      <Switch
         android:id="@+id/follow_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textOff="No "
         android:textOn="Yes"
-        android:paddingBottom="20dp"
-        android:text="Follow this user?" />
-   
+        android:paddingBottom="10dp"
+        android:text="Do you want to follow this user?" />
+     
+ <View
+    android:layout_width="fill_parent"
+    android:layout_height="1dp"
+    android:background="@android:color/darker_gray"/>
+     
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/options_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Allow this user to:"
+        android:text="Do you want to allow this user to:"
+        android:paddingTop="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView
@@ -71,10 +94,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText1"
-        android:layout_marginTop="32dp" >
+        android:paddingBottom="10dp"
+        android:layout_marginTop="4dp" >
 
     </ListView>
+    
+    <View
+    android:layout_width="fill_parent"
+    android:layout_height="1dp"
+    android:background="@android:color/darker_gray"/>
+     
+    <TextView
+        android:id="@+id/microposts_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:text="Here are this users recent microposts:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />   
+        
+      <ListView
+        android:id="@+id/user_detail_microposts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="4dp" >
+
+    </ListView>
+      
 
 
 </LinearLayout>

@@ -9,10 +9,12 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
-import com.gmail.npnster.first_project.api_params.CreateMicropostResponse;
 import com.gmail.npnster.first_project.api_params.FollowRequest;
 import com.gmail.npnster.first_project.api_params.GetFollowedUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetFollowedUsersResponse;
+import com.gmail.npnster.first_project.api_params.GetMicropostsRequest;
+import com.gmail.npnster.first_project.api_params.GetMicropostsResponse;
+import com.gmail.npnster.first_project.api_params.GetMicropostsResponse.Micropost;
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
 import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
@@ -38,8 +40,10 @@ import android.widget.ArrayAdapter;
 public class UserDetailPresenter {
 
 	private UserDetailView mView;
+	private ArrayList<Micropost> mUserDetailMicroposts = new ArrayList<Micropost>();
 	private ArrayList<UserDetailOption> mUserDetailOptions = new ArrayList<UserDetailOption>();
-	private ArrayAdapter<UserDetailOption> adapter;
+	private ArrayAdapter<UserDetailOption> optionsAdapter;
+	private ArrayAdapter<Micropost> micropostsAdapter;
 	private String mUserId;
 	private String mCurrentUser;
 	@Inject
@@ -78,9 +82,23 @@ public class UserDetailPresenter {
 
 	public void refreshView() {
 		mUserDetailOptions.clear();
-		adapter = new UserDetailOptionsAdapter(getContext(), mUserDetailOptions, mView);
-		mView.setUserDetailOptionsAdapter(adapter);
-		mBus.post(new GetUserProfileRequest(mUserId)); //hardcoded for now
+		optionsAdapter = new UserDetailOptionsAdapter(getContext(), mUserDetailOptions, mView);
+		micropostsAdapter = new UserDetailMicropostAdapter(getContext(), mUserDetailMicroposts);
+		mView.setUserDetailOptionsAdapter(optionsAdapter);
+		mView.setUserDetailMicropostsAdapter(micropostsAdapter);
+		mBus.post(new GetUserProfileRequest(mUserId)); 
+		mBus.post(new GetMicropostsRequest(mUserId)); 
+	}
+	
+	@Subscribe
+	public void onGetMicropostsResponse(GetMicropostsResponse event) {
+		mUserDetailMicroposts.clear();
+		mUserDetailMicroposts.addAll(event.getMicroposts());
+		System.out.println(String.format("micorpost count = %s", event.getMicroposts().size()));
+		micropostsAdapter.notifyDataSetChanged();
+		System.out.println(String.format("microposts adapter size = %d ", micropostsAdapter.getCount()));
+		
+		
 	}
 
 	@Subscribe
@@ -91,6 +109,7 @@ public class UserDetailPresenter {
         mView.setUserEmailId(event.getEmail());
         mView.setUserPhoneNumber(event.getPhoneNumber());
         mView.setFollowUser(event.areFollowing());
+        mView.setFollowingNotice(event.isFollowedBy());
 		mUserDetailOptions.clear();
 		mUserDetailOptions.addAll(new UserDetailOptions().toArrayList());
 		System.out.println(String.format("user details options size = %d ", mUserDetailOptions.size()));
@@ -104,8 +123,8 @@ public class UserDetailPresenter {
 				}
 			}
 		}
-		adapter.notifyDataSetChanged();
-		System.out.println(String.format("adapter size = %d ", adapter.getCount()));
+		optionsAdapter.notifyDataSetChanged();
+		System.out.println(String.format("adapter size = %d ", optionsAdapter.getCount()));
 		
 		
 

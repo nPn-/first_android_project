@@ -7,10 +7,10 @@ public class UserDetailOptions {
 	
 	public UserDetailOptions() {
 		mUserDetailOptions = new ArrayList<UserDetailOption>();
-		mUserDetailOptions.add(new UserDetailOption("allow_location", "See my location?"));
-		mUserDetailOptions.add(new UserDetailOption("allow_email_id", "See my email id?"));
-		mUserDetailOptions.add(new UserDetailOption("allow_phone_number", "See my phone number?"));
-		mUserDetailOptions.add(new UserDetailOption("allow_microposts", "See my microposts?"));
+		mUserDetailOptions.add(new UserDetailOption("allow_location", "See your location?"));
+		mUserDetailOptions.add(new UserDetailOption("allow_email_id", "See your email id?"));
+		mUserDetailOptions.add(new UserDetailOption("allow_phone_number", "See your phone number?"));
+		mUserDetailOptions.add(new UserDetailOption("allow_microposts", "See your microposts?"));
 	}
 	
 	public ArrayList<UserDetailOption> toArrayList() {
