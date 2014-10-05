@@ -29,6 +29,7 @@ import dagger.Provides;
 				MapPresenter.class,
 				UsersListActivity.class,
 				UserListActivity.PlaceholderFragment.class,
+				MicropostListActivity.PlaceholderFragment.class,
 				UserDetailActivity.class,
 				UserDetailActivity.PlaceholderFragment.class,
 				PersistData.class,
@@ -38,6 +39,7 @@ import dagger.Provides;
 				ApiCheckerActivity.PlaceholderFragment.class,  //can probably remove this class completely
 				HomePresenter.class, 
 				UserListPresenter.class, 
+				MicropostListPresenter.class, 
 				UserDetailPresenter.class, 
 				MyApp.class
 			  },

@@ -17,9 +17,9 @@
     
            <ImageView
              android:id="@+id/user_detail_icon"
-             android:layout_width="wrap_content"
-             android:paddingRight="20dp"
-             android:layout_height="match_parent" />
+             android:layout_width="64dp"
+             android:paddingRight="5dp"
+             android:layout_height="64dp" />
    
     <LinearLayout 
           android:orientation="vertical"
@@ -30,7 +30,7 @@
              android:id="@+id/user_detail_name"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:text="name"
+             android:text=""
              android:textAppearance="?android:attr/textAppearanceMedium" />
            
                <TextView
@@ -99,7 +99,7 @@
 
     </ListView>
     
-    <View
+<View
     android:layout_width="fill_parent"
     android:layout_height="1dp"
     android:background="@android:color/darker_gray"/>
@@ -118,7 +118,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="4dp" >
-
+ 
     </ListView>
       
 

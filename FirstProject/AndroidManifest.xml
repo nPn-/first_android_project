@@ -78,6 +78,10 @@
             android:label="@string/title_activity_user_list" >
         </activity>
         <activity
+            android:name="com.gmail.npnster.first_project.MicropostListActivity"
+            android:label="@string/title_activity_micropost_list" >
+        </activity>
+        <activity
             android:name="com.gmail.npnster.first_project.UserDetailActivity"
             android:label="@string/title_activity_user_detail" >
         </activity>

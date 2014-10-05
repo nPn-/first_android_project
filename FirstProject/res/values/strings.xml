@@ -8,6 +8,7 @@
     <string name="title_activity_sign_in">SignInActivity</string>
     <string name="title_activity_users_list">UsersListActivity</string>
     <string name="title_activity_user_list">UserListActivity</string>
+    <string name="title_activity_micropost_list">MicropostListActivity</string>
     <string name="title_activity_user_detail">UserDetailActivity</string>
     <string name="title_activity_api_checker">ApiCheckerActivity</string>
     <string name="title_activity_api_ex">ApiExActivity</string>

@@ -53,6 +53,9 @@ public class UserDetailView {
 		case R.id.action_settings:
 			mPresenter.onSettingsOptionSelected();
 			return true;
+		case R.id.microposts:
+			mPresenter.onMicropostssOptionSelected();
+			return true;
 		default:
 			return false;
 
@@ -116,6 +119,7 @@ public class UserDetailView {
 	public void setFollowingNotice(boolean following) {
 		if (following) {
 			userDetailFollowingNoticeView.setText("This user is following you!");
+			userDetailFollowingNoticeView.setTextColor(getActivity().getResources().getColor(R.color.Orange));
 		} else {
 			userDetailFollowingNoticeView.setText("This user is not following you");
 		}
