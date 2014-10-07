@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.gmail.npnster.first_project.UpdateUserDetailActivity$PlaceholderFragment" >
+
+    
+    
+     <ImageView
+         android:id="@+id/update_user_profile_icon"
+         android:layout_width="64dp"
+         android:layout_height="64dp"
+         android:paddingRight="5dp"
+         android:src="@drawable/ic_launcher" />
+
+        <ScrollView
+          android:id="@+id/login_form"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" >
+           
+           
+           <LinearLayout
+               style="@style/LoginFormContainer"
+               android:layout_height="310dp"
+               android:orientation="vertical" 
+               android:layout_width="fill_parent" >
+ 
+               <EditText
+                   android:id="@+id/update_user_profile_name"
+                   android:hint="Name"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:ems="10"
+                   android:maxLines="1"
+                   android:singleLine="true"
+                   android:inputType="textPersonName" /> 
+
+         
+       
+               <EditText
+                   android:id="@+id/update_user_profile_email_id"  
+                   android:hint="Email"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:ems="10"
+                   android:maxLines="1"
+                   android:singleLine="true"
+                   android:inputType="textEmailAddress" />
+
+                <EditText
+                   android:id="@+id/update_user_profile_password"
+                   android:hint="New Password"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:maxLines="1"
+                   android:singleLine="true"
+                   android:ems="10"
+                   android:inputType="textPassword" />
+
+             
+           <EditText
+                   android:id="@+id/update_user_profile_confirmation_password"
+                   android:hint="Confirm New Password"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:ems="10"
+                   android:maxLines="1"
+                   android:singleLine="true"
+                   android:inputType="textPassword" />
+
+ 
+              
+           <EditText
+                   android:id="@+id/update_user_profile_current_password"
+                   android:hint="Current Password"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:ems="10"
+                   android:maxLines="1"
+                   android:singleLine="true"
+                   android:paddingTop="30dp"
+                   android:imeOptions="actionDone"
+                   android:inputType="textPassword" />
+ 
+               
+
+           
+          </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -54,7 +54,8 @@ public class RailsApiClient {
 				@Query("api_access_token") String token,
 				Callback<GetUserProfileResponse> callback);
 
-		@PATCH(API_URL + "/users/{id}")
+		// changed to put for now - bluemix does not support patch?
+		@PUT(API_URL + "/users/{id}")
 		void updateUser(@Path("id") String id, @Body UpdateUserRequest request,
 				Callback<UpdateUserResponse> callback);
 

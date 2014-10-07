@@ -153,6 +153,9 @@ public class HomePresenter {
 			Intent intent = new Intent(getContext(), UserDetailActivity.class);
 			intent.putExtra("user_id", selectedUser);
 			getContext().startActivity(intent);
+		} else {
+			Intent intent = new Intent(getContext(), UserProfileActivity.class);
+			getContext().startActivity(intent);			
 		}
 		
 //		Integer userId = followedUsers.get(position).getUserId();

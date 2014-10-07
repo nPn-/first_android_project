@@ -21,7 +21,28 @@ public class RailsApiCallback<T extends BaseResponse> implements Callback<T> {
 
 	@Override 
 	public void failure(RetrofitError retrofitError) {
-		System.out.println(retrofitError.toString() );
+//		System.out.println(retrofitError.toString() );
+		System.out.println(String.format("message = %s, localized message = %s", retrofitError.getMessage(), retrofitError.getLocalizedMessage()));
+		if (retrofitError.getResponse() != null ) {
+			System.out.println(String.format("retrofit error - status code = %d", retrofitError.getResponse().getStatus()));
+		} else {
+			System.out.println("retrofit error - response was null");
+		}
+		
+		if (retrofitError.isNetworkError()) {
+			System.out.println("retrofit error - network error");
+		} else {			
+			System.out.println("retrofit error - this was not a network error");
+		}
+		
+		if (retrofitError.getBody() == null) {
+			System.out.println("retrofit error - body is null");
+		} else {
+			System.out.println("retrofit error - body is not null");
+			
+		}
+		
+		
 		if (!retrofitError.isNetworkError()  && retrofitError.getResponse().getStatus() < 500) { 
 		T response = retrofitError != null && retrofitError.getBody() != null ? (T) retrofitError.getBody() : mResponse  ;
 //		T response;

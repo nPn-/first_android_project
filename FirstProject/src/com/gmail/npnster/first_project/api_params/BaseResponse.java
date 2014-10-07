@@ -8,6 +8,7 @@ import retrofit.client.Response;
 public class BaseResponse {
 	private List<String> errors = new ArrayList<String>();
 	private Boolean mSuccessful = false;
+	private Boolean mNetworkError = false;
 	public Response getRawResponse() {
 		return rawResponse;
 	}
@@ -31,7 +32,15 @@ public class BaseResponse {
 		mSuccessful = successful;
 	}
 	
+	public void setNetworkError(Boolean networkError) {
+		mNetworkError = networkError;
+	}
+	
 	public Boolean isSuccessful() {
 		return mSuccessful;
+	}
+	
+	public Boolean isNetworkError() {
+		return mNetworkError;
 	}
 }

@@ -95,6 +95,9 @@ public class UserListPresenter {
 			Intent intent = new Intent(getContext(), UserDetailActivity.class);
 			intent.putExtra("user_id", mUserList.get(position).getId());
 			getContext().startActivity(intent);
+		} else {
+			Intent intent = new Intent(getContext(), UserProfileActivity.class);
+			getContext().startActivity(intent);
 		}
 		
 	}
