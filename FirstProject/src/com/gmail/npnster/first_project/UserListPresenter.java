@@ -58,7 +58,7 @@ public class UserListPresenter {
 		return mView;
 	}
 
-	public Context getContext() {
+	public Activity getContext() {
 		return getView().getFragment().getActivity();
 	}
 
@@ -72,11 +72,13 @@ public class UserListPresenter {
 		adapter = new UserListAdapter(getContext(), mUserList);
 		mView.setUserListAdapter(adapter);
 		mBus.post(new GetUsersRequest());
+		getContext().setProgressBarIndeterminateVisibility(true);
 	}
 
 	@Subscribe
 	public void onGetUsersResponse(GetUsersResponse event) {
 
+		getContext().setProgressBarIndeterminateVisibility(false);
 		mUserList.clear();
 		for (GetUsersResponse.User user : event.getUsers()) {
 			System.out.println(user.getName());

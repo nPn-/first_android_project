@@ -34,14 +34,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 
 public class UserDetailActivity extends ActionBarActivity {
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_user_detail);
 
 		if (savedInstanceState == null) {
@@ -49,6 +52,7 @@ public class UserDetailActivity extends ActionBarActivity {
 					transaction.add(R.id.container, new PlaceholderFragment());
 					transaction.commit();
 		}
+		
 	}
 
 
@@ -63,12 +67,18 @@ public class UserDetailActivity extends ActionBarActivity {
 		@Override
 		public void onPause() {
 			super.onPause();
+			UserDetailActivityStateChangeEvent stateChange = new UserDetailActivityStateChangeEvent();
+			stateChange.setState(UserDetailActivityStateChangeEvent.State.PAUSED);
+			mBus.post(stateChange);			
 			mBus.unregister(mUserDetailPresenter);
 		}
 
 		@Override
 		public void onResume() {
 			super.onResume();
+			UserDetailActivityStateChangeEvent stateChange = new UserDetailActivityStateChangeEvent();
+			stateChange.setState(UserDetailActivityStateChangeEvent.State.RESUMED);
+			mBus.post(stateChange);			
 			 mBus.register(mUserDetailPresenter);
 			 int id = getActivity().getIntent().getIntExtra("user_id", 0);
 			 System.out.println(String.format("id recived = %d", id));

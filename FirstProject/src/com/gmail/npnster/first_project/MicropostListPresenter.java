@@ -41,8 +41,12 @@ public class MicropostListPresenter {
 	private ArrayAdapter<Micropost> adapter;
 	private String mUserId;
 	private String mCurrentUser;
-	@Inject	PersistData mPersistData;
-	@Inject	Bus mBus;
+	private boolean mProfileRequestActive = false;
+	private boolean mMicropostRequestActive = false;
+	@Inject
+	PersistData mPersistData;
+	@Inject
+	Bus mBus;
 
 	public MicropostListPresenter() {
 		Injector.getInstance().inject(this);
@@ -64,7 +68,7 @@ public class MicropostListPresenter {
 		return mView;
 	}
 
-	public Context getContext() {
+	public Activity getContext() {
 		return getView().getFragment().getActivity();
 	}
 
@@ -77,42 +81,50 @@ public class MicropostListPresenter {
 		mMicropostList.clear();
 		adapter = new UserDetailMicropostAdapter(getContext(), mMicropostList);
 		mView.setMicropostListAdapter(adapter);
-		mBus.post(new GetMicropostsRequest(mUserId));
 		mBus.post(new GetUserProfileRequest(mUserId));
+		mProfileRequestActive = true;
+		mBus.post(new GetMicropostsRequest(mUserId));
+		mMicropostRequestActive = true;
+		getContext().setProgressBarIndeterminateVisibility(true);
+
 	}
 
-	
 	@Subscribe
 	public void onGetMicropostsResponse(GetMicropostsResponse event) {
+		mMicropostRequestActive = false;
+		requestComplete();
 		mMicropostList.clear();
 		mMicropostList.addAll(event.getMicroposts());
 		System.out.println(String.format("micorpost count = %s", event.getMicroposts().size()));
 		adapter.notifyDataSetChanged();
 		System.out.println(String.format("microposts adapter size = %d ", adapter.getCount()));
-		
-		
+
 	}
-	
+
 	@Subscribe
 	public void onGetUserProfileResponse(GetUserProfileResponse event) {
-		  mView.setUserIcon("http://www.gravatar.com/avatar/" + event.getGravatar_id());
-		  mView.setUserName(event.getName());
+		mProfileRequestActive = false;
+		requestComplete();
+		mView.setUserIcon("http://www.gravatar.com/avatar/" + event.getGravatar_id());
+		mView.setUserName(event.getName());
 
-		
 	}
-
-
-		
-	
 
 	public void setUserId(String userId) {
 		mUserId = userId;
-		
+
 	}
 
 	public void onMicropostSelected(int position) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
+	private void requestComplete() {
+		if (!mProfileRequestActive && !mMicropostRequestActive) {
+			getContext().setProgressBarIndeterminateVisibility(false);
+		}
+
+	}
+
 }

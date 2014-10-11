@@ -70,7 +70,7 @@ public class UpdateUserProfilePresenter {
 		return mView;
 	}
 
-	public Context getContext() {
+	public Activity getContext() {
 		return getView().getFragment().getActivity();
 	}
 
@@ -81,6 +81,7 @@ public class UpdateUserProfilePresenter {
 
 	public void refreshView() {
 		mBus.post(new GetUserProfileRequest(mCurrentUser));
+		getContext().setProgressBarIndeterminateVisibility(true);
 	}
 
 
@@ -89,6 +90,7 @@ public class UpdateUserProfilePresenter {
 	public void onGetUserProfileResponse(GetUserProfileResponse event) {
 		System.out.println(String.format("got the user profile for user = %s",
 				event.getName()));
+		getContext().setProgressBarIndeterminateVisibility(false);
 		mView.setUserIcon("http://www.gravatar.com/avatar/"
 				+ event.getGravatar_id());
 		mCurrentName = event.getName();
@@ -121,6 +123,7 @@ public class UpdateUserProfilePresenter {
 	
 	@Subscribe public void onUserUpdateRequestCompleted(UpdateUserResponse event) {
 		refreshView();
+		
 		mView.resetUpdateProfileForm();
 	}
 

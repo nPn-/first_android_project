@@ -28,9 +28,10 @@ public class MapPresenter {
 	private int centerOnPersonIndex = 0;
 	private String centerOnUserId = "";
 	private GoogleMap.CancelableCallback mExpandMapCallback;
-	@Inject Bus mBus;
+	@Inject
+	Bus mBus;
 
-	public MapPresenter(Context context,MapMarkers mapMarkers) {
+	public MapPresenter(Context context, MapMarkers mapMarkers) {
 		System.out.println("Constructing MapPresenter");
 		Injector.getInstance().inject(this);
 		mMapMarkers = mapMarkers;
@@ -41,40 +42,35 @@ public class MapPresenter {
 
 	@Subscribe
 	public void onGetMapMarkersRequestCompleted(GetMapMarkersResponse event) {
-		System.out
-				.println("inside map activity - onGetMapMarkersRequestCompleted");
+		System.out.println("inside map activity - onGetMapMarkersRequestCompleted");
 		if (event != null && event.getRawResponse() != null) {
-			System.out
-					.println(String
-							.format("get marker request completed with a status of %d, isSuccessful = %b",
-									event.getRawResponse().getStatus(),
-									event.isSuccessful()));
+			System.out.println(String.format("get marker request completed with a status of %d, isSuccessful = %b", event
+					.getRawResponse().getStatus(), event.isSuccessful()));
 		}
 		if (event != null && event.isSuccessful()) {
 			if (mMapMarkers.hasSameUserList(event.getMarkers())) {
-				System.out.println(String.format("updating %d markers",
-						mMapMarkers.size()));
+				System.out.println(String.format("updating %d markers", mMapMarkers.size()));
 
-				mMapMarkers.updateLocationInfo(event.getMarkers(),
-						centerOnModeIndex);
+				mMapMarkers.updateLocationInfo(event.getMarkers(), centerOnModeIndex);
 				for (MapMarker m : mMapMarkers.toArrayList()) {
-					GoogleMapMarkerParameters parameters = m
-							.getGoogleMapMarkerParameters();
+					GoogleMapMarkerParameters parameters = m.getGoogleMapMarkerParameters();
 					mMapView.updateMarker(parameters);
 				}
 
 			} else {
 				System.out.println("replacing markers");
-//				String currentCenterOnUser = null; 
-//				if (mMapMarkers.get(centerOnPersonIndex) != null ) {
-//				    currentCenterOnUser = mMapMarkers.get(centerOnPersonIndex).getUserId();
-//				}
+				// String currentCenterOnUser = null;
+				// if (mMapMarkers.get(centerOnPersonIndex) != null ) {
+				// currentCenterOnUser =
+				// mMapMarkers.get(centerOnPersonIndex).getUserId();
+				// }
 				mMapMarkers.clear();
 				mMapView.clearMap();
 
 				for (RailsMarker m : event.getMarkers()) {
 					mMapMarkers.add(new MapMarker(mContext, m));
-					System.out.println(String.format("requesting profile for user name = %s,  id = %s", m.getName(), m.getUserId()));
+					System.out
+							.println(String.format("requesting profile for user name = %s,  id = %s", m.getName(), m.getUserId()));
 					mBus.post(new GetUserProfileRequest(m.getUserId()));
 
 				}
@@ -82,11 +78,10 @@ public class MapPresenter {
 				if (newIndexOfCurrentCenterOnUser >= 0) {
 					setCenterOnPosition(newIndexOfCurrentCenterOnUser);
 				} else {
-					 setCenterOnPosition(0);
+					setCenterOnPosition(0);
 				}
 				mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
-				mMapView.setIntialCenterOnImage(mMapMarkers
-						.get(centerOnPersonIndex));
+				mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
 			}
 			isMapReady = true;
 			recenterMap();
@@ -102,8 +97,7 @@ public class MapPresenter {
 		switch (centerOnModeIndex) {
 		case 0:
 			if (mapMarker != null) {
-				LatLng latLng = new LatLng(mapMarker.getLatitude(),
-						mapMarker.getLongitude());
+				LatLng latLng = new LatLng(mapMarker.getLatitude(), mapMarker.getLongitude());
 				mMapView.centerMapAt(latLng);
 			}
 			break;
@@ -128,12 +122,9 @@ public class MapPresenter {
 	public void onMarkerReadyEvent(MarkerReadyEvent event) {
 		MapMarker mapMarker = event.getMapMarker();
 		GoogleMapMarkerParameters markerParameters = new GoogleMapMarkerParameters();
-		markerParameters.setUserId(mapMarker.getUserId())
-				.setBitmap(mapMarker.getBitmap())
-				.setLatLng(mapMarker.getLatLng()).setTitle(mapMarker.getName())
-				.setCircleRadius(mapMarker.getAccuracy());
-		if (mapMarker.getUserId().equals(
-				mMapMarkers.get(centerOnPersonIndex).getUserId())) {
+		markerParameters.setUserId(mapMarker.getUserId()).setBitmap(mapMarker.getBitmap()).setLatLng(mapMarker.getLatLng())
+				.setTitle(mapMarker.getName()).setCircleRadius(mapMarker.getAccuracy());
+		if (mapMarker.getUserId().equals(mMapMarkers.get(centerOnPersonIndex).getUserId())) {
 			markerParameters.setIsCenterOn(true);
 		}
 		mMapView.addMarkerToMap(markerParameters);
@@ -142,7 +133,7 @@ public class MapPresenter {
 
 	public void centerOnPersonSelected(int position) {
 		setCenterOnPosition(position);
-//		centerOnPersonIndex = position;
+		// centerOnPersonIndex = position;
 		recenterMap();
 		MapMarker mapMarker = mMapMarkers.get(position);
 		if (mapMarker != null) {
@@ -154,13 +145,14 @@ public class MapPresenter {
 	public void refreshMap() {
 		// no longer needed map is refresehd while fragment is active - remove
 		// calls to this method
-		System.out
-				.println("inside map presenter method refreshMap - this no longer does anything please remove calls");
+		System.out.println("inside map presenter method refreshMap - this no longer does anything please remove calls");
 
 	}
 
 	public void nextButtonClicked() {
-		int nextPosition = (centerOnPersonIndex + 1) % mMapMarkers.size();
+		int nextPosition;
+		int n = centerOnPersonIndex + 1;
+		nextPosition = (n < mMapMarkers.size()) ? n : 0 ;
 		mMapView.setCenterOnSpinnerSelection(nextPosition);
 		centerOnPersonSelected(nextPosition);
 	}
@@ -168,11 +160,7 @@ public class MapPresenter {
 	public void previousButtonClicked() {
 		int previousPosition;
 		int n = centerOnPersonIndex - 1;
-		if (n >= 0) {
-			previousPosition = n;
-		} else {
-			previousPosition = 3 + n % 3;
-		}
+		previousPosition = (n >= 0) ? n : mMapMarkers.size() - 1;
 		mMapView.setCenterOnSpinnerSelection(previousPosition);
 		centerOnPersonSelected(previousPosition);
 	}
@@ -184,8 +172,7 @@ public class MapPresenter {
 	}
 
 	public void markerClicked(com.google.android.gms.maps.model.Marker marker) {
-		System.out.println(String.format("marker id %s was clicked",
-				marker.getId()));
+		System.out.println(String.format("marker id %s was clicked", marker.getId()));
 		String userId = mMapView.getUserIdForMarker(marker);
 		System.out.println(String.format("marker is for user id = %s,", userId));
 		;
@@ -201,8 +188,10 @@ public class MapPresenter {
 	}
 
 	public void centerOnImageclicked() {
-		mMapView.clickOnMarkerForUserId(mMapMarkers.get(centerOnPersonIndex)
-				.getUserId());
+		MapMarker marker = mMapMarkers.get(centerOnPersonIndex);
+		if (marker != null) {
+			mMapView.clickOnMarkerForUserId(marker.getUserId());
+		}
 
 	}
 
@@ -218,8 +207,7 @@ public class MapPresenter {
 			public void onFinish() {
 				System.out.println("map is now centered on the group");
 				LatLngBounds mapBounds = mMapView.getCurrentMapBounds();
-				boolean areAllMarkersContained = mMapMarkers
-						.areAllMarkersContained(mapBounds);
+				boolean areAllMarkersContained = mMapMarkers.areAllMarkersContained(mapBounds);
 				if (areAllMarkersContained) {
 					System.out.println("map size is OK");
 				} else {
@@ -247,7 +235,7 @@ public class MapPresenter {
 
 	}
 
-	public int getGenterOnPosition() {  
+	public int getGenterOnPosition() {
 		return centerOnPersonIndex;
 	}
 
@@ -258,7 +246,7 @@ public class MapPresenter {
 	public void setCenterOnPosition(int position) {
 		centerOnPersonIndex = position;
 		if (mMapMarkers.get(position) != null) {
-		    setCenterOnUserId(mMapMarkers.get(position).getUserId());
+			setCenterOnUserId(mMapMarkers.get(position).getUserId());
 		}
 		mMapView.setCenterOnSpinnerSelection(position);
 	}
@@ -267,55 +255,57 @@ public class MapPresenter {
 		centerOnModeIndex = mode;
 		mMapView.setCenterOnMode(mode);
 	}
-	
-	@Subscribe public void onGetUserProfileRequestCompleted(GetUserProfileResponse event) {
-		System.out.println(String.format("got an updated users profile, name = %s, id = %s, phone number = %s", event.getName(), event.getId(), event.getPhoneNumber()));
+
+	@Subscribe
+	public void onGetUserProfileRequestCompleted(GetUserProfileResponse event) {
+		System.out.println(String.format("got an updated users profile, name = %s, id = %s, phone number = %s", event.getName(),
+				event.getId(), event.getPhoneNumber()));
 		MapMarker marker = mMapMarkers.findByUserId(event.getId().toString());
-		if (marker != null) marker.setPhoneNumber(event.getPhoneNumber());
-		
+		if (marker != null)
+			marker.setPhoneNumber(event.getPhoneNumber());
+
 	}
 
 	public void centerOnImageLongClicked() {
 		System.out.println("inside presenter center on image long clikcked");
 		mMapView.startActionMode();
-		
-	}
 
+	}
 
 	public void callPerson() {
 		String phoneNumber = mMapMarkers.get(centerOnPersonIndex).getPhoneNumber();
-		String uriString = String.format("tel:%s",phoneNumber);
+		String uriString = String.format("tel:%s", phoneNumber);
 		System.out.println(String.format("call person with phone number = %s", phoneNumber));
 		Intent phoneCallIntent = new Intent(Intent.ACTION_CALL);
 		phoneCallIntent.setData(Uri.parse(uriString));
 		mContext.startActivity(phoneCallIntent);
-		
-		
+
 	}
 
 	public void messagePerson() {
 		String phoneNumber = mMapMarkers.get(centerOnPersonIndex).getPhoneNumber();
-		String uriString = String.format("sms:%s",phoneNumber);
-		System.out.println(String.format("message person with phone number = %s", mMapMarkers.get(centerOnPersonIndex).getPhoneNumber()));
+		String uriString = String.format("sms:%s", phoneNumber);
+		System.out.println(String.format("message person with phone number = %s", mMapMarkers.get(centerOnPersonIndex)
+				.getPhoneNumber()));
 		Intent txtMessageIntent = new Intent(Intent.ACTION_VIEW);
 		txtMessageIntent.setData(Uri.parse(uriString));
 		mContext.startActivity(txtMessageIntent);
-		
+
 	}
 
 	public void mapLongClicked() {
 		System.out.println("staring action mode");
 		mMapView.startActionMode();
-		
+
 	}
 
 	public void centerOnPersonLongClicked(int position, long id) {
 		System.out.println("map view spinner item long clicked");
 		setCenterOnPosition(position);
 		mMapView.startActionMode();
-		
+
 	}
-	
+
 	public String getCenterOnUserId() {
 		return centerOnUserId;
 	}
@@ -323,7 +313,5 @@ public class MapPresenter {
 	public void setCenterOnUserId(String centerOnUserId) {
 		this.centerOnUserId = centerOnUserId;
 	}
-
-
 
 }

@@ -20,7 +20,9 @@ import com.gmail.npnster.first_project.api_params.GetUserProfileResponse;
 import com.gmail.npnster.first_project.api_params.GetUsersRequest;
 import com.gmail.npnster.first_project.api_params.GetUsersResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionRequest;
+import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionRequest;
+import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.SignoutRequest;
 import com.gmail.npnster.first_project.api_params.SignoutResponse;
 import com.gmail.npnster.first_project.api_params.UnfollowRequest;
@@ -29,7 +31,9 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.Editable;
 import android.text.format.DateUtils;
@@ -45,7 +49,10 @@ public class UserDetailPresenter {
 	private ArrayAdapter<UserDetailOption> optionsAdapter;
 	private ArrayAdapter<Micropost> micropostsAdapter;
 	private String mUserId;
+	private String mUserName;
 	private String mCurrentUser;
+	private boolean mProfileRequestActive = false;
+	private boolean mMicropostRequestActive = false;
 	@Inject
 	PersistData mPersistData;
 	@Inject
@@ -71,7 +78,7 @@ public class UserDetailPresenter {
 		return mView;
 	}
 
-	public Context getContext() {
+	public Activity getContext() {
 		return getView().getFragment().getActivity();
 	}
 
@@ -82,34 +89,36 @@ public class UserDetailPresenter {
 
 	public void refreshView() {
 		mUserDetailOptions.clear();
-		optionsAdapter = new UserDetailOptionsAdapter(getContext(),
-				mUserDetailOptions, mView);
-		micropostsAdapter = new UserDetailMicropostAdapter(getContext(),
-				mUserDetailMicroposts);
+		optionsAdapter = new UserDetailOptionsAdapter(getContext(), mUserDetailOptions, mView);
+		micropostsAdapter = new UserDetailMicropostAdapter(getContext(), mUserDetailMicroposts);
 		mView.setUserDetailOptionsAdapter(optionsAdapter);
 		mView.setUserDetailMicropostsAdapter(micropostsAdapter);
 		mBus.post(new GetUserProfileRequest(mUserId));
+		mProfileRequestActive = true;
 		mBus.post(new GetMicropostsRequest(mUserId));
+		mMicropostRequestActive = true;
+		getContext().setProgressBarIndeterminateVisibility(true);
 	}
 
 	@Subscribe
 	public void onGetMicropostsResponse(GetMicropostsResponse event) {
+		mMicropostRequestActive = false;
+		requestComplete();
 		mUserDetailMicroposts.clear();
 		mUserDetailMicroposts.addAll(event.getMicroposts());
-		System.out.println(String.format("micorpost count = %s", event
-				.getMicroposts().size()));
+		System.out.println(String.format("micorpost count = %s", event.getMicroposts().size()));
 		micropostsAdapter.notifyDataSetChanged();
-		System.out.println(String.format("microposts adapter size = %d ",
-				micropostsAdapter.getCount()));
+		System.out.println(String.format("microposts adapter size = %d ", micropostsAdapter.getCount()));
 
 	}
 
 	@Subscribe
 	public void onGetUserProfileResponse(GetUserProfileResponse event) {
-		System.out.println(String.format("got the user profile for user = %s",
-				event.getName()));
-		mView.setUserIcon("http://www.gravatar.com/avatar/"
-				+ event.getGravatar_id());
+		System.out.println(String.format("got the user profile for user = %s", event.getName()));
+		mProfileRequestActive = false;
+		requestComplete();
+		mView.setUserIcon("http://www.gravatar.com/avatar/" + event.getGravatar_id());
+		mUserName = event.getName();
 		mView.setUserName(event.getName());
 		mView.setUserEmailId(event.getEmail());
 		mView.setUserPhoneNumber(event.getPhoneNumber());
@@ -117,39 +126,41 @@ public class UserDetailPresenter {
 		mView.setFollowingNotice(event.isFollowedBy());
 		mUserDetailOptions.clear();
 		mUserDetailOptions.addAll(new UserDetailOptions().toArrayList());
-		System.out.println(String.format("user details options size = %d ",
-				mUserDetailOptions.size()));
-		for (String permission : event
-				.getPermissionsGrantedByCurrentUserToUser()) {
+		System.out.println(String.format("user details options size = %d ", mUserDetailOptions.size()));
+		for (String permission : event.getPermissionsGrantedByCurrentUserToUser()) {
 			for (UserDetailOption userDetailOption : mUserDetailOptions) {
-				System.out.println(String.format(
-						"checking permission %s == %s ? ",
-						userDetailOption.getName(), permission));
-				System.out.println(String.format("permission granted =  = %s",
-						permission));
+				System.out.println(String.format("checking permission %s == %s ? ", userDetailOption.getName(), permission));
+				System.out.println(String.format("permission granted =  = %s", permission));
 				if (userDetailOption.getName().equals(permission)) {
 					userDetailOption.setEnabled(true);
-					System.out.println(String.format(
-							"set permission true for permission name = %s",
-							userDetailOption.getName()));
+					System.out.println(String.format("set permission true for permission name = %s", userDetailOption.getName()));
 				}
 			}
 		}
 		optionsAdapter.notifyDataSetChanged();
-		System.out.println(String.format("adapter size = %d ",
-				optionsAdapter.getCount()));
+		System.out.println(String.format("adapter size = %d ", optionsAdapter.getCount()));
 
+	}
+
+	private void requestComplete() {
+		if (!mProfileRequestActive && !mMicropostRequestActive) {
+			getContext().setProgressBarIndeterminateVisibility(false);
+		}
+		
 	}
 
 	public void onUserPermissionChanged(int position, boolean checked) {
 		String permission = mUserDetailOptions.get(position).getName();
 		if (checked) {
-			mBus.post(new GrantFollowerPermissionRequest(mCurrentUser, mUserId,
-					permission));
+			GrantFollowerPermissionRequest event = new GrantFollowerPermissionRequest(mCurrentUser, mUserId, permission);
+			event.setFollowerName(mUserName);
+			mBus.post(event);
 		} else {
-			mBus.post(new RevokeFollowerPermissionRequest(mCurrentUser,
-					mUserId, permission));
+			RevokeFollowerPermissionRequest event = new RevokeFollowerPermissionRequest(mCurrentUser, mUserId, permission);
+			event.setFollowerName(mUserName);
+			mBus.post(event);
 		}
+
 	}
 
 	public void setUserId(String userId) {
@@ -172,6 +183,27 @@ public class UserDetailPresenter {
 		intent.putExtra("user_id", mUserId);
 		getContext().startActivity(intent);
 
+	}
+
+	@Subscribe
+	public void onRevokePermissionResponse(RevokeFollowerPermissionResponse event) {
+		if (!event.isSuccessful()) {
+			System.out.println(String.format("permission %s revoked", event.getRequestEvent().getPermission()));
+			String reason = event.isNetworkError() ? "network" : "server";
+			mView.showPermissionChangeFailedDialog(event.getRequestEvent().getPermission(), "revoke", reason);
+			refreshView();
+
+		}
+	}
+
+	@Subscribe
+	public void onGrantPermissionResponse(GrantFollowerPermissionResponse event) {
+		if (!event.isSuccessful()) {
+			System.out.println(String.format("permission %s granted", event.getRequestEvent().getPermission()));
+			String reason = event.isNetworkError() ? "network" : "server";
+			mView.showPermissionChangeFailedDialog(event.getRequestEvent().getPermission(), "grant", reason);
+			refreshView();
+		}
 	}
 
 }

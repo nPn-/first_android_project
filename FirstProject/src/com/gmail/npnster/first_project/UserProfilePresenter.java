@@ -45,6 +45,8 @@ public class UserProfilePresenter {
 	private ArrayList<Micropost> mUserProfileMicroposts = new ArrayList<Micropost>();
 	private ArrayAdapter<Micropost> micropostsAdapter;
 	private String mCurrentUser;
+	private boolean mProfileRequestActive = false;
+	private boolean mMicropostRequestActive = false;
 	@Inject PersistData mPersistData;
 	@Inject	Bus mBus;
 	private Micropost mLongClickedMicropost;
@@ -69,7 +71,7 @@ public class UserProfilePresenter {
 		return mView;
 	}
 
-	public Context getContext() {
+	public Activity getContext() {
 		return getView().getFragment().getActivity();
 	}
 
@@ -83,11 +85,16 @@ public class UserProfilePresenter {
 				mUserProfileMicroposts);
 		mView.setUserProfileMicropostsAdapter(micropostsAdapter);
 		mBus.post(new GetUserProfileRequest(mCurrentUser));
+		mProfileRequestActive = true;
 		mBus.post(new GetMicropostsRequest(mCurrentUser));
+		mMicropostRequestActive = true;
+		getContext().setProgressBarIndeterminateVisibility(true);
 	}
 
 	@Subscribe
 	public void onGetMicropostsResponse(GetMicropostsResponse event) {
+		mMicropostRequestActive = false;
+		requestComplete();
 		mUserProfileMicroposts.clear();
 		mUserProfileMicroposts.addAll(event.getMicroposts());
 		System.out.println(String.format("micorpost count = %s", event
@@ -102,6 +109,8 @@ public class UserProfilePresenter {
 	public void onGetUserProfileResponse(GetUserProfileResponse event) {
 		System.out.println(String.format("got the user profile for user = %s",
 				event.getName()));
+		mProfileRequestActive = false;
+		requestComplete();
 		mView.setUserIcon("http://www.gravatar.com/avatar/"
 				+ event.getGravatar_id());
 		mView.setUserName(event.getName());
@@ -135,6 +144,12 @@ public class UserProfilePresenter {
 		
 	}
 
+	private void requestComplete() {
+		if (!mProfileRequestActive && !mMicropostRequestActive) {
+			getContext().setProgressBarIndeterminateVisibility(false);
+		}
+		
+	}
 
 
 

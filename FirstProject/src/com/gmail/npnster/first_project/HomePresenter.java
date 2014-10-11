@@ -8,6 +8,8 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import retrofit.client.Header;
+
 import com.gmail.npnster.first_project.api_params.CreateMicropostRequest;
 import com.gmail.npnster.first_project.api_params.CreateMicropostResponse;
 import com.gmail.npnster.first_project.api_params.GetFollowedUsersRequest;
@@ -26,6 +28,7 @@ import android.text.Editable;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 
 public class HomePresenter {
@@ -57,7 +60,7 @@ public class HomePresenter {
 		return mView;
 	}
 
-	public Context getContext() {
+	public Activity getContext() {
 		return getView().getFragment().getActivity();
 	}
 
@@ -67,7 +70,7 @@ public class HomePresenter {
 		Intent intent = new Intent(getContext(), MapActivity.class);
 		getContext().startActivity(intent);
 	}
-	
+
 	public void onUserListOptionSelected() {
 		System.out.println("item user selected");
 		System.out.println("launching user list activity");
@@ -102,32 +105,36 @@ public class HomePresenter {
 		adapter = new FollowedUsersListAdapter(getContext(), followedUsers);
 		mView.setFollowedUsersListAdapter(adapter);
 		mBus.post(new GetFollowedUsersRequest(mPersistData.getUserId()));
+		getContext().setProgressBarIndeterminateVisibility(true);
 	}
 
 	@Subscribe
 	public void onGetFollowedUsersResponse(GetFollowedUsersResponse event) {
 
-		followedUsers.clear();
-		for (GetUsersResponse.User user : event.getUsers()) {
-			System.out.println(user.getName());
-			String lastPost = "";
-			String postedTimeAgo = "";
-			if (user.hasMicropost()) {
-				lastPost = user.getLastMicropost().getContent();
-				postedTimeAgo = MyDateUtils.timeAgo(user.getLastMicropost()
-						.getCreated_at());
+		getContext().setProgressBarIndeterminateVisibility(false);
+		if (event.isSuccessful()) {
+			followedUsers.clear();
+			for (GetUsersResponse.User user : event.getUsers()) {
+				System.out.println(user.getName());
+				String lastPost = "";
+				String postedTimeAgo = "";
+				if (user.hasMicropost()) {
+					lastPost = user.getLastMicropost().getContent();
+					postedTimeAgo = MyDateUtils.timeAgo(user.getLastMicropost().getCreated_at());
+				}
+				UserListItem userListIterm = new UserListItem(user.getId(), user.getName(), user.getGravatar_id(), lastPost,
+						postedTimeAgo);
+				followedUsers.add(userListIterm);
 			}
-			UserListItem userListIterm = new UserListItem(user.getId(),user.getName(),
-					user.getGravatar_id(), lastPost, postedTimeAgo);
-			followedUsers.add(userListIterm);
+			adapter.notifyDataSetChanged();
+		} else {
+			mView.showGetFailedDialog(event.isNetworkError());
 		}
-		adapter.notifyDataSetChanged();
 
 	}
 
 	public void onMicroPostSubmit(Editable text) {
-		CreateMicropostRequest request = new CreateMicropostRequest(
-				text.toString());
+		CreateMicropostRequest request = new CreateMicropostRequest(text.toString());
 		mView.resetMicroPostContent();
 		mBus.post(request);
 
@@ -137,14 +144,14 @@ public class HomePresenter {
 	public void onCreateMicropostResponse(CreateMicropostResponse event) {
 		refreshView();
 	}
-	
+
 	@Subscribe
 	public void onNewMicropostEvent(NewMicropostEvent event) {
 		refreshView();
 	}
 
 	public void onFollowerClicked(int position) {
-		
+
 		Integer selectedUser = followedUsers.get(position).getUserId();
 		String selectedUserAsString = String.valueOf(selectedUser);
 		System.out.println(String.format("user selected = %s", selectedUserAsString));
@@ -155,14 +162,13 @@ public class HomePresenter {
 			getContext().startActivity(intent);
 		} else {
 			Intent intent = new Intent(getContext(), UserProfileActivity.class);
-			getContext().startActivity(intent);			
+			getContext().startActivity(intent);
 		}
-		
-//		Integer userId = followedUsers.get(position).getUserId();
-//		System.out.println(String.format("followed user id selected = %s", userId));
-				
+
+		// Integer userId = followedUsers.get(position).getUserId();
+		// System.out.println(String.format("followed user id selected = %s",
+		// userId));
+
 	}
 
-
-	
 }

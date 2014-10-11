@@ -83,7 +83,11 @@
         </activity>
         <activity
             android:name="com.gmail.npnster.first_project.UserDetailActivity"
+            android:parentActivityName="com.gmail.npnster.first_project.HomeActivity"
             android:label="@string/title_activity_user_detail" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gmail.npnster.first_project.HomeActivity"/>
         </activity>
         <activity
             android:name="com.gmail.npnster.first_project.UserProfileActivity"

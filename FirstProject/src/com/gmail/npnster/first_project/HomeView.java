@@ -21,6 +21,7 @@ import android.widget.TextView.OnEditorActionListener;
 public class HomeView {
 
 	private Fragment mFragment;
+	private GetFailedDialog mGetFailedDialog;
 	private HomePresenter mPresenter;
 	@InjectView(R.id.followed_users_listview)
 	ListView followedUsersListView;
@@ -64,6 +65,7 @@ public class HomeView {
 
 	public void initializeView(View rootView) {
 		ButterKnife.inject(this, rootView);
+		mGetFailedDialog = new GetFailedDialog(mFragment.getActivity());
 		microPostContent.setHorizontallyScrolling(false);
 		microPostContent.setMaxLines(10);
 		microPostContent.setOnEditorActionListener(new OnEditorActionListener() {
@@ -107,6 +109,10 @@ public class HomeView {
 
 	private Activity getActivity() {
 		return getFragment().getActivity();
+	}
+	
+	public void showGetFailedDialog(boolean networkError) {
+		mGetFailedDialog.show(networkError);
 	}
 
 //	public void onFollowedUserClicked(int position) {

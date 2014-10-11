@@ -5,6 +5,7 @@ public class GrantFollowerPermissionRequest extends TokenBasedRequest {
 	private String userId;
 	private String followerId;
 	private String permission;
+	private String mFollowerName = null;
 	
 	public GrantFollowerPermissionRequest(String userId, String followerId, String permission) {
 		super();
@@ -20,6 +21,18 @@ public class GrantFollowerPermissionRequest extends TokenBasedRequest {
 
 	public String getFollowerId() {
 		return followerId;
+	}
+	
+	public String getPermission() {
+		return permission;
+	}
+	
+	public void setFollowerName(String name) {
+		mFollowerName = name;
+	}
+	
+	public String getFollowerName() {
+		return mFollowerName;
 	}
 
 

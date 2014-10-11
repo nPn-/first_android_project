@@ -34,6 +34,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -42,6 +43,7 @@ public class UserListActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_user_list);
 
 		if (savedInstanceState == null) {
@@ -61,6 +63,9 @@ public class UserListActivity extends ActionBarActivity {
 		@Override
 		public void onPause() {
 			super.onPause();
+			UserDetailActivityStateChangeEvent stateChange = new UserDetailActivityStateChangeEvent();
+			stateChange.setState(UserDetailActivityStateChangeEvent.State.PAUSED);
+			mBus.post(stateChange);
 			mBus.unregister(mUserListPresenter);
 		}
 

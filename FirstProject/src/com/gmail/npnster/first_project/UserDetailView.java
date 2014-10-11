@@ -8,11 +8,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -38,6 +42,8 @@ public class UserDetailView {
 	@InjectView(R.id.user_detail_microposts) ListView userDetailMicropostsView;
 	@InjectView(R.id.following_notice) TextView userDetailFollowingNoticeView;
 	@InjectView(R.id.follow_switch) Switch userDetailFollowSwitchView;
+	private PermissionChangeFailedDialog mPermissionChangeFailedDialog;
+
 
 	public UserDetailView(Fragment fragment) {
 		mFragment = fragment;
@@ -70,7 +76,10 @@ public class UserDetailView {
 
 	public void initializeView(View rootView) {
 		ButterKnife.inject(this, rootView);
+		mPermissionChangeFailedDialog = new PermissionChangeFailedDialog(mFragment.getActivity());
 		userDetailFollowSwitchView.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+	
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
@@ -142,4 +151,39 @@ public class UserDetailView {
 		
 	}
 
+	
+	public static class PermissionChangeFailedDialog  {
+		
+		String mPermission;
+		String mState;
+		String mReason;
+		Context mContext;
+		
+		public PermissionChangeFailedDialog(Context context) {
+			mContext = context;
+		}
+		
+		public void show(String permission, String state, String reason) {
+			String mPermission = permission;
+			String mState = state;
+			String mReason = reason;
+			AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+	        builder.setMessage(String.format("Your %s %s permission update failed due to a %s error. Please try the update again later",
+	        		            mPermission,mState,mReason))
+	               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                   }
+	               });
+	        builder.show();
+		}
+		
+	   
+	}
+
+
+	public void showPermissionChangeFailedDialog(String permission,
+			String state, String reason) {
+		mPermissionChangeFailedDialog.show(permission, state, reason);
+		
+	}
 }
