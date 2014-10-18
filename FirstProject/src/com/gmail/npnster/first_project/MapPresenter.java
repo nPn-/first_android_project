@@ -2,12 +2,15 @@ package com.gmail.npnster.first_project;
 
 import javax.inject.Inject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.view.ActionMode;
 import android.view.MenuItem;
 
+import com.gmail.npnster.first_project.api_params.GetMapMarkersRequest;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse;
 import com.gmail.npnster.first_project.api_params.GetMapMarkersResponse.RailsMarker;
 import com.gmail.npnster.first_project.api_params.GetUserProfileRequest;
@@ -40,52 +43,71 @@ public class MapPresenter {
 
 	}
 
+	public MapView getView() {
+		return mMapView;
+	}
+
+	public Activity getContext() {
+		return getView().getFragment().getActivity();
+	}
+
+//	@Subscribe
+//	public void onGetMapMarkersRequest(GetMapMarkersRequest even) {
+//		getContext().setProgressBarIndeterminateVisibility(true);
+//
+//	}
+
 	@Subscribe
 	public void onGetMapMarkersRequestCompleted(GetMapMarkersResponse event) {
 		System.out.println("inside map activity - onGetMapMarkersRequestCompleted");
-		if (event != null && event.getRawResponse() != null) {
-			System.out.println(String.format("get marker request completed with a status of %d, isSuccessful = %b", event
-					.getRawResponse().getStatus(), event.isSuccessful()));
-		}
-		if (event != null && event.isSuccessful()) {
-			if (mMapMarkers.hasSameUserList(event.getMarkers())) {
-				System.out.println(String.format("updating %d markers", mMapMarkers.size()));
-
-				mMapMarkers.updateLocationInfo(event.getMarkers(), centerOnModeIndex);
-				for (MapMarker m : mMapMarkers.toArrayList()) {
-					GoogleMapMarkerParameters parameters = m.getGoogleMapMarkerParameters();
-					mMapView.updateMarker(parameters);
-				}
-
-			} else {
-				System.out.println("replacing markers");
-				// String currentCenterOnUser = null;
-				// if (mMapMarkers.get(centerOnPersonIndex) != null ) {
-				// currentCenterOnUser =
-				// mMapMarkers.get(centerOnPersonIndex).getUserId();
-				// }
-				mMapMarkers.clear();
-				mMapView.clearMap();
-
-				for (RailsMarker m : event.getMarkers()) {
-					mMapMarkers.add(new MapMarker(mContext, m));
-					System.out
-							.println(String.format("requesting profile for user name = %s,  id = %s", m.getName(), m.getUserId()));
-					mBus.post(new GetUserProfileRequest(m.getUserId()));
-
-				}
-				int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(centerOnUserId);
-				if (newIndexOfCurrentCenterOnUser >= 0) {
-					setCenterOnPosition(newIndexOfCurrentCenterOnUser);
-				} else {
-					setCenterOnPosition(0);
-				}
-				mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
-				mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
+		getContext().setProgressBarIndeterminateVisibility(false);
+		if (event.isSuccessful()) {
+			if (event != null && event.getRawResponse() != null) {
+				System.out.println(String.format("get marker request completed with a status of %d, isSuccessful = %b", event
+						.getRawResponse().getStatus(), event.isSuccessful()));
 			}
-			isMapReady = true;
-			recenterMap();
-			System.out.println("finished processing returned markers");
+			if (event != null && event.isSuccessful()) {
+				if (mMapMarkers.hasSameUserList(event.getMarkers())) {
+					System.out.println(String.format("updating %d markers", mMapMarkers.size()));
+
+					mMapMarkers.updateLocationInfo(event.getMarkers(), centerOnModeIndex);
+					for (MapMarker m : mMapMarkers.toArrayList()) {
+						GoogleMapMarkerParameters parameters = m.getGoogleMapMarkerParameters();
+						mMapView.updateMarker(parameters);
+					}
+
+				} else {
+					System.out.println("replacing markers");
+					// String currentCenterOnUser = null;
+					// if (mMapMarkers.get(centerOnPersonIndex) != null ) {
+					// currentCenterOnUser =
+					// mMapMarkers.get(centerOnPersonIndex).getUserId();
+					// }
+					mMapMarkers.clear();
+					mMapView.clearMap();
+
+					for (RailsMarker m : event.getMarkers()) {
+						mMapMarkers.add(new MapMarker(mContext, m));
+						System.out.println(String.format("requesting profile for user name = %s,  id = %s", m.getName(),
+								m.getUserId()));
+						mBus.post(new GetUserProfileRequest(m.getUserId()));
+
+					}
+					int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(centerOnUserId);
+					if (newIndexOfCurrentCenterOnUser >= 0) {
+						setCenterOnPosition(newIndexOfCurrentCenterOnUser);
+					} else {
+						setCenterOnPosition(0);
+					}
+					mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
+					mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
+				}
+				isMapReady = true;
+				recenterMap();
+				System.out.println("finished processing returned markers");
+			}
+		} else {
+			getView().showGetFailedDialog(event.isNetworkError());
 		}
 
 	}
@@ -152,7 +174,7 @@ public class MapPresenter {
 	public void nextButtonClicked() {
 		int nextPosition;
 		int n = centerOnPersonIndex + 1;
-		nextPosition = (n < mMapMarkers.size()) ? n : 0 ;
+		nextPosition = (n < mMapMarkers.size()) ? n : 0;
 		mMapView.setCenterOnSpinnerSelection(nextPosition);
 		centerOnPersonSelected(nextPosition);
 	}
@@ -229,6 +251,7 @@ public class MapPresenter {
 
 	public void reinitMapView() {
 		mMapView.setupCustomActionBar();
+		getContext().setProgressBarIndeterminateVisibility(true);
 		mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
 		mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
 		mMapView.setCenterOnMode(centerOnModeIndex);

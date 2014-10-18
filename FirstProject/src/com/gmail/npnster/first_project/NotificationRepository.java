@@ -14,8 +14,10 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
+import com.gmail.npnster.first_project.api_params.FollowResponse;
 import com.gmail.npnster.first_project.api_params.GrantFollowerPermissionResponse;
 import com.gmail.npnster.first_project.api_params.RevokeFollowerPermissionResponse;
+import com.gmail.npnster.first_project.api_params.UnfollowResponse;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -146,6 +148,22 @@ public class NotificationRepository {
 		if (mPermissionNotificationsEnabled && !event.isSuccessful()) {
 			System.out.println(String.format("notify = grant %s permission failed", event.getRequestEvent().getPermission()));
 			notifyUserUpdateFailed(event.getRequestEvent().getFollowerId(),event.getRequestEvent().getFollowerName());
+		}
+	}
+	
+	@Subscribe
+	public void onFollowResponse(FollowResponse event) {
+		if (mPermissionNotificationsEnabled && !event.isSuccessful()) {
+			System.out.println(String.format("notify = follow action for %s failed", event.getRequestEvent().getUserName()));
+			notifyUserUpdateFailed(event.getRequestEvent().getUserId(),event.getRequestEvent().getUserName());
+		}
+	}
+	
+	@Subscribe
+	public void onUnfollowResponse(UnfollowResponse event) {
+		if (mPermissionNotificationsEnabled && !event.isSuccessful()) {
+			System.out.println(String.format("notify = unfollow action for %s failed", event.getRequestEvent().getUserName()));
+			notifyUserUpdateFailed(event.getRequestEvent().getUserId(),event.getRequestEvent().getUserName());
 		}
 	}
 

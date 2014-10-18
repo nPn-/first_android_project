@@ -55,6 +55,7 @@ public class DeviceLocationClient implements
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 		System.out.println("connection to google play services FAILED!");
+		isConnected = false;
 
 	}
 
@@ -79,22 +80,26 @@ public class DeviceLocationClient implements
 		// TODO Auto-generated method stub
 		System.out
 				.println("google play services got disconnected - reconnecting");
+		isConnected = false;
 		mBus.unregister(this);
 		locationClient.connect();
 
 	}
 
-	@Subscribe
-	public void onUpdateLocationRequest(UpdateLocationRequest event) {
-		System.out.println("got the location request");
-		request = new LocationRequest();
-		request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		request.setExpirationDuration(60 * 1000);
-		request.setFastestInterval(5 * 1000);
-		request.setInterval(10 * 1000);
-		locationClient.removeLocationUpdates(this);
-		locationClient.requestLocationUpdates(request, this);
-	}
+	
+	// I don't think this is used anymore
+   
+//	@Subscribe
+//	public void onUpdateLocationRequest(UpdateLocationRequest event) {
+//		System.out.println("got the location request");
+//		request = new LocationRequest();
+//		request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//		request.setExpirationDuration(60 * 1000);
+//		request.setFastestInterval(5 * 1000);
+//		request.setInterval(10 * 1000);
+//		locationClient.removeLocationUpdates(this);
+//		locationClient.requestLocationUpdates(request, this);
+//	}
 
 	public void requestLLocationUpdates() {
 		System.out.println("got the location request from the service");

@@ -14,7 +14,7 @@ import android.os.Bundle;
 public class GcmBroadcastReceiver extends BroadcastReceiver {
 	
 	@Inject Bus mBus;
-	UpdateLocationRequest updateLocationRequest = new UpdateLocationRequest();
+//	UpdateLocationRequest updateLocationRequest = new UpdateLocationRequest();
 	
 	public GcmBroadcastReceiver() {
 		

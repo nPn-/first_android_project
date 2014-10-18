@@ -44,6 +44,8 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 	private DummyInfoWindowAdapter dummyInfoWindowAdapter;
 	private RealInfoWindowAdapter realInfoWindowAdapter;
 	private GoogleMap.OnMarkerClickListener dummyMarkerOnClickListener ;
+	private GetFailedDialog mGetFailedDialog;
+
 
 	public MapView(Fragment fragment, GoogleMap map, View actionBarView) {
 		mFragment = fragment;
@@ -55,6 +57,8 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 		realInfoWindowAdapter = new RealInfoWindowAdapter(mFragment.getActivity());
 		setupCustomActionBar();
 		attachMapListeners();
+		mGetFailedDialog = new GetFailedDialog(mFragment.getActivity());
+
 		
 	}
 	
@@ -445,6 +449,14 @@ public class MapView implements OnMarkerClickListener, OnMapLongClickListener, a
 		System.out.println("map long clicked");
 		mMapPresenter.mapLongClicked();
 		
+	}
+	
+	public void showGetFailedDialog(boolean networkError) {
+		mGetFailedDialog.show(networkError);
+	}
+
+	public Fragment getFragment() {
+		return mFragment;
 	}
 
 
