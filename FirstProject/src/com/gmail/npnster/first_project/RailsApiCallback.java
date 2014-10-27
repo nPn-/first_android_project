@@ -9,6 +9,9 @@ import com.squareup.otto.Bus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.converter.Converter;
+
+
 
 public class RailsApiCallback<T,S extends BaseResponse> implements Callback<S> {
 

@@ -3,7 +3,7 @@ package com.gmail.npnster.first_project.api_params;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateMicropostResponse extends BaseResponse {
+public class CreateMicropostResponse extends BaseResponse<CreateMicropostRequest> {
 	private Micropost micropost;
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

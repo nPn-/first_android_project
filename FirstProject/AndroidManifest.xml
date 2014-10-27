@@ -122,6 +122,7 @@
         </receiver>
 
         <service android:name="com.gmail.npnster.first_project.LocationMonitorService" />
+        <service android:name="com.gmail.npnster.first_project.ApiIntentService" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

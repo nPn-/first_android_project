@@ -7,7 +7,7 @@ import com.gmail.npnster.first_project.GoogleMapMarkerParameters;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GetMapMarkersResponse extends BaseResponse {
+public class GetMapMarkersResponse extends BaseResponse<GetMapMarkersRequest> {
 	@Expose
 	private ArrayList<RailsMarker> markers = new ArrayList<RailsMarker>();
 

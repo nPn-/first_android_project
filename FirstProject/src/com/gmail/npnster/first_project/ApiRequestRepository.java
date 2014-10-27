@@ -75,7 +75,7 @@ public class ApiRequestRepository {
 						.format("inside api repro making profile request with the following userParams,  user = %s, token = %s",
 								userToFetch, mPersistData.getToken()));
 		mRailsApi.userParams(userToFetch, mPersistData.getToken(),
-				new RailsApiCallback<GetUserProfileRequest,GetUserProfileResponse>(mBus, event ,new GetUserProfileResponse()));
+				new RailsApiCallback<GetUserProfileRequest,GetUserProfileResponse>(mBus, event ,new GetUserProfileResponse()));			
 	}
 
 	@Subscribe
@@ -109,8 +109,11 @@ public class ApiRequestRepository {
 
 	@Subscribe
 	public void onGetUsers(GetUsersRequest event) {
-		System.out.println("inside api repo - making get users list  request");
-		mRailsApi.getUsers(mPersistData.getToken(), new RailsApiCallback<GetUsersRequest,GetUsersResponse>(mBus, event, new GetUsersResponse()));
+		String pageNumber = event.getRequestedPageNumber() == -1 ? "1" : String.valueOf(event.getRequestedPageNumber());
+		String perPage = event.getRequestedItemsPerPage() == -1 ? "all" : String.valueOf(event.getRequestedItemsPerPage());
+		String search = event.getSearch();
+		System.out.println(String.format("inside api repo - making get users list  request page = %s, items per page = %s", pageNumber, perPage));
+		mRailsApi.getUsers(mPersistData.getToken(), pageNumber, perPage, search, new RailsApiCallback<GetUsersRequest,GetUsersResponse>(mBus, event, new GetUsersResponse()));
 	}
 	
 	@Subscribe

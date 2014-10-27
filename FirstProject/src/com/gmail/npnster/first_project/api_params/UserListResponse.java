@@ -8,9 +8,10 @@ import java.util.Map;
 import com.gmail.npnster.first_project.api_params.GetMicropostsResponse.Micropost;
 
 
-public class UserListResponse extends BaseResponse {
+public class UserListResponse<T> extends BaseResponse<T> {
 	private Integer page;
 	private Integer total_user_count;
+	private Integer found_count;
 	private List<User> users = new ArrayList<User>();
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -24,6 +25,10 @@ public class UserListResponse extends BaseResponse {
 
 	public Integer getTotalCount() {
 		return total_user_count;
+	}
+	
+	public Integer getFoundCount() {
+		return found_count;
 	}
 
 
@@ -48,7 +53,7 @@ public class UserListResponse extends BaseResponse {
 		this.additionalProperties.put(name, value);
 	}
 
-	public class User {
+	static public class User {
 
 		private Integer id;
 		private String name;

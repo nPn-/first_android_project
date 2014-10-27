@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.gmail.npnster.first_project.api_params.GetMicropostsResponse.Micropost;
 
-public class GetUserProfileResponse extends BaseResponse {
+public class GetUserProfileResponse extends BaseResponse<GetUserProfileRequest> {
 
 	private Integer id;
 	private String name;

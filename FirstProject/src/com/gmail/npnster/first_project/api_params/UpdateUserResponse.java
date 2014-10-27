@@ -1,5 +1,5 @@
 package com.gmail.npnster.first_project.api_params;
 
-public class UpdateUserResponse extends BaseResponse {
+public class UpdateUserResponse extends BaseResponse<UpdateUserRequest> {
 
 }

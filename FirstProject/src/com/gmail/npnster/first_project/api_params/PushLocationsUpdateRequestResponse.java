@@ -1,6 +1,6 @@
 package com.gmail.npnster.first_project.api_params;
 
-public class PushLocationsUpdateRequestResponse extends BaseResponse {
+public class PushLocationsUpdateRequestResponse extends BaseResponse<PushLocationsUpdateRequestRequest> {
 
 	private int rails_status_code;
 	private int gcm_status_code;

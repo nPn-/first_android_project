@@ -38,6 +38,8 @@ public class UserListPresenter {
 	PersistData mPersistData;
 	@Inject
 	Bus mBus;
+	private String mSearch = null;
+	private int mUsersFound = 0;
 
 	public UserListPresenter() {
 		Injector.getInstance().inject(this);
@@ -71,20 +73,27 @@ public class UserListPresenter {
 		mUserList.clear();
 		adapter = new UserListAdapter(getContext(), mUserList);
 		mView.setUserListAdapter(adapter);
-		mBus.post(new GetUsersRequest());
+		mBus.post(new GetUsersRequest(1, 30, mSearch));
 		getContext().setProgressBarIndeterminateVisibility(true);
 	}
 
 	@Subscribe
 	public void onGetUsersResponse(GetUsersResponse event) {
 
+		System.out.println(String.format("**got user list response loadmore = %b", event.getRequestEvent().isLoadMore()));
 		getContext().setProgressBarIndeterminateVisibility(false);
-		mUserList.clear();
+		if (!event.getRequestEvent().isLoadMore()) {
+			System.out.println("clearing list");
+			mUserList.clear();
+		}
+		System.out.println(String.format("total found = %d", event.getFoundCount()));
+		getView().setFoundCountMsg(String.format("Users found = %d", event.getFoundCount()));
 		for (GetUsersResponse.User user : event.getUsers()) {
 			System.out.println(user.getName());
 			mUserList.add(user);
 		}
 		adapter.notifyDataSetChanged();
+		System.out.println(String.format("**finished user list response loadmore = %b", event.getRequestEvent().isLoadMore()));
 
 	}
 
@@ -101,9 +110,24 @@ public class UserListPresenter {
 			Intent intent = new Intent(getContext(), UserProfileActivity.class);
 			getContext().startActivity(intent);
 		}
-		
+
 	}
 
+	public void onLoadMoreUsers(int page, int totalItemsCount) {
+		if (page > 1) {
+			System.out.println(String.format("time to add more users, requesting page = %d", page));
+			mBus.post(new GetUsersRequest(page, 30, mSearch, true));
+			getContext().setProgressBarIndeterminateVisibility(true);
+		}
 
-	
+	}
+
+	public void onSearchBoxChanged(Editable text) {
+		// System.out.println(String.format("new search field =  %s", text));
+		mSearch = text.toString();
+		System.out.println(String.format("new search field =  %s", mSearch));
+		refreshView();
+
+	}
+
 }

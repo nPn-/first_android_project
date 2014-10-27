@@ -10,6 +10,7 @@ import dagger.Provides;
 
 @Module(
 		injects = { DeviceLocationClient.class,
+				    ApiRequestRepositorySync.class,
 			},
 		library = true, complete = false
 		)

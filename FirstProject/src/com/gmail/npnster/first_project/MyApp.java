@@ -9,6 +9,7 @@ import retrofit.RestAdapter;
 
 import com.gmail.npnster.first_project.ApiExActivity.ApiCall;
 import com.gmail.npnster.first_project.RailsApiClient.RailsApi;
+import com.gmail.npnster.first_project.RailsApiClientSync.RailsApiSync;
 import com.gmail.npnster.first_project.api_params.CreateDeviceRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationRequest;
 import com.gmail.npnster.first_project.api_params.PostLocationResponse;
@@ -26,7 +27,7 @@ public class MyApp extends Application {
 
 //	private static String mApiRootUrl = "http://10.0.2.2:3000";   // for android test suite  
 	
-	
+	 
 //	private static final String API_ROOT_URL = "http://172.16.1.105:3000";    // for local server    
 //	private static final String API_ROOT_URL = "https://jdd-sample-app-rails4.herokuapp.com";  // heroku
 //	private static final String API_ROOT_URL = "https://mylatitude.mybluemix.net";  // bluemix
@@ -34,8 +35,10 @@ public class MyApp extends Application {
 	private String mApiRootUrl = "https://ourlatitude.mybluemix.net";  // bluemix
 
 	private ApiRequestRepository apiRequestRepository;
+	private ApiRequestRepositorySync apiRequestRepositorySync;
 	private NotificationRepository mNotificationRepository;
 	private RailsApi railsApi;
+	private RailsApiSync railsApiSync;
 	@Inject Bus mBus;
 	@Inject PersistData mPersistData;
 	Injector mInjector; 
@@ -50,10 +53,12 @@ public class MyApp extends Application {
 		RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(
 				mApiRootUrl).build();
 		railsApi = restAdapter.create(RailsApi.class);
-		apiRequestRepository = new ApiRequestRepository(mPersistData,
-				railsApi, mBus);
+		railsApiSync = restAdapter.create(RailsApiSync.class);
+		apiRequestRepository = new ApiRequestRepository(mPersistData,railsApi, mBus);
+		apiRequestRepositorySync = new ApiRequestRepositorySync(mPersistData,railsApiSync, mBus);
+//		mBus.register(apiRequestRepository);
+		mBus.register(apiRequestRepositorySync);
 		mNotificationRepository = new NotificationRepository();
-		mBus.register(apiRequestRepository);
 		mBus.register(this);
 		startService(new Intent(getApplicationContext(), LocationMonitorService.class));
 	}

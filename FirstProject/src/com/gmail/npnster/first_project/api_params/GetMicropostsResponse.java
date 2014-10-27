@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetMicropostsResponse extends BaseResponse {
+public class GetMicropostsResponse extends BaseResponse<GetMicropostsRequest> {
 	
 	private Integer page;
 	private Integer total_user_microposts_count;

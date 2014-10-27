@@ -1,7 +1,7 @@
 package com.gmail.npnster.first_project.api_params;
 
 
-public class GetFollowersResponse extends UserListResponse {
+public class GetFollowersResponse extends UserListResponse<GetFollowersRequest> {
 
 	
 }

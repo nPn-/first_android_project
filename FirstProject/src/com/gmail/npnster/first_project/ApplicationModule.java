@@ -16,6 +16,7 @@ import dagger.Provides;
 	injects = { 
 				MapMarker.class,
 				ApiRequestRepository.class,
+				ApiRequestRepositorySync.class,
 				DeviceLocationClient.class,
 				GcmBroadcastReceiver.class,
 				HomeActivity.PlaceholderFragment.class,
@@ -45,7 +46,9 @@ import dagger.Provides;
 				UserListPresenter.class, 
 				MicropostListPresenter.class, 
 				UserDetailPresenter.class, 
-				UserProfilePresenter.class, 
+				UserProfilePresenter.class,
+				RailsApiQue.class,
+				ApiIntentService.class,
 				UpdateUserProfilePresenter.class, 
 				MyApp.class
 			  },
@@ -95,5 +98,9 @@ public class ApplicationModule {
 		return new LocationMonitorService.PushRequestTimer(10*60000,60000);
 	}
 	
+	@Provides @Singleton
+	public RailsApiQue provideRailsApiQue () {
+		return new RailsApiQue();
+	}
 		  
 }

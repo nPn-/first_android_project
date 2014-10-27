@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CreateDeviceResponse extends BaseResponse {
+public class CreateDeviceResponse extends BaseResponse<CreateDeviceRequest> {
 
 	private String name;
 	private String gcm_reg_id;

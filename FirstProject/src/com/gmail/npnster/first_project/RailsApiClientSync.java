@@ -35,6 +35,7 @@ import com.gmail.npnster.first_project.api_params.UpdateUserResponse;
 import com.gmail.npnster.first_project.api_params.UserRequestParams;
 
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -44,110 +45,92 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public class RailsApiClient {
+public class RailsApiClientSync {
 	private static final String API_URL = "/api/v1";
 
-	interface RailsApi {
+
+	interface RailsApiSync {
 
 		@GET(API_URL + "/users/{id}")
-		void userParams(@Path("id") String id,
-				@Query("api_access_token") String token,
-				Callback<GetUserProfileResponse> callback);
+		Response userParams(@Path("id") String id,
+				@Query("api_access_token") String token);
 
 		// changed to put for now - bluemix does not support patch?
 		@PUT(API_URL + "/users/{id}")
-		void updateUser(@Path("id") String id, @Body UpdateUserRequest request,
-				Callback<UpdateUserResponse> callback);
+		Response updateUser(@Path("id") String id, @Body UpdateUserRequest request);
 
 		@POST(API_URL + "/signup")
-		void signup(@Body UserRequestParams requestParams,
-				Callback<SignupResponse> tokenParms);
+		Response signup(@Body UserRequestParams requestParams);
 
 		@POST(API_URL + "/signin")
-		void signup(@Body SigninRequest request,
-				Callback<SigninResponse> response);
+		Response signin(@Body SigninRequest request);
 
 		@DELETE(API_URL + "/leave")
-		void leave(@Query("email") String email,
-				@Query("password") String password,
-				Callback<LeaveResponse> callback);
+		Response leave(@Query("email") String email,
+				@Query("password") String password);
 
 		@DELETE(API_URL + "/signout")
-		void signout(@Query("api_access_token") String token,
+		Response signout(@Query("api_access_token") String token,
 				@Query("email") String email,
-				@Query("password") String password,
-				Callback<SignoutResponse> callback);
+				@Query("password") String password);
 
 		@GET(API_URL + "/users")
-		void getUsers(@Query("api_access_token") String token,
+		Response getUsers(@Query("api_access_token") String token,
 				@Query("page") String page,
 				@Query("per_page") String perPage,
-				@Query("search") String search,
-				Callback<GetUsersResponse> callback);
+				@Query("search") String search);
 
 		@GET(API_URL + "/users/{id}/followers?per_page=all")
-		void getFollowers(@Query("api_access_token") String token,
-				@Path("id") String id, Callback<GetFollowersResponse> callback);
+		Response getFollowers(@Query("api_access_token") String token,
+				@Path("id") String id);
 
 		@GET(API_URL + "/users/{id}/following?per_page=all")
-		void getFollowedUsers(@Query("api_access_token") String token,
-				@Path("id") String id,
-				Callback<GetFollowedUsersResponse> callback);
+		Response getFollowedUsers(@Query("api_access_token") String token,
+				@Path("id") String id);
 
 		@GET(API_URL + "/users/{id}/microposts?per_page=all")
-		void getMicroposts(@Query("api_access_token") String token,
-				@Path("id") String id, Callback<GetMicropostsResponse> callback);
+		Response getMicroposts(@Query("api_access_token") String token,
+				@Path("id") String id);
 
 		@POST(API_URL + "/microposts")
-		void createMicropost(@Body CreateMicropostRequest request,
-				Callback<CreateMicropostResponse> callback);
+		Response createMicropost(@Body CreateMicropostRequest request);
 
 		@DELETE(API_URL + "/microposts/{id}")
-		void deleteMicropost(@Query("api_access_token") String token,
-				@Path("id") String id,
-				Callback<DeleteMicropostResponse> callback);
+		Response deleteMicropost(@Query("api_access_token") String token,
+				@Path("id") String id);
 
 		@POST(API_URL + "/users/{id}/follow")
-		void follow(@Path("id")String id, @Body FollowRequest request,
-				Callback<FollowResponse> callback);
+		Response follow(@Path("id")String id, @Body FollowRequest request);
 
 		@DELETE(API_URL + "/users/{id}/follow")
-		void unfollow(@Query("api_access_token") String token,
-				@Path("id")String id, 
-				Callback<UnfollowResponse> callback);
+		Response unfollow(@Query("api_access_token") String token,
+				@Path("id")String id); 
 
 		@POST(API_URL + "/users/{id}/followers/{follower_id}/permission")
-		void grantFollowerPermission(@Path("id") String id, @Path ("follower_id") String followerId,
-				@Body GrantFollowerPermissionRequest request,
-				Callback<GrantFollowerPermissionResponse> callback);
+		Response grantFollowerPermission(@Path("id") String id, @Path ("follower_id") String followerId,
+				@Body GrantFollowerPermissionRequest request);
 
 		@DELETE(API_URL + "/users/{id}/followers/{follower_id}/permission")
-		void revokeFollowerPermission(@Query("api_access_token") String token,
+		Response revokeFollowerPermission(@Query("api_access_token") String token,
 				  @Query("permission") String permission,
 				  @Path("id") String id,
-				  @Path ("follower_id") String followerId,
-				Callback<RevokeFollowerPermissionResponse> callback);
+				  @Path ("follower_id") String followerId);
 
 		@POST(API_URL + "/devices")
-		void createDevice(@Body CreateDeviceRequest request,
-				Callback<CreateDeviceResponse> callback);
+		Response createDevice(@Body CreateDeviceRequest request);
 		
 		@POST(API_URL + "/devices/{gcm_reg_key}/locations")
-		void postLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PostLocationRequest request,
-				Callback<PostLocationResponse> callback);
+		Response postLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PostLocationRequest request);
 		
 		// changed to put for now - bluemix does not support patch?
 		@PUT(API_URL + "/devices/{gcm_reg_key}/locations")
-		void patchLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PatchLocationRequest request,
-				Callback<PatchLocationResponse> callback);
+		Response patchLocation(@Path("gcm_reg_key") String gcmRegKey, @Body PatchLocationRequest request);
 		
 		@POST(API_URL + "/locations_update_requests")
-		void postPushLocationsUpdateRequest(@Body PushLocationsUpdateRequestRequest request,
-				Callback<PushLocationsUpdateRequestResponse> callback);
+		Response postPushLocationsUpdateRequest(@Body PushLocationsUpdateRequestRequest request);
 		
 		@GET(API_URL + "/map_markers")
-		void getMapMarkersRequest(@Query("api_access_token") String token,
-				Callback<GetMapMarkersResponse> callback);
+		Response getMapMarkersRequest(@Query("api_access_token") String token);
 
 	}
 

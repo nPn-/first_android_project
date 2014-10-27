@@ -71,7 +71,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	private String valid_android_token;
 	private String storedEmailId;
 	private String storedToken;
-	private final Integer DEFAULT_TIMEOUT = 500;
+	private final Integer DEFAULT_TIMEOUT = 1000;
 	private Integer timeout = DEFAULT_TIMEOUT;
 	private PersistData mPersistData = null;
 	private String VALID_ACCESS_TOKEN_FOR_USER_1 = "1:Ccqe68MdGftnkJKVfpfs8g"; 
@@ -126,7 +126,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 						"foobar", "foobar"));
 		clickAndWait();
 		valid_android_token = getActivity().getSignupResponse().getToken();
-		System.out.println(String.format("goe token = %s ", valid_android_token));
+		System.out.println(String.format("got token = %s ", valid_android_token));
 		mPersistData.saveToken(valid_android_token);
 		mPersistData.saveEmailId("valid_android_user@example.com");
 
