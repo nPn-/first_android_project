@@ -56,8 +56,8 @@ public class MyApp extends Application {
 		railsApiSync = restAdapter.create(RailsApiSync.class);
 		apiRequestRepository = new ApiRequestRepository(mPersistData,railsApi, mBus);
 		apiRequestRepositorySync = new ApiRequestRepositorySync(mPersistData,railsApiSync, mBus);
-//		mBus.register(apiRequestRepository);
-		mBus.register(apiRequestRepositorySync);
+		mBus.register(apiRequestRepository);
+//		mBus.register(apiRequestRepositorySync);
 		mNotificationRepository = new NotificationRepository();
 		mBus.register(this);
 		startService(new Intent(getApplicationContext(), LocationMonitorService.class));

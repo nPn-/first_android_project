@@ -37,6 +37,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -53,6 +54,7 @@ public class UserDetailPresenter {
 	private String mUserId;
 	private String mUserName;
 	private String mCurrentUser;
+	private String mUserPhoneNumber;
 	private boolean mProfileRequestActive = false;
 	private boolean mMicropostRequestActive = false;
 	@Inject
@@ -124,7 +126,8 @@ public class UserDetailPresenter {
 			mUserName = event.getName();
 			mView.setUserName(event.getName());
 			mView.setUserEmailId(event.getEmail());
-			mView.setUserPhoneNumber(event.getPhoneNumber());
+			setUserPhoneNumber(event.getPhoneNumber());
+			mView.setUserPhoneNumber(getUserPhoneNumber());
 			mView.setFollowUser(event.areFollowing());
 			mView.setFollowingNotice(event.isFollowedBy());
 			mUserDetailOptions.clear();
@@ -190,7 +193,7 @@ public class UserDetailPresenter {
 			String reason = event.isNetworkError() ? "network" : "server";
 			mView.showFollowUnfollowChangeFailedDialog("follow", reason);
 			refreshView();
-		} 
+		}
 	}
 
 	@Subscribe
@@ -230,6 +233,39 @@ public class UserDetailPresenter {
 			mView.showPermissionChangeFailedDialog(event.getRequestEvent().getPermission(), "grant", reason);
 			refreshView();
 		}
+	}
+
+	public void onMapOptionSelected() {
+		mPersistData.saveCenterOnUserId(mUserId);
+		Intent intent = new Intent(getContext(), MapActivity.class);
+		getContext().startActivity(intent);
+	}
+
+	public void contactPersonVia(String via) {
+		String phoneNumber = getUserPhoneNumber();
+		if (phoneNumber != null && phoneNumber != "") {
+			String uriString = String.format("%s:%s", via, phoneNumber);
+			System.out.println(String.format("contact person with phone number = %s, via %s", phoneNumber, via));
+			Intent contactIntent = new Intent(Intent.ACTION_VIEW);
+			contactIntent.setData(Uri.parse(uriString));
+			getContext().startActivity(contactIntent);
+		}
+	}
+
+	public void onMessagePersonOptionSelected() {
+		contactPersonVia("sms");
+	}
+	
+	public void onCallPersonOptionSelected() {
+		contactPersonVia("tel");
+	}
+
+	public String getUserPhoneNumber() {
+		return mUserPhoneNumber;
+	}
+
+	public void setUserPhoneNumber(String userPhoneNumber) {
+		mUserPhoneNumber = userPhoneNumber;
 	}
 
 }

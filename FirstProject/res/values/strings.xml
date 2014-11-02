@@ -9,7 +9,7 @@
     <string name="title_activity_users_list">UsersListActivity</string>
     <string name="title_activity_user_list">UserListActivity</string>
     <string name="title_activity_micropost_list">MicropostListActivity</string>
-    <string name="title_activity_user_detail">UserDetailActivity</string>
+    <string name="title_activity_user_detail">Details</string>
     <string name="title_activity_user_profile">UserProfileActivity</string>
     <string name="title_activity_update_user_profile">UpdateProfileActivity</string>
     <string name="title_activity_api_checker">ApiCheckerActivity</string>

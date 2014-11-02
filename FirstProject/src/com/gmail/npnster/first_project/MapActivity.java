@@ -86,8 +86,8 @@ public class MapActivity extends Activity {
 //			mapView.setActivity(getActivity());
             mapView.setActionBarView(actionBarView);
 			mapPresenter.reinitMapView();
-			System.out.println(String.format("restoreing state = centerOnIndex = %d,  centerOnMode = %d",mPersistData.getCenterOnPosition() ,mPersistData.getCenterOnMode() ));
-            mapPresenter.setCenterOnPosition(mPersistData.getCenterOnPosition());
+			System.out.println(String.format("restoreing state = centerOnUserId = %s, centerOnIndex = %d,  centerOnMode = %d",mPersistData.getCenterOnUserId(), mPersistData.getCenterOnPosition() ,mPersistData.getCenterOnMode() ));
+//            mapPresenter.setCenterOnPosition(mPersistData.getCenterOnPosition());
             mapPresenter.setCenterOnMode(mPersistData.getCenterOnMode());
             mapPresenter.setCenterOnUserId(mPersistData.getCenterOnUserId());
 			getBus().register(mapPresenter);
@@ -108,10 +108,10 @@ public class MapActivity extends Activity {
 		public void onPause() {
 			super.onPause();
 			System.out.println("pausing map fragment");
-			System.out.println(String.format("state = centerOnIndex = %d,  centerOnMode = %d",mapPresenter.getGenterOnPosition() ,mapPresenter.getGenterOnMode() ));
+			System.out.println(String.format("state = centerOnUserId = %s, centerOnIndex = %d,  centerOnMode = %d",mapPresenter.getCenterOnUserId(),mapPresenter.getGenterOnPosition() ,mapPresenter.getGenterOnMode() ));
 			getBus().unregister(mapPresenter);
 			mPersistData.saveMapBounds(mapView.getCurrentMapBounds());
-			mPersistData.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
+//			mPersistData.saveCenterOnPosition(mapPresenter.getGenterOnPosition());
 			mPersistData.saveCenterOnMode(mapPresenter.getGenterOnMode());
 			mPersistData.saveCenterOnUserId(mapPresenter.getCenterOnUserId());
     		context.startService(endTracking);

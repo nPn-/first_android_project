@@ -71,6 +71,15 @@ public class UserDetailView {
 		case R.id.microposts:
 			mPresenter.onMicropostssOptionSelected();
 			return true;
+		case R.id.map:
+			mPresenter.onMapOptionSelected();
+			return true;
+		case R.id.call_person:
+			mPresenter.onCallPersonOptionSelected();
+			return true;
+		case R.id.message_person:
+			mPresenter.onMessagePersonOptionSelected();
+			return true;
 		default:
 			return false;
 

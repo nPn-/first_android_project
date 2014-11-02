@@ -93,12 +93,13 @@ public class MapPresenter {
 						mBus.post(new GetUserProfileRequest(m.getUserId()));
 
 					}
-					int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(centerOnUserId);
-					if (newIndexOfCurrentCenterOnUser >= 0) {
-						setCenterOnPosition(newIndexOfCurrentCenterOnUser);
-					} else {
-						setCenterOnPosition(0);
-					}
+					setCenterOnUserId(centerOnUserId);
+//					int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(centerOnUserId);
+//					if (newIndexOfCurrentCenterOnUser >= 0) {
+//						setCenterOnPosition(newIndexOfCurrentCenterOnUser);
+//					} else {
+//						setCenterOnPosition(0);
+//					}
 					mMapView.setupCenterOnSpinner(mMapMarkers, centerOnPersonIndex);
 					mMapView.setIntialCenterOnImage(mMapMarkers.get(centerOnPersonIndex));
 				}
@@ -154,8 +155,9 @@ public class MapPresenter {
 	}
 
 	public void centerOnPersonSelected(int position) {
-		setCenterOnPosition(position);
-		// centerOnPersonIndex = position;
+//		setCenterOnPosition(position);
+		setCenterOnUserId(mMapMarkers.get(position).getUserId());
+		centerOnPersonIndex = position;
 		recenterMap();
 		MapMarker mapMarker = mMapMarkers.get(position);
 		if (mapMarker != null) {
@@ -164,12 +166,12 @@ public class MapPresenter {
 
 	}
 
-	public void refreshMap() {
-		// no longer needed map is refresehd while fragment is active - remove
-		// calls to this method
-		System.out.println("inside map presenter method refreshMap - this no longer does anything please remove calls");
-
-	}
+//	public void refreshMap() {
+//		// no longer needed map is refresehd while fragment is active - remove
+//		// calls to this method
+//		System.out.println("inside map presenter method refreshMap - this no longer does anything please remove calls");
+//
+//	}
 
 	public void nextButtonClicked() {
 		int nextPosition;
@@ -268,9 +270,9 @@ public class MapPresenter {
 
 	public void setCenterOnPosition(int position) {
 		centerOnPersonIndex = position;
-		if (mMapMarkers.get(position) != null) {
-			setCenterOnUserId(mMapMarkers.get(position).getUserId());
-		}
+//		if (mMapMarkers.get(position) != null) {
+//			setCenterOnUserId(mMapMarkers.get(position).getUserId());
+//		}
 		mMapView.setCenterOnSpinnerSelection(position);
 	}
 
@@ -299,7 +301,7 @@ public class MapPresenter {
 		String phoneNumber = mMapMarkers.get(centerOnPersonIndex).getPhoneNumber();
 		String uriString = String.format("tel:%s", phoneNumber);
 		System.out.println(String.format("call person with phone number = %s", phoneNumber));
-		Intent phoneCallIntent = new Intent(Intent.ACTION_CALL);
+		Intent phoneCallIntent = new Intent(Intent.ACTION_VIEW);
 		phoneCallIntent.setData(Uri.parse(uriString));
 		mContext.startActivity(phoneCallIntent);
 
@@ -322,19 +324,27 @@ public class MapPresenter {
 
 	}
 
-	public void centerOnPersonLongClicked(int position, long id) {
-		System.out.println("map view spinner item long clicked");
-		setCenterOnPosition(position);
-		mMapView.startActionMode();
-
-	}
+//	public void centerOnPersonLongClicked(int position, long id) {
+//		System.out.println("map view spinner item long clicked");
+//		setCenterOnPosition(position);
+//		mMapView.startActionMode();
+//
+//	}
 
 	public String getCenterOnUserId() {
 		return centerOnUserId;
 	}
 
 	public void setCenterOnUserId(String centerOnUserId) {
+		int newIndexOfCurrentCenterOnUser = mMapMarkers.getIndexOfUserId(centerOnUserId);
+		System.out.println(String.format("setting center on user id = %d", newIndexOfCurrentCenterOnUser));
 		this.centerOnUserId = centerOnUserId;
+		if (newIndexOfCurrentCenterOnUser >= 0) {
+			setCenterOnPosition(newIndexOfCurrentCenterOnUser);
+		} else {
+			setCenterOnPosition(0);
+		}
+
 	}
 
 }
