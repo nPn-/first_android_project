@@ -116,7 +116,7 @@ public class UpdateUserProfilePresenter {
 //		}
 		String pw = newPassword == null ? "" : newPassword;
 		String confirmPw = newConfirmationPassword == null ? "" : newConfirmationPassword;
-		mBus.post(new UpdateUserRequest(newUserName, newEmailId,pw,confirmPw));
+		mBus.post(new UpdateUserRequest(newUserName, newEmailId,pw,confirmPw, currentPassword));
 //		refreshView();
 		
 	}

@@ -330,7 +330,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testUpdateUser() throws Exception {
 		getActivity().setUpdateUserRequest(
 				new UpdateUserRequest("new_user_name",
-						"new_email_address@example.com", "foobar", "foobar"));
+						"new_email_address@example.com", "foobar", "foobar", "foobar"));
 		clickAndWait();
 		UpdateUserResponse updateUserResponse = getActivity()
 				.getUpdateUserResponse();
@@ -341,7 +341,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testUpdateUserFail() throws Exception {
 		getActivity().setUpdateUserRequest(
 				new UpdateUserRequest("new_user_name",
-						"new_email_address@example.com", "foobar", "fxxbar"));
+						"new_email_address@example.com", "foobar", "fxxbar", "foobar"));
 		clickAndWait();
 		UpdateUserResponse updateUserResponse = getActivity()
 				.getUpdateUserResponse();
