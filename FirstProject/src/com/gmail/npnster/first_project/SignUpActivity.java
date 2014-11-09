@@ -20,10 +20,13 @@ import com.squareup.otto.Subscribe;
 //import com.turbomanage.httpclient.android.AndroidHttpClient;
 
 
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -195,6 +198,12 @@ public class SignUpActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		String emailId = mPersistData.getEmail();
+		if (emailId != null && !emailId.equals("")) {
+			mEmailView.setText(emailId);
+			mPasswordView.requestFocus();
+			showLoggedOutDialog();
+		}
 		mBus.register(this);
 	}
 
@@ -416,6 +425,19 @@ public class SignUpActivity extends Activity {
 			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
+	}
+	
+	public void showLoggedOutDialog() {
+		System.out.println("showing logged out dialog");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Please Login")
+			   .setMessage("It looks like you may have changed your password from another device or via the web")
+		       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+			}
+		});
+		builder.create()
+			   .show();
 	}
 
 	/**

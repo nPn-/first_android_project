@@ -74,7 +74,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	private final Integer DEFAULT_TIMEOUT = 1000;
 	private Integer timeout = DEFAULT_TIMEOUT;
 	private PersistData mPersistData = null;
-	private String VALID_ACCESS_TOKEN_FOR_USER_1 = "1:Ccqe68MdGftnkJKVfpfs8g"; 
+	private String VALID_ACCESS_TOKEN_FOR_USER_1 = "1:GJxpzRsBQpf7BDE1sdHQBw"; 
 	
 //	@Inject PersistData mPersistData;
 
@@ -383,8 +383,9 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 	public void testGetFollowedUsers() throws Exception {
 		GetFollowedUsersRequest request = new GetFollowedUsersRequest("1");
 		request.setToken(VALID_ACCESS_TOKEN_FOR_USER_1);
+		System.out.println(request.getToken());
 		getActivity().setGetFollowedUsersRequest(request);
-		clickAndWait(2000);
+		clickAndWait(3000);
 		GetFollowedUsersResponse getFollowedUsersResponse = getActivity()
 				.getGetFollowedUsersResponse();
 		assertTrue("followedUsers list > 0 ", getFollowedUsersResponse
@@ -780,7 +781,7 @@ public class ApiExTest extends ActivityInstrumentationTestCase2<ApiExActivity> {
 		String dummyGcmRegId = String.valueOf(System.currentTimeMillis());
 		String name = "android_device" + dummyGcmRegId;
 		getActivity().setCreateDeviceRequest(new CreateDeviceRequest(dummyGcmRegId,name, true, "dummy_phone_number")); 
-		clickAndWait();
+		clickAndWait(2000);
 		CreateDeviceResponse createDeviceResponse = getActivity()
 				.getCreateDeviceResponse();
 		assertEquals("returned device name is correct",

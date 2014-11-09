@@ -3,7 +3,9 @@ package com.gmail.npnster.first_project;
 import javax.inject.Inject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -46,7 +48,7 @@ public class MainActivity extends Activity {
 			intent.putExtra("ACTION", "signup");
 			startActivity(intent);
 		} else if (mPersistData.readAccessToken() == "") {
-			intent = new Intent(this, SignInActivity.class);
+			intent = new Intent(this, SignUpActivity.class);
 			intent.putExtra("ACTION", "signin");
 			startActivity(intent);
 		} else if  (mPersistData.getGcmRegId() == "") {
@@ -91,6 +93,8 @@ public class MainActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+
 
 	/**
 	 * A placeholder fragment containing a simple view.

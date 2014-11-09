@@ -48,6 +48,7 @@ import dagger.Provides;
 				UserDetailPresenter.class, 
 				UserProfilePresenter.class,
 				RailsApiQue.class,
+				RailsApiCallback.class,
 				ApiIntentService.class,
 				UpdateUserProfilePresenter.class, 
 				MyApp.class
@@ -102,5 +103,6 @@ public class ApplicationModule {
 	public RailsApiQue provideRailsApiQue () {
 		return new RailsApiQue();
 	}
+	
 		  
 }

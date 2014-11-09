@@ -47,8 +47,10 @@ public class UpdateUserProfilePresenter {
 	private String mCurrentUser;
 	private String mCurrentName;
 	private String mCurrentEmailId;
-	@Inject PersistData mPersistData;
-	@Inject	Bus mBus;
+	@Inject
+	PersistData mPersistData;
+	@Inject
+	Bus mBus;
 
 	public UpdateUserProfilePresenter() {
 		Injector.getInstance().inject(this);
@@ -84,15 +86,11 @@ public class UpdateUserProfilePresenter {
 		getContext().setProgressBarIndeterminateVisibility(true);
 	}
 
-
-
 	@Subscribe
 	public void onGetUserProfileResponse(GetUserProfileResponse event) {
-		System.out.println(String.format("got the user profile for user = %s",
-				event.getName()));
+		System.out.println(String.format("got the user profile for user = %s", event.getName()));
 		getContext().setProgressBarIndeterminateVisibility(false);
-		mView.setUserIcon("http://www.gravatar.com/avatar/"
-				+ event.getGravatar_id());
+		mView.setUserIcon("http://www.gravatar.com/avatar/" + event.getGravatar_id());
 		mCurrentName = event.getName();
 		mCurrentEmailId = event.getEmail();
 		mView.setUserName(mCurrentName);
@@ -102,33 +100,45 @@ public class UpdateUserProfilePresenter {
 		mView.userProfileCurrentPasswordTextView.setText(null);
 
 	}
-	
-	
+
 	public void onCurrentPasswordEntered() {
+		getContext().setProgressBarIndeterminateVisibility(true);
 		String newUserName = mView.getNewUserName();
 		String newEmailId = mView.getNewEmailId();
 		String newPassword = mView.getNewPassword();
 		String newConfirmationPassword = mView.getNewConfirmationPassword();
 		String currentPassword = mView.getCurrentPassword();
 		System.out.println("current password entered");
-//		if (currentPassword.length() > 5 && newPassword.length() > 5 && newPassword.equals(newConfirmationPassword)) {
-//			System.out.println(String.format("process update for user = %s", mCurrentUser));
-//		}
+		// if (currentPassword.length() > 5 && newPassword.length() > 5 &&
+		// newPassword.equals(newConfirmationPassword)) {
+		// System.out.println(String.format("process update for user = %s",
+		// mCurrentUser));
+		// }
 		String pw = newPassword == null ? "" : newPassword;
 		String confirmPw = newConfirmationPassword == null ? "" : newConfirmationPassword;
-		mBus.post(new UpdateUserRequest(newUserName, newEmailId,pw,confirmPw, currentPassword));
-//		refreshView();
-		
+		mBus.post(new UpdateUserRequest(newUserName, newEmailId, pw, confirmPw, currentPassword));
+		// refreshView();
+
 	}
-	
-	@Subscribe public void onUserUpdateRequestCompleted(UpdateUserResponse event) {
+
+	@Subscribe 
+	public void onUserUpdateRequestCompleted(UpdateUserResponse event) {
+		System.out.println("got the following errors back, should be shown to user");
+		for (String error : event.getErrors()) {
+			System.out.println(error);
+		}
+		if (event.getErrors() != null && event.getErrors().size() > 0) {
+			mView.showErrorsDialog(event.getErrors());
+		} else {
+			System.out.println(String.format("new token = %s", event.getToken()));
+			if (event.getToken() != null && !event.getToken().equals("")) {
+				mPersistData.saveToken(event.getToken());
+			}
+			mView.resetUpdateProfileForm();
+			mView.showUpdatedProfileToast();
+			getContext().finish();
+		}
 		refreshView();
-		
-		mView.resetUpdateProfileForm();
 	}
-
-
-
-
 
 }

@@ -73,7 +73,7 @@ public class HomeView {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,	KeyEvent event) {
 				boolean handled = false;
-				if (actionId == EditorInfo.IME_ACTION_DONE) {
+				if (actionId == EditorInfo.IME_ACTION_DONE || event != null ) {
 					mPresenter.onMicroPostSubmit(microPostContent.getText());
 					handled = true;
 				}
